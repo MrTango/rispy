@@ -1,0 +1,16 @@
+.coverage
+*.egg-info/
+*.egg
+/.installed.cfg
+*.pyc
+*.codeintel
+/.Python
+/.project
+/.pydevproject
+/.mr.developer.cfg
+*.nja
+*.mo
+.tmp
+.ropeproject
+.idea
+1a.ris
