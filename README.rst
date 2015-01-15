@@ -1,3 +1,5 @@
-RISparser reads RIS files and provide dicts via a generator
-===========================================================
+Python RIS files parser
+=======================
+
+It reads RIS files and provides Python dictionaries via a generator.
 
