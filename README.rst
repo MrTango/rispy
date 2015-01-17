@@ -14,11 +14,6 @@ Usage
 
    >>> filepath = 'tests/example_full.ris'
    >>> entries = readris(filepath)
-   >>> entries_list = list(entries)
-   >>> print(len(entries_list))
-   2
-
-   >>> entries = readris(filepath)
    >>> for entry in entries:
    ...     pprint(entry)
    {'A1': ['Marx, Karl', 'Lindgren, Astrid', 'Glattauer, Daniel'],
@@ -55,6 +50,11 @@ Usage
     'TY': 'JOUR',
     'VL': '6',
     'Y1': '2006//'}
+
+   >>> entries = readris(filepath)
+   >>> entries_list = list(entries)
+   >>> print(len(entries_list))
+   2
 
 
 Example entry
