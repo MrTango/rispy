@@ -2,7 +2,7 @@ Python RIS files parser
 =======================
 
 It reads RIS files and provides Python dictionaries via a generator.
-This works also for very larg ris files.
+This works also for very larg RIS files.
 
 
 Usage
@@ -62,11 +62,8 @@ Usage
    2
 
 
-Example entry
--------------
-
-RIS entry
-*********
+Example RIS entry
+-----------------
 ::
 
    1.
@@ -98,7 +95,7 @@ RIS entry
 TAG_KEY_MAPPING
 ---------------
 
-The parser use a TAG_KEY_MAPPING, with one can override by calling readris() with a custom mapping.
+The parser use a TAG_KEY_MAPPING, witch one can override by calling readris() with a custom mapping.
 
 ::
 
@@ -109,7 +106,7 @@ The parser use a TAG_KEY_MAPPING, with one can override by calling readris() wit
    >>> filepath = 'tests/example_full.ris'
    >>> mapping = TAG_KEY_MAPPING
    >>> mapping["SP"] = "pages"
-   >>> entries = list(readris(filepath))
+   >>> entries = list(readris(filepath, mapping=mapping))
    >>> pprint(entries[0])
    {'abstract': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
     'alternate_title2': 'lorem',
