@@ -22,6 +22,7 @@ Example entry
 RIS entry
 *********
 ::
+
    1.
    TY  - JOUR
    ID  - 12345
