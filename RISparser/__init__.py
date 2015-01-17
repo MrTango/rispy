@@ -9,6 +9,7 @@ __author__ = 'maik'
 """Parse WOK and Refman's RIS files"""
 
 import re
+import types
 
 woktag = "^[A-Z][A-Z0-9] |^ER$|^EF$"
 ristag = "^[A-Z][A-Z0-9]  - "
@@ -74,7 +75,7 @@ ristags = {
 }
 
 
-def readris(filename, wok=True):
+def readris(filename, wok=False):
     """Parse a ris file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -92,13 +93,13 @@ def readris(filename, wok=True):
 
     if wok:
         gettag = lambda line: line[0:2]
-        getcontent = lambda line: line[2:]
+        getcontent = lambda line: line[2:].strip()
         istag = lambda line: (wokpat.match(line) is not None)
         starttag, endtag = wok_boundtags
         ignoretags = wok_ignoretags
     else:
         gettag = lambda line: line[0:2]
-        getcontent = lambda line: line[6:]
+        getcontent = lambda line: line[6:].strip()
         istag = lambda line: (rispat.match(line) is not None)
         iscounter = lambda line: (riscounterpat.match(line) is not None)
         starttag, endtag = ris_boundtags
@@ -139,7 +140,14 @@ def readris(filename, wok=True):
                 if not inref:
                     text = "Invalid start tag in line %d:\n %s" % (ln, line)
                     raise IOError(text)
-                current[tag] = getcontent(line)
+                # if tags exists more than once, store it as list
+                if tag in current:
+                    if not isinstance(current[tag], types.ListType):
+                        multi_val = [current[tag]]
+                        current[tag] = multi_val
+                    current[tag].append(getcontent(line))
+                else:
+                    current[tag] = getcontent(line)
         else:
             if not line.strip():
                 continue
