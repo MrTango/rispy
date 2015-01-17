@@ -25,57 +25,74 @@ wok_boundtags = ('PT', 'ER')
 wok_ignoretags = ['FN', 'VR', 'EF']
 ris_ignoretags = []
 
-ristags = {
-    'TY': "Record kind",
-    'A1': "Author",
-    'A2': "Secondary Author",
-    'A3': "Tertiary Author",
-    'A4': "Subsidiary Author",
-    'AB': "Abstract",
-    'AD': "Author Address",
-    'AN': "Accession Number",
-    'AU': "Author",
-    'C1': "Custom 1",
-    'CA': "Caption",
-    'CN': "Call Number",
-    'CY': "Place Published",
-    'DA': "Date",
-    'DB': "Name of Database",
-    'DO': "DOI",
-    'DP': "Database Provider",
-    'ET': "Edition",
-    'J2': "Alternate Title",
-    'KW': "Keywords",
-    'L1': "File Attachments",
-    'L4': "Figure",
-    'LA': "Language",
-    'LB': "Label",
-    'IS': "Number",
-    'M3': "Type of Work",
-    'N1': "Notes",
-    'NV': "Number of Volumes",
-    'OP': "Original Publication",
-    'PB': "Publisher",
-    'PY': "Year",
-    'RI': "Reviewed Item",
-    'RN': "Research Notes",
-    'RP': "Reprint Edition",
-    'SE': "Version",
-    'SN': "ISBN",
-    'SP': "Pages",
-    'ST': "Short Title",
-    'T2': "Dictionary Title",
-    'TA': "Translated Author",
-    'TI': "Title",
-    'TT': "Translated Title",
-    'UR': "URL",
-    'VL': "Volume",
-    'Y2': "Access Date",
-    'ER': "[End of Reference]"
+TAG_KEY_MAPPING = {
+    'TY': "type",
+    'A1': "authors",
+    'A2': "secondary_authors",
+    'A3': "tertiary_authors",
+    'A4': "subsidiary_author",
+    'AB': "abstract",
+    'AD': "author_address",
+    'AN': "accession_number",
+    'AU': "author",
+    'C1': "custom1",
+    'C2': "custom2",
+    'C3': "custom3",
+    'C4': "custom4",
+    'C5': "custom5",
+    'C6': "custom6",
+    'C7': "custom7",
+    'C8': "custom8",
+    'CA': "caption",
+    'CN': "call_number",
+    'CY': "place_published",
+    'DA': "date",
+    'DB': "name_of_database",
+    'DO': "doi",
+    'DP': "database_provider",
+    'ET': "edition",
+    'EP': "end_page",
+    'ID': "id",
+    'IS': "number",
+    'J2': "alternate_title1",
+    'JA': "alternate_title2",
+    'JF': "alternate_title3",
+    'KW': "keywords",
+    'L1': "file_attachments1",
+    'L2': "file_attachments2",
+    'L4': "figure",
+    'LA': "language",
+    'LB': "label",
+    'M1': "note",
+    'M3': "type_of_work",
+    'N1': "notes",
+    'N2': "abstract",
+    'NV': "number_of_Volumes",
+    'OP': "original_publication",
+    'PB': "publisher",
+    'PY': "year",
+    'RI': "reviewed_item",
+    'RN': "research_notes",
+    'RP': "reprint_edition",
+    'SE': "version",
+    'SN': "issn",
+    'SP': "start_page",
+    'ST': "short_title",
+    'T1': "primary_title",
+    'T2': "secondary_title",
+    'T3': "tertiary_title",
+    'TA': "translated_author",
+    'TI': "title",
+    'TT': "translated_title",
+    'UR': "url",
+    'VL': "volume",
+    'Y1': "publication_year",
+    'Y2': "access_date",
+    'ER': "end_of_reference"
 }
 
 
-def readris(filename, wok=False):
+def readris(filename, mapping=None, wok=False):
     """Parse a ris file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -85,11 +102,14 @@ def readris(filename, wok=False):
     of strings.
 
     Keyword arguments:
-    filename -- input ris file
+    filename -- path of input ris file
+    mapping -- custom RIS tags mapping
     wok -- flag, Web of Knowledge format is used if True, otherwise
            Refman's RIS specifications are used.
 
     """
+    if not mapping:
+        mapping = TAG_KEY_MAPPING
 
     if wok:
         gettag = lambda line: line[0:2]
@@ -134,20 +154,20 @@ def readris(filename, wok=False):
                     text = "Missing end of record tag in line %d:\n %s" % (
                         ln, line)
                     raise IOError(text)
-                current[tag] = getcontent(line)
+                current[mapping[tag]] = getcontent(line)
                 inref = True
             else:
                 if not inref:
                     text = "Invalid start tag in line %d:\n %s" % (ln, line)
                     raise IOError(text)
                 # if tags exists more than once, store it as list
-                if tag in current:
-                    if not isinstance(current[tag], types.ListType):
-                        multi_val = [current[tag]]
-                        current[tag] = multi_val
-                    current[tag].append(getcontent(line))
+                if mapping[tag] in current:
+                    if not isinstance(current[mapping[tag]], types.ListType):
+                        multi_val = [current[mapping[tag]]]
+                        current[mapping[tag]] = multi_val
+                    current[mapping[tag]].append(getcontent(line))
                 else:
-                    current[tag] = getcontent(line)
+                    current[mapping[tag]] = getcontent(line)
         else:
             if not line.strip():
                 continue
@@ -158,10 +178,11 @@ def readris(filename, wok=False):
                     raise IOError(text)
                 else:
                     # Active tag
-                    if hasattr(current[tag], '__iter__'):
-                        current[tag].append(line.strip())
+                    if hasattr(current[mapping[tag]], '__iter__'):
+                        current[mapping[tag]].append(line.strip())
                     else:
-                        current[tag] = [current[tag], line.strip()]
+                        current[mapping[tag]] = [
+                            current[mapping[tag]], line.strip()]
             else:
                 if iscounter(line):
                     continue
