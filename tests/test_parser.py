@@ -9,7 +9,8 @@ pj = os.path.join
 class TestRISparser():
 
     def test_parse_example_basic_ris(self):
-        filepath = os.getcwd() + '/example_basic.ris'
+        filedirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = filedirpath + '/example_basic.ris'
         ristags = [
             {'TY': 'JOUR'},
             {'AU': 'Shannon,Claude E.'},
@@ -28,7 +29,8 @@ class TestRISparser():
             assert v == entries[0][k].strip()
 
     def test_parse_example_full_ris(self):
-        filepath = os.getcwd() + '/example_full.ris'
+        filedirpath = os.path.dirname(os.path.realpath(__file__))
+        filepath = filedirpath + '/example_full.ris'
         ristags = [
             {'TY': 'JOUR'},
             {'ID': '12345'},

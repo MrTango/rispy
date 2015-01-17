@@ -8,13 +8,54 @@ Usage
 -----
 ::
 
-   from RISparser import readris
+   >>> import os
+   >>> from RISparser import readris
+   >>> from pprint import pprint
 
-   entries = readris('/home/tester/myrisfile.ris')
+   >>> filepath = 'tests/example_full.ris'
+   >>> entries = readris(filepath)
+   >>> entries_list = list(entries)
+   >>> print(len(entries_list))
+   2
 
-   for entry in entries:
-      # do what ever you want with this entry
-      # an SQL INSERT for example
+   >>> entries = readris(filepath)
+   >>> for entry in entries:
+   ...     pprint(entry)
+   {'A1': ['Marx, Karl', 'Lindgren, Astrid', 'Glattauer, Daniel'],
+    'CY': 'United States',
+    'ID': '12345',
+    'IS': '3',
+    'JA': 'lorem',
+    'JF': 'Lorem',
+    'KW': ['Pippi', 'Nordwind', 'Piraten'],
+    'L2': 'http://example.com',
+    'M1': '1008150341',
+    'N2': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
+    'PB': ['Fun Factory', 'Fun Factory USA'],
+    'SN': '1932-6208',
+    'SP': 'e0815',
+    'T1': 'Title of reference',
+    'TY': 'JOUR',
+    'VL': '9',
+    'Y1': '2014//'}
+   {'A1': ['Marxus, Karlus', 'Lindgren, Astrid', 'Glattauer, Daniel'],
+    'CY': 'Germany',
+    'ID': '12345',
+    'IS': '3',
+    'JA': 'lorem',
+    'JF': 'Lorem',
+    'KW': ['Pippi Langstrumpf', 'Nordwind', 'Piraten'],
+    'L2': 'http://example2.com',
+    'M1': '1228150341',
+    'N2': 'BACKGROUND: Lorem dammed ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
+    'PB': ['Dark Factory', 'Dark Factory GER'],
+    'SN': '1732-4208',
+    'SP': 'e0815341',
+    'T1': 'The title of the reference',
+    'TY': 'JOUR',
+    'VL': '6',
+    'Y1': '2006//'}
+
 
 Example entry
 -------------
