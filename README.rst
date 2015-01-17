@@ -4,6 +4,7 @@ Python RIS files parser
 It reads RIS files and provides Python dictionaries via a generator.
 This works also for very larg ris files.
 
+
 Usage
 -----
 ::
@@ -94,27 +95,38 @@ RIS entry
    ER  -
 
 
-DICT entry
-**********
+TAG_KEY_MAPPING
+---------------
+
+The parser use a TAG_KEY_MAPPING, with one can override by calling readris() with a custom mapping.
+
 ::
 
-   {
-      'A1': ['Marx, Karl', 'Lindgren, Astrid', 'Glattauer, Daniel'],
-      'CY': 'United States',
-      'ID': '12345',
-      'IS': '3',
-      'JA': 'lorem',
-      'JF': 'Lorem',
-      'KW': ['Pippi', 'Nordwind', 'Piraten'],
-      'L2': 'http://example.com',
-      'M1': '1008150341',
-      'N2': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
-      'PB': ['Fun Factory', 'Fun Factory USA'],
-      'SN': '1932-6208',
-      'SP': 'e0815',
-      'T1': 'Title of reference',
-      'TY': 'JOUR',
-      'VL': '9',
-      'Y1': '2014//'
-   }
+   >>> import os
+   >>> from RISparser import readris, TAG_KEY_MAPPING
+   >>> from pprint import pprint
 
+   >>> filepath = 'tests/example_full.ris'
+   >>> mapping = TAG_KEY_MAPPING
+   >>> mapping["SP"] = "pages"
+   >>> entries = list(readris(filepath))
+   >>> pprint(entries[0])
+   {'abstract': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
+    'alternate_title2': 'lorem',
+    'alternate_title3': 'Lorem',
+    'authors': ['Marx, Karl', 'Lindgren, Astrid'],
+    'file_attachments2': 'http://example.com',
+    'id': '12345',
+    'issn': '1932-6208',
+    'keywords': ['Pippi', 'Nordwind', 'Piraten'],
+    'note': '1008150341',
+    'number': '3',
+    'pages': 'e0815',
+    'place_published': 'United States',
+    'primary_title': 'Title of reference',
+    'publication_year': '2014//',
+    'publisher': ['Fun Factory', 'Fun Factory USA'],
+    'secondary_authors': 'Glattauer, Daniel',
+    'type': 'JOUR',
+    'url': 'http://example_url.com',
+    'volume': '9'}
