@@ -6,14 +6,15 @@ This works also for very larg ris files.
 
 Usage
 -----
+::
 
-from RISparser import readris
+   from RISparser import readris
 
-entries = readris('/home/tester/myrisfile.ris')
+   entries = readris('/home/tester/myrisfile.ris')
 
-for entry in entries:
-   # do what ever you want with this entry
-   # an SQL INSERT for example
+   for entry in entries:
+      # do what ever you want with this entry
+      # an SQL INSERT for example
 
 Example entry
 -------------
