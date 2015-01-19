@@ -33,7 +33,7 @@ Usage
     'publisher': 'Fun Factory',
     'secondary_authors': ['Glattauer, Daniel'],
     'start_page': 'e0815',
-    'type': 'JOUR',
+    'type_of_reference': 'JOUR',
     'url': 'http://example_url.com',
     'volume': '9'}
    {'abstract': 'BACKGROUND: Lorem dammed ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
@@ -52,7 +52,7 @@ Usage
     'publisher': 'Dark Factory',
     'secondary_authors': ['Glattauer, Daniel'],
     'start_page': 'e0815341',
-    'type': 'JOUR',
+    'type_of_reference': 'JOUR',
     'url': 'http://example_url.com',
     'volume': '6'}
 
@@ -72,7 +72,7 @@ Example RIS entry
    T1  - Title of reference
    A1  - Marx, Karl
    A1  - Lindgren, Astrid
-   A1  - Glattauer, Daniel
+   A2  - Glattauer, Daniel
    Y1  - 2014//
    N2  - BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
    KW  - Pippi
@@ -124,7 +124,7 @@ The parser use a TAG_KEY_MAPPING, witch one can override by calling readris() wi
     'publication_year': '2014//',
     'publisher': 'Fun Factory',
     'secondary_authors': ['Glattauer, Daniel'],
-    'type': 'JOUR',
+    'type_of_reference': 'JOUR',
     'url': 'http://example_url.com',
     'volume': '9'}
 
