@@ -28,7 +28,7 @@ wok_ignoretags = ['FN', 'VR', 'EF']
 ris_ignoretags = []
 
 
-def readris(filename, mapping=None, wok=False):
+def readris(bibliography_file, mapping=None, wok=False):
     """Parse a ris file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -38,7 +38,7 @@ def readris(filename, mapping=None, wok=False):
     of strings.
 
     Keyword arguments:
-    filename -- path of input ris file
+    bibliography_file -- ris filehandle
     mapping -- custom RIS tags mapping
     wok -- flag, Web of Knowledge format is used if True, otherwise
            Refman's RIS specifications are used.
@@ -63,68 +63,67 @@ def readris(filename, mapping=None, wok=False):
         starttag, endtag = ris_boundtags
         ignoretags = ris_ignoretags
 
-    with open(filename, 'r') as bibliography_file:
-        filelines = bibliography_file.readlines()
-        # Corrects for BOM in utf-8 encodings while keeping an 8-bit
-        # string representation
-        st = filelines[0]
-        if (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
-            filelines[0] = st[3:]
+    filelines = bibliography_file.readlines()
+    # Corrects for BOM in utf-8 encodings while keeping an 8-bit
+    # string representation
+    st = filelines[0]
+    if (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
+        filelines[0] = st[3:]
 
-        inref = False
-        tag = None
-        current = {}
-        ln = 0
+    inref = False
+    tag = None
+    current = {}
+    ln = 0
 
-        for line in filelines:
-            ln += 1
-            if istag(line):
-                tag = gettag(line)
-                if tag in ignoretags:
-                    continue
-                elif tag == endtag:
-                    # Close the active entry and yield it
-                    yield current
-                    current = {}
-                    inref = False
-                elif tag == starttag:
-                    # New entry
-                    if inref:
-                        text = "Missing end of record tag in line %d:\n %s" % (
-                            ln, line)
-                        raise IOError(text)
-                    current[mapping[tag]] = getcontent(line)
-                    inref = True
-                else:
-                    if not inref:
-                        text = "Invalid start tag in line %d:\n %s" % (ln, line)
-                        raise IOError(text)
-                    if tag in LIST_TYPE_KEYS:
-                        if mapping[tag] not in current:
-                            current[mapping[tag]] = []
-                        current[mapping[tag]].append(getcontent(line))
-                    elif mapping[tag] not in current:
-                        current[mapping[tag]] = getcontent(line)
-                    else:
-                        ignored_lines.append(line)
-
-            else:
-                if not line.strip():
-                    continue
+    for line in filelines:
+        ln += 1
+        if istag(line):
+            tag = gettag(line)
+            if tag in ignoretags:
+                continue
+            elif tag == endtag:
+                # Close the active entry and yield it
+                yield current
+                current = {}
+                inref = False
+            elif tag == starttag:
+                # New entry
                 if inref:
-                    # Active reference
-                    if tag is None:
-                        text = "Expected tag in line %d:\n %s" % (ln, line)
-                        raise IOError(text)
-                    else:
-                        # Active tag
-                        if hasattr(current[mapping[tag]], '__iter__'):
-                            current[mapping[tag]].append(line.strip())
-                        else:
-                            current[mapping[tag]] = [
-                                current[mapping[tag]], line.strip()]
-                else:
-                    if iscounter(line):
-                        continue
-                    text = "Expected start tag in line %d:\n %s" % (ln, line)
+                    text = "Missing end of record tag in line %d:\n %s" % (
+                        ln, line)
                     raise IOError(text)
+                current[mapping[tag]] = getcontent(line)
+                inref = True
+            else:
+                if not inref:
+                    text = "Invalid start tag in line %d:\n %s" % (ln, line)
+                    raise IOError(text)
+                if tag in LIST_TYPE_KEYS:
+                    if mapping[tag] not in current:
+                        current[mapping[tag]] = []
+                    current[mapping[tag]].append(getcontent(line))
+                elif mapping[tag] not in current:
+                    current[mapping[tag]] = getcontent(line)
+                else:
+                    ignored_lines.append(line)
+
+        else:
+            if not line.strip():
+                continue
+            if inref:
+                # Active reference
+                if tag is None:
+                    text = "Expected tag in line %d:\n %s" % (ln, line)
+                    raise IOError(text)
+                else:
+                    # Active tag
+                    if hasattr(current[mapping[tag]], '__iter__'):
+                        current[mapping[tag]].append(line.strip())
+                    else:
+                        current[mapping[tag]] = [
+                            current[mapping[tag]], line.strip()]
+            else:
+                if iscounter(line):
+                    continue
+                text = "Expected start tag in line %d:\n %s" % (ln, line)
+                raise IOError(text)

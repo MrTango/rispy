@@ -14,9 +14,10 @@ Usage
    >>> from pprint import pprint
 
    >>> filepath = 'tests/example_full.ris'
-   >>> entries = readris(filepath)
-   >>> for entry in entries:
-   ...     pprint(entry)
+   >>> with open(filepath, 'r') as bibliography_file:
+   ...     entries = readris(bibliography_file)
+   ...     for entry in entries:
+   ...         pprint(entry)
    {'abstract': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
     'alternate_title2': 'lorem',
     'alternate_title3': 'Lorem',
@@ -56,9 +57,10 @@ Usage
     'url': 'http://example_url.com',
     'volume': '6'}
 
-   >>> entries = readris(filepath)
-   >>> entries_list = list(entries)
-   >>> print(len(entries_list))
+   >>> with open(filepath, 'r') as bibliography_file:
+   ...     entries = readris(bibliography_file)
+   ...     entries_list = list(entries)
+   ...     print(len(entries_list))
    2
 
 
@@ -179,8 +181,9 @@ The parser use a TAG_KEY_MAPPING, witch one can override by calling readris() wi
    >>> filepath = 'tests/example_full.ris'
    >>> mapping = TAG_KEY_MAPPING
    >>> mapping["SP"] = "pages"
-   >>> entries = list(readris(filepath, mapping=mapping))
-   >>> pprint(entries[0])
+   >>> with open(filepath, 'r') as bibliography_file:
+   ...     entries = list(readris(bibliography_file, mapping=mapping))
+   ...     pprint(entries[0])
    {'abstract': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
     'alternate_title2': 'lorem',
     'alternate_title3': 'Lorem',

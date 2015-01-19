@@ -22,15 +22,16 @@ class TestRISparser():
             {'EP': '423'},
             {'VL': '27'},
         ]
-        entries = list(readris(filepath))
-        assert len(entries)
-        for ristag in ristags:
-            k, v = ristag.popitem()
-            k = mapping[k]
-            if isinstance(entries[0][k], types.ListType):
-                assert ''.join(v) == ''.join(entries[0][k])
-            else:
-                assert v == entries[0][k].strip()
+        with open(filepath, 'r') as bibliography_file:
+            entries = list(readris(bibliography_file))
+            assert len(entries)
+            for ristag in ristags:
+                k, v = ristag.popitem()
+                k = mapping[k]
+                if isinstance(entries[0][k], types.ListType):
+                    assert ''.join(v) == ''.join(entries[0][k])
+                else:
+                    assert v == entries[0][k].strip()
 
     def test_parse_example_full_ris(self):
         mapping = TAG_KEY_MAPPING
@@ -57,13 +58,14 @@ class TestRISparser():
             {'L2': 'http://example.com'},
             {'UR': 'http://example_url.com'},
         ]
-        entries = list(readris(filepath))
-        assert len(entries) == 2
-        for ristag in ristags:
-            k, v = ristag.popitem()
-            k = mapping[k]
-            assert k in entries[0]
-            if isinstance(entries[0][k], types.ListType):
-                assert ''.join(v) == ''.join(entries[0][k])
-            else:
-                assert v == entries[0][k].strip()
+        with open(filepath, 'r') as bibliography_file:
+            entries = list(readris(bibliography_file))
+            assert len(entries) == 2
+            for ristag in ristags:
+                k, v = ristag.popitem()
+                k = mapping[k]
+                assert k in entries[0]
+                if isinstance(entries[0][k], types.ListType):
+                    assert ''.join(v) == ''.join(entries[0][k])
+                else:
+                    assert v == entries[0][k].strip()
