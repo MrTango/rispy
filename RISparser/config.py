@@ -1,4 +1,4 @@
-LIST_TYPE_KEYS = [
+LIST_TYPE_TAGS = [
     'A1',
     'A2',
     'A3',

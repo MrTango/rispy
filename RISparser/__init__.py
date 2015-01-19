@@ -11,7 +11,7 @@ __author__ = 'maik'
 import re
 import types
 
-from config import LIST_TYPE_KEYS, TYPE_OF_REFERENCE_MAPPING, TAG_KEY_MAPPING
+from config import LIST_TYPE_TAGS, TYPE_OF_REFERENCE_MAPPING, TAG_KEY_MAPPING
 
 woktag = "^[A-Z][A-Z0-9] |^ER$|^EF$"
 ristag = "^[A-Z][A-Z0-9]  - "
@@ -98,7 +98,7 @@ def readris(bibliography_file, mapping=None, wok=False):
                 if not inref:
                     text = "Invalid start tag in line %d:\n %s" % (ln, line)
                     raise IOError(text)
-                if tag in LIST_TYPE_KEYS:
+                if tag in LIST_TYPE_TAGS:
                     if mapping[tag] not in current:
                         current[mapping[tag]] = []
                     current[mapping[tag]].append(getcontent(line))

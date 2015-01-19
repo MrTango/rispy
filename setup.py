@@ -16,8 +16,9 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='0.4',
 
-    description='Parse RIS files into dictionaries and provide'
-            'theme via generator.',
+    description='Reads RIS files in pure Python and provides Python '
+            'dictionaries via a generator.\n'
+            'This works also for very larg RIS files.',
     long_description=long_description,
 
     # The project's main homepage.

@@ -1,9 +1,5 @@
-Python RIS files parser
-=======================
-
-It reads RIS files and provides Python dictionaries via a generator.
-This works also for very larg RIS files.
-
+Pure Python RIS files parser
+============================
 
 Usage
 -----
@@ -96,6 +92,17 @@ Example RIS entry
 
 TAG_KEY_MAPPING
 ---------------
+
+The most fields contain string values, but some like first_authors (A1) are parsed into lists.
+
+Complete list of ListType tags
+******************************
+::
+
+    >>> from RISparser.config import LIST_TYPE_TAGS
+    >>> pprint(LIST_TYPE_TAGS)
+    ['A1', 'A2', 'A3', 'A4', 'AU', 'KW']
+
 
 Complete default mapping
 ************************
