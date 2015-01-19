@@ -25,16 +25,25 @@ wok_boundtags = ('PT', 'ER')
 wok_ignoretags = ['FN', 'VR', 'EF']
 ris_ignoretags = []
 
+LIST_TYPE_KEYS = [
+    'A1',
+    'A2',
+    'A3',
+    'A4',
+    'AU',
+    'KW',
+]
+
 TAG_KEY_MAPPING = {
     'TY': "type",
-    'A1': "authors",
-    'A2': "secondary_authors",
-    'A3': "tertiary_authors",
-    'A4': "subsidiary_author",
+    'A1': "first_authors", #ListType
+    'A2': "secondary_authors", #ListType
+    'A3': "tertiary_authors", #ListType
+    'A4': "subsidiary_authors", #ListType
     'AB': "abstract",
     'AD': "author_address",
     'AN': "accession_number",
-    'AU': "author",
+    'AU': "authors", #ListType
     'C1': "custom1",
     'C2': "custom2",
     'C3': "custom3",
@@ -57,7 +66,7 @@ TAG_KEY_MAPPING = {
     'J2': "alternate_title1",
     'JA': "alternate_title2",
     'JF': "alternate_title3",
-    'KW': "keywords",
+    'KW': "keywords", #ListType
     'L1': "file_attachments1",
     'L2': "file_attachments2",
     'L4': "figure",
@@ -108,6 +117,8 @@ def readris(filename, mapping=None, wok=False):
            Refman's RIS specifications are used.
 
     """
+    ignored_lines = []
+
     if not mapping:
         mapping = TAG_KEY_MAPPING
 
@@ -160,14 +171,15 @@ def readris(filename, mapping=None, wok=False):
                 if not inref:
                     text = "Invalid start tag in line %d:\n %s" % (ln, line)
                     raise IOError(text)
-                # if tags exists more than once, store it as list
-                if mapping[tag] in current:
-                    if not isinstance(current[mapping[tag]], types.ListType):
-                        multi_val = [current[mapping[tag]]]
-                        current[mapping[tag]] = multi_val
+                if tag in LIST_TYPE_KEYS:
+                    if mapping[tag] not in current:
+                        current[mapping[tag]] = []
                     current[mapping[tag]].append(getcontent(line))
-                else:
+                elif mapping[tag] not in current:
                     current[mapping[tag]] = getcontent(line)
+                else:
+                    ignored_lines.append(line)
+
         else:
             if not line.strip():
                 continue
