@@ -11,7 +11,7 @@ __author__ = 'maik'
 import re
 import types
 
-from config import LIST_TYPE_TAGS, TYPE_OF_REFERENCE_MAPPING, TAG_KEY_MAPPING
+from .config import LIST_TYPE_TAGS, TYPE_OF_REFERENCE_MAPPING, TAG_KEY_MAPPING
 
 woktag = "^[A-Z][A-Z0-9] |^ER$|^EF$"
 ristag = "^[A-Z][A-Z0-9]  - "
