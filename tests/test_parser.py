@@ -28,7 +28,7 @@ class TestRISparser():
             for ristag in ristags:
                 k, v = ristag.popitem()
                 k = mapping[k]
-                if isinstance(entries[0][k], types.ListType):
+                if isinstance(entries[0][k], (list, tuple)):
                     assert ''.join(v) == ''.join(entries[0][k])
                 else:
                     assert v == entries[0][k].strip()
@@ -65,7 +65,7 @@ class TestRISparser():
                 k, v = ristag.popitem()
                 k = mapping[k]
                 assert k in entries[0]
-                if isinstance(entries[0][k], types.ListType):
+                if isinstance(entries[0][k], (list, tuple)):
                     assert ''.join(v) == ''.join(entries[0][k])
                 else:
                     assert v == entries[0][k].strip()
