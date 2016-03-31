@@ -25,9 +25,6 @@ class Base(object):
         self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping
 
-    def __iter__(self):
-        return self.parse()
-
     def parse(self):
         self.in_ref = False
         self.current = {}
@@ -180,6 +177,6 @@ def read(filelines, mapping=None, wok=False):
         mapping = TAG_KEY_MAPPING
 
     if wok:
-        return Wok(filelines, mapping)
+        return Wok(filelines, mapping).parse()
 
-    return Ris(filelines, mapping)
+    return Ris(filelines, mapping).parse()

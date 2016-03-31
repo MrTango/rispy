@@ -40,6 +40,7 @@ TAG_KEY_MAPPING = {
     'J2': "alternate_title1",
     'JA': "alternate_title2",
     'JF': "alternate_title3",
+    'JO': "journal_name",
     'KW': "keywords",  # ListType
     'L1': "file_attachments1",
     'L2': "file_attachments2",
@@ -71,7 +72,7 @@ TAG_KEY_MAPPING = {
     'VL': "volume",
     'Y1': "publication_year",
     'Y2': "access_date",
-    'ER': "end_of_reference"
+    'ER': "end_of_reference",
 }
 
 TYPE_OF_REFERENCE_MAPPING = {
