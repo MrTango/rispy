@@ -1,22 +1,23 @@
-LIST_TYPE_TAGS = [
+LIST_TYPE_TAGS = (
     'A1',
     'A2',
     'A3',
     'A4',
     'AU',
     'KW',
-]
+)
+
 
 TAG_KEY_MAPPING = {
     'TY': "type_of_reference",
-    'A1': "first_authors", #ListType
-    'A2': "secondary_authors", #ListType
-    'A3': "tertiary_authors", #ListType
-    'A4': "subsidiary_authors", #ListType
+    'A1': "first_authors",  # ListType
+    'A2': "secondary_authors",  # ListType
+    'A3': "tertiary_authors",  # ListType
+    'A4': "subsidiary_authors",  # ListType
     'AB': "abstract",
     'AD': "author_address",
     'AN': "accession_number",
-    'AU': "authors", #ListType
+    'AU': "authors",  # ListType
     'C1': "custom1",
     'C2': "custom2",
     'C3': "custom3",
@@ -39,7 +40,7 @@ TAG_KEY_MAPPING = {
     'J2': "alternate_title1",
     'JA': "alternate_title2",
     'JF': "alternate_title3",
-    'KW': "keywords", #ListType
+    'KW': "keywords",  # ListType
     'L1': "file_attachments1",
     'L2': "file_attachments2",
     'L4': "figure",
