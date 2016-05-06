@@ -91,6 +91,21 @@ class Base(object):
         text = "Expected start tag in line %d:\n %s" % (line_number, line)
         raise IOError(text)
 
+    def add_single_value(self, name, value, is_multi=False):
+        if not is_multi:
+            ignore_this_if_has_one = value
+            self.current.setdefault(name, ignore_this_if_has_one)
+            return
+
+        value_must_exist_or_is_bug = self.current[name]
+        self.current[name] = ' '.join((value_must_exist_or_is_bug, value))
+
+    def add_list_value(self, name, value):
+        try:
+            self.current[name].append(value)
+        except KeyError:
+            self.current[name] = [value]
+
     def add_tag(self, tag, line, all_line=False):
         self.last_tag = tag
         name = self.mapping[tag]
@@ -100,17 +115,10 @@ class Base(object):
             new_value = self.get_content(line)
 
         if tag not in LIST_TYPE_TAGS:
-            if name not in self.current:
-                self.current[name] = new_value
+            self.add_single_value(name, new_value, is_multi=all_line)
             return
 
-        try:
-            value = self.current[name]
-        except KeyError:
-            self.current[name] = [new_value]
-            return
-        else:
-            value.append(new_value)
+        self.add_list_value(name, new_value)
 
     def get_tag(self, line):
         return line[0:2]

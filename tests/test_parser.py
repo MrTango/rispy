@@ -4,6 +4,8 @@ from RISparser import readris, TAG_KEY_MAPPING
 
 pj = os.path.join
 
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 
 class TestRISparser():
 
@@ -11,6 +13,7 @@ class TestRISparser():
         for key, value in d0.items():
             assert key in d1
             self.compare(value, d1.pop(key))
+        assert not len(d1)
 
     def cmp_list(self, l0, l1):
         assert len(l0) == len(l1)
@@ -35,8 +38,7 @@ class TestRISparser():
         return [self.nice_keys(d, mapping) for d in to_change]
 
     def test_parse_example_basic_ris(self):
-        filedirpath = os.path.dirname(os.path.realpath(__file__))
-        filepath = filedirpath + '/example_basic.ris'
+        filepath = os.path.join(CURRENT_DIR, 'example_basic.ris')
         result_entry = self.nice_keys({
             'TY': 'JOUR',
             'AU': ['Shannon,Claude E.'],
@@ -53,12 +55,24 @@ class TestRISparser():
             self.compare([result_entry], entries)
 
     def test_parse_multiline_ris(self):
-        pass
+        filepath = os.path.join(CURRENT_DIR, 'multiline.ris')
+        result_entry = self.nice_keys({
+            'TY': 'JOUR',
+            'AU': ['Shannon,Claude E.'],
+            'PY': '1948/07//',
+            'TI': 'A Mathematical Theory of Communication',
+            'JF': 'Bell System Technical Journal',
+            'N2': 'first line, then second line and at the end the last line',
+            'SP': '379',
+            'EP': '423',
+            'VL': '27',
+        })
+        with open(filepath, 'r') as f:
+            entries = list(readris(f))
+            self.compare([result_entry], entries)
 
     def test_parse_example_full_ris(self):
-        mapping = TAG_KEY_MAPPING
-        filedirpath = os.path.dirname(os.path.realpath(__file__))
-        filepath = filedirpath + '/example_full.ris'
+        filepath = os.path.join(CURRENT_DIR, 'example_full.ris')
         entry1 = {
             'TY': 'JOUR',
             'ID': '12345',
