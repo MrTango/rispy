@@ -63,6 +63,7 @@ class TestRISparser():
             'TI': 'A Mathematical Theory of Communication',
             'JF': 'Bell System Technical Journal',
             'N2': 'first line, then second line and at the end the last line',
+            'N1': ['first line', '* second line', '* last line'],
             'SP': '379',
             'EP': '423',
             'VL': '27',

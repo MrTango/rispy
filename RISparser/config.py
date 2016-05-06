@@ -5,6 +5,7 @@ LIST_TYPE_TAGS = (
     'A4',
     'AU',
     'KW',
+    'N1',
 )
 
 
