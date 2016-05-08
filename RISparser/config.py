@@ -5,7 +5,7 @@ LIST_TYPE_TAGS = (
     'A4',
     'AU',
     'KW',
-    'N1',
+    'N1'
 )
 
 
@@ -50,7 +50,7 @@ TAG_KEY_MAPPING = {
     'LB': "label",
     'M1': "note",
     'M3': "type_of_work",
-    'N1': "notes",
+    'N1': "notes", # ListType
     'N2': "abstract",
     'NV': "number_of_Volumes",
     'OP': "original_publication",
