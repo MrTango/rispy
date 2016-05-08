@@ -5,6 +5,11 @@
 
 """Parse WOK and Refman's RIS files"""
 
+__version__ = "0.4.2"
+# to be incremented manually
+# automatically parsed by setup.py
+
+
 import re
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
