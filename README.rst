@@ -61,7 +61,7 @@ Complete list of ListType tags
 
     >>> from RISparser.config import LIST_TYPE_TAGS
     >>> pprint(LIST_TYPE_TAGS)
-    ('A1', 'A2', 'A3', 'A4', 'AU', 'KW')
+    ('A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1')
 
 
 Complete default mapping
@@ -172,3 +172,13 @@ The parser use a TAG_KEY_MAPPING, which one can override by calling readris() wi
     'url',
     'volume']
 
+
+Tests
+-----
+
+Tests can be easily launched via the command-line, using `pytest <https://pypi.python.org/pypi/pytest>`_:
+
+::
+
+   $ cd <path_to_the_repo>/RISparser
+   $ py.test
