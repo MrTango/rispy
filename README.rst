@@ -6,58 +6,18 @@ Usage
 ::
 
    >>> import os
-   >>> from RISparser import readris
    >>> from pprint import pprint
-
+   >>> from RISparser import readris
    >>> filepath = 'tests/example_full.ris'
    >>> with open(filepath, 'r') as bibliography_file:
    ...     entries = readris(bibliography_file)
    ...     for entry in entries:
-   ...         pprint(entry)
-   {'abstract': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
-    'alternate_title2': 'lorem',
-    'alternate_title3': 'Lorem',
-    'file_attachments2': 'http://example.com',
-    'first_authors': ['Marx, Karl', 'Lindgren, Astrid'],
-    'id': '12345',
-    'issn': '1932-6208',
-    'keywords': ['Pippi', 'Nordwind', 'Piraten'],
-    'note': '1008150341',
-    'number': '3',
-    'place_published': 'United States',
-    'primary_title': 'Title of reference',
-    'publication_year': '2014//',
-    'publisher': 'Fun Factory',
-    'secondary_authors': ['Glattauer, Daniel'],
-    'start_page': 'e0815',
-    'type_of_reference': 'JOUR',
-    'url': 'http://example_url.com',
-    'volume': '9'}
-   {'abstract': 'BACKGROUND: Lorem dammed ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
-    'alternate_title2': 'lorem',
-    'alternate_title3': 'Lorem',
-    'file_attachments2': 'http://example2.com',
-    'first_authors': ['Marxus, Karlus', 'Lindgren, Astrid'],
-    'id': '12345',
-    'issn': '1732-4208',
-    'keywords': ['Pippi Langstrumpf', 'Nordwind', 'Piraten'],
-    'note': '1228150341',
-    'number': '3',
-    'place_published': 'Germany',
-    'primary_title': 'The title of the reference',
-    'publication_year': '2006//',
-    'publisher': 'Dark Factory',
-    'secondary_authors': ['Glattauer, Daniel'],
-    'start_page': 'e0815341',
-    'type_of_reference': 'JOUR',
-    'url': 'http://example_url.com',
-    'volume': '6'}
-
-   >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = readris(bibliography_file)
-   ...     entries_list = list(entries)
-   ...     print(len(entries_list))
-   2
+   ...         print(entry['id'])
+   ...         print(entry['first_authors'])
+   12345
+   ['Marx, Karl', 'Lindgren, Astrid']
+   12345
+   ['Marxus, Karlus', 'Lindgren, Astrid']
 
 
 Example RIS entry
@@ -101,7 +61,7 @@ Complete list of ListType tags
 
     >>> from RISparser.config import LIST_TYPE_TAGS
     >>> pprint(LIST_TYPE_TAGS)
-    ['A1', 'A2', 'A3', 'A4', 'AU', 'KW']
+    ('A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1')
 
 
 Complete default mapping
@@ -141,6 +101,7 @@ Complete default mapping
      'J2': 'alternate_title1',
      'JA': 'alternate_title2',
      'JF': 'alternate_title3',
+     'JO': 'journal_name',
      'KW': 'keywords',
      'L1': 'file_attachments1',
      'L2': 'file_attachments2',
@@ -177,7 +138,7 @@ Complete default mapping
 Override key mapping
 ********************
 
-The parser use a TAG_KEY_MAPPING, witch one can override by calling readris() with a custom mapping.
+The parser use a TAG_KEY_MAPPING, which one can override by calling readris() with a custom mapping.
 
 ::
 
@@ -187,27 +148,37 @@ The parser use a TAG_KEY_MAPPING, witch one can override by calling readris() wi
 
    >>> filepath = 'tests/example_full.ris'
    >>> mapping = TAG_KEY_MAPPING
-   >>> mapping["SP"] = "pages"
+   >>> mapping["SP"] = "pages_this_is_my_fun"
    >>> with open(filepath, 'r') as bibliography_file:
    ...     entries = list(readris(bibliography_file, mapping=mapping))
-   ...     pprint(entries[0])
-   {'abstract': 'BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.',
-    'alternate_title2': 'lorem',
-    'alternate_title3': 'Lorem',
-    'file_attachments2': 'http://example.com',
-    'first_authors': ['Marx, Karl', 'Lindgren, Astrid'],
-    'id': '12345',
-    'issn': '1932-6208',
-    'keywords': ['Pippi', 'Nordwind', 'Piraten'],
-    'note': '1008150341',
-    'number': '3',
-    'pages': 'e0815',
-    'place_published': 'United States',
-    'primary_title': 'Title of reference',
-    'publication_year': '2014//',
-    'publisher': 'Fun Factory',
-    'secondary_authors': ['Glattauer, Daniel'],
-    'type_of_reference': 'JOUR',
-    'url': 'http://example_url.com',
-    'volume': '9'}
+   ...     pprint(sorted(entries[0].keys()))
+   ['abstract',
+    'alternate_title2',
+    'alternate_title3',
+    'file_attachments2',
+    'first_authors',
+    'id',
+    'issn',
+    'keywords',
+    'note',
+    'number',
+    'pages_this_is_my_fun',
+    'place_published',
+    'primary_title',
+    'publication_year',
+    'publisher',
+    'secondary_authors',
+    'type_of_reference',
+    'url',
+    'volume']
 
+
+Tests
+-----
+
+Tests can be easily launched via the command-line, using `pytest <https://pypi.python.org/pypi/pytest>`_:
+
+::
+
+   $ cd <path_to_the_repo>/RISparser
+   $ py.test

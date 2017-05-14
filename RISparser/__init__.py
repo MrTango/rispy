@@ -1,6 +1,3 @@
-__author__ = 'maik'
-
-
 # Copyright (C) 2013 Angel Yanguas-Gil
 # This program is free software, licensed under GPLv2 or later.
 # A copy of the GPLv2 license is provided in the root directory of
@@ -8,28 +5,172 @@ __author__ = 'maik'
 
 """Parse WOK and Refman's RIS files"""
 
+__version__ = "0.4.2"
+# to be incremented manually
+# automatically parsed by setup.py
+
+
 import re
-import types
 
-from config import LIST_TYPE_TAGS, TYPE_OF_REFERENCE_MAPPING, TAG_KEY_MAPPING
-
-woktag = "^[A-Z][A-Z0-9] |^ER$|^EF$"
-ristag = "^[A-Z][A-Z0-9]  - "
-riscounter = "^[0-9]+."
-
-wokpat = re.compile(woktag)
-rispat = re.compile(ristag)
-riscounterpat = re.compile(riscounter)
-
-ris_boundtags = ('TY', 'ER')
-wok_boundtags = ('PT', 'ER')
-
-wok_ignoretags = ['FN', 'VR', 'EF']
-ris_ignoretags = []
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
 
 
-def readris(bibliography_file, mapping=None, wok=False):
-    """Parse a ris file and return a list of entries.
+class NextLine(Exception):
+    pass
+
+
+class Base(object):
+    START_TAG = None
+    END_TAG = 'ER'
+    IGNORE = []
+    PATTERN = None
+
+    def __init__(self, lines, mapping):
+        self.lines = lines
+        self.pattern = re.compile(self.PATTERN)
+        self.mapping = mapping
+
+    def parse(self):
+        self.in_ref = False
+        self.current = {}
+        self.last_tag = None
+
+        for line_number, line in enumerate(self.lines):
+            if not line.strip():
+                continue
+
+            if self.is_tag(line):
+                try:
+                    yield self.parse_tag(line, line_number)
+                    self.current = {}
+                    self.in_ref = False
+                    self.last_tag = None
+                except NextLine:
+                    continue
+            else:
+                try:
+                    yield self.parse_other(line, line_number)
+                except NextLine:
+                    continue
+
+    def parse_tag(self, line, line_number):
+        tag = self.get_tag(line)
+        if tag in self.IGNORE:
+            raise NextLine
+
+        if tag == self.END_TAG:
+            return self.current
+
+        if tag == self.START_TAG:
+            # New entry
+            if self.in_ref:
+                raise IOError("Missing end of record tag in line "
+                              "%d:\n %s" % (line_number, line))
+            self.add_tag(tag, line)
+            self.in_ref = True
+            raise NextLine
+
+        if not self.in_ref:
+            text = "Invalid start tag in line %d:\n %s" % (line_number, line)
+            raise IOError(text)
+
+        if tag in self.mapping:
+            self.add_tag(tag, line)
+            raise NextLine
+
+        print("RIS Ignored:", line)
+        raise NextLine
+
+    def parse_other(self, line, line_number):
+        if self.in_ref:
+            # Active reference
+            if self.last_tag is None:
+                text = "Expected tag in line %d:\n %s" % (line_number, line)
+                raise IOError(text)
+            # Active tag
+            self.add_tag(self.last_tag, line, all_line=True)
+            raise NextLine
+
+        if self.is_counter(line):
+            raise NextLine
+        text = "Expected start tag in line %d:\n %s" % (line_number, line)
+        raise IOError(text)
+
+    def add_single_value(self, name, value, is_multi=False):
+        if not is_multi:
+            ignore_this_if_has_one = value
+            self.current.setdefault(name, ignore_this_if_has_one)
+            return
+
+        value_must_exist_or_is_bug = self.current[name]
+        self.current[name] = ' '.join((value_must_exist_or_is_bug, value))
+
+    def add_list_value(self, name, value):
+        try:
+            self.current[name].append(value)
+        except KeyError:
+            self.current[name] = [value]
+
+    def add_tag(self, tag, line, all_line=False):
+        self.last_tag = tag
+        name = self.mapping[tag]
+        if all_line:
+            new_value = line.strip()
+        else:
+            new_value = self.get_content(line)
+
+        if tag not in LIST_TYPE_TAGS:
+            self.add_single_value(name, new_value, is_multi=all_line)
+            return
+
+        self.add_list_value(name, new_value)
+
+    def get_tag(self, line):
+        return line[0:2]
+
+    def is_tag(self, line):
+        return bool(self.pattern.match(line))
+
+    def get_content(self, line):
+        raise NotImplementedError
+
+
+class Wok(Base):
+    START_TAG = 'PT'
+    IGNORE = ['FN', 'VR', 'EF']
+    PATTERN = "^[A-Z][A-Z0-9] |^ER |^EF "
+
+    def get_content(self, line):
+        return line[2:].strip()
+
+
+class Ris(Base):
+    START_TAG = 'TY'
+    PATTERN = "^[A-Z][A-Z0-9]  - "
+
+    counter_re = re.compile("^[0-9]+.")
+
+    def get_content(self, line):
+        return line[6:].strip()
+
+    def is_counter(self, line):
+        none_or_match = self.counter_re.match(line)
+        return bool(none_or_match)
+
+
+def readris(file_, mapping=None, wok=False):
+    filelines = file_.readlines()
+    # Corrects for BOM in utf-8 encodings while keeping an 8-bit
+    # string representation
+    st = filelines[0]
+    if (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
+        filelines[0] = st[3:]
+
+    return read(filelines, mapping, wok)
+
+
+def read(filelines, mapping=None, wok=False):
+    """Parse a ris lines and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly ocurring tags,
@@ -44,86 +185,11 @@ def readris(bibliography_file, mapping=None, wok=False):
            Refman's RIS specifications are used.
 
     """
-    ignored_lines = []
 
     if not mapping:
         mapping = TAG_KEY_MAPPING
 
     if wok:
-        gettag = lambda line: line[0:2]
-        getcontent = lambda line: line[2:].strip()
-        istag = lambda line: (wokpat.match(line) is not None)
-        starttag, endtag = wok_boundtags
-        ignoretags = wok_ignoretags
-    else:
-        gettag = lambda line: line[0:2]
-        getcontent = lambda line: line[6:].strip()
-        istag = lambda line: (rispat.match(line) is not None)
-        iscounter = lambda line: (riscounterpat.match(line) is not None)
-        starttag, endtag = ris_boundtags
-        ignoretags = ris_ignoretags
+        return Wok(filelines, mapping).parse()
 
-    filelines = bibliography_file.readlines()
-    # Corrects for BOM in utf-8 encodings while keeping an 8-bit
-    # string representation
-    st = filelines[0]
-    if (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
-        filelines[0] = st[3:]
-
-    inref = False
-    tag = None
-    current = {}
-    ln = 0
-
-    for line in filelines:
-        ln += 1
-        if istag(line):
-            tag = gettag(line)
-            if tag in ignoretags:
-                continue
-            elif tag == endtag:
-                # Close the active entry and yield it
-                yield current
-                current = {}
-                inref = False
-            elif tag == starttag:
-                # New entry
-                if inref:
-                    text = "Missing end of record tag in line %d:\n %s" % (
-                        ln, line)
-                    raise IOError(text)
-                current[mapping[tag]] = getcontent(line)
-                inref = True
-            else:
-                if not inref:
-                    text = "Invalid start tag in line %d:\n %s" % (ln, line)
-                    raise IOError(text)
-                if tag in LIST_TYPE_TAGS:
-                    if mapping[tag] not in current:
-                        current[mapping[tag]] = []
-                    current[mapping[tag]].append(getcontent(line))
-                elif mapping[tag] not in current:
-                    current[mapping[tag]] = getcontent(line)
-                else:
-                    ignored_lines.append(line)
-
-        else:
-            if not line.strip():
-                continue
-            if inref:
-                # Active reference
-                if tag is None:
-                    text = "Expected tag in line %d:\n %s" % (ln, line)
-                    raise IOError(text)
-                else:
-                    # Active tag
-                    if hasattr(current[mapping[tag]], '__iter__'):
-                        current[mapping[tag]].append(line.strip())
-                    else:
-                        current[mapping[tag]] = [
-                            current[mapping[tag]], line.strip()]
-            else:
-                if iscounter(line):
-                    continue
-                text = "Expected start tag in line %d:\n %s" % (ln, line)
-                raise IOError(text)
+    return Ris(filelines, mapping).parse()
