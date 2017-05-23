@@ -9,7 +9,7 @@ __version__ = "0.4.2"
 # to be incremented manually
 # automatically parsed by setup.py
 
-
+from collections import defaultdict
 import re
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
@@ -77,8 +77,10 @@ class Base(object):
         if tag in self.mapping:
             self.add_tag(tag, line)
             raise NextLine
+        else:
+            self.add_unknown_tag(tag, line)
+            raise NextLine
 
-        print("RIS Ignored:", line)
         raise NextLine
 
     def parse_other(self, line, line_number):
@@ -124,6 +126,16 @@ class Base(object):
             return
 
         self.add_list_value(name, new_value)
+
+    def add_unknown_tag(self, tag, line):
+        name = self.mapping['UK']
+        tag = self.get_tag(line)
+        value = self.get_content(line)
+        # check if unknown_tag dict exists
+        if name not in self.current:
+            self.current[name] = defaultdict(list)
+
+        self.current[name][tag].append(value)
 
     def get_tag(self, line):
         return line[0:2]

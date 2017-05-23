@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import defaultdict
 import os
 from RISparser import readris, TAG_KEY_MAPPING
 
@@ -122,3 +123,47 @@ class TestRISparser():
         with open(filepath, 'r') as bibliography_file:
             entries = list(readris(bibliography_file))
             self.compare(results, entries)
+
+    def test_parse_single_unknown_tag_ris(self):
+        filepath = os.path.join(CURRENT_DIR, 'example_single_unknown_tag.ris')
+        unknowns = defaultdict(list)
+        unknowns['JP'].append('CRISPR')
+        unknowns['JP'].append('Direct Current')
+        result_entry = self.nice_keys({
+            'TY': 'JOUR',
+            'AU': ['Shannon,Claude E.'],
+            'PY': '1948/07//',
+            'TI': 'A Mathematical Theory of Communication',
+            'JF': 'Bell System Technical Journal',
+            'SP': '379',
+            'EP': '423',
+            'VL': '27',
+            # {'JP': ['CRISPR', 'Direct Current']}
+            'UK': unknowns,
+        })
+
+        with open(filepath, 'r') as bibliography_file:
+            entries = list(readris(bibliography_file))
+            self.compare([result_entry], entries)
+
+    def test_parse_multiple_unknown_tags_ris(self):
+        filepath = os.path.join(CURRENT_DIR, 'example_multi_unknown_tags.ris')
+        unknowns = defaultdict(list)
+        unknowns['JP'].append('CRISPR')
+        unknowns['DC'].append('Direct Current')
+        result_entry = self.nice_keys({
+            'TY': 'JOUR',
+            'AU': ['Shannon,Claude E.'],
+            'PY': '1948/07//',
+            'TI': 'A Mathematical Theory of Communication',
+            'JF': 'Bell System Technical Journal',
+            'SP': '379',
+            'EP': '423',
+            'VL': '27',
+            # {'JP': ['CRISPR'], 'DC': ['Direct Current']}
+            'UK': unknowns,
+        })
+
+        with open(filepath, 'r') as bibliography_file:
+            entries = list(readris(bibliography_file))
+            self.compare([result_entry], entries)
