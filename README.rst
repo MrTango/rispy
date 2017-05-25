@@ -130,6 +130,7 @@ Complete default mapping
      'TI': 'title',
      'TT': 'translated_title',
      'TY': 'type_of_reference',
+     'UK': 'unknown_tag',
      'UR': 'url',
      'VL': 'volume',
      'Y1': 'publication_year',
