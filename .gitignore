@@ -13,5 +13,5 @@
 .tmp
 .ropeproject
 .idea
-1a.ris
+.cache
 dist
