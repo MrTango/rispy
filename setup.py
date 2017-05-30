@@ -18,7 +18,7 @@ def find_version():
                                   version_file, re.M)
         if version_match:
             return version_match.group(1)
-        raise RuntimeError("Unable to find version string.")
+        raise RuntimeError('Unable to find version string.')
 
 setup(
     name='RISparser',
