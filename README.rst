@@ -185,7 +185,7 @@ Tests are launched via the command-line using pytest_:
 
 .. _pytest: https://pypi.python.org/pypi/pytest
 
-.. code:: python
+.. code:: bash
 
    $ cd <path_to_the_repo>/RISparser
    $ py.test
