@@ -14,4 +14,5 @@
 .ropeproject
 .idea
 .cache
+build
 dist

@@ -86,7 +86,8 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': [
-            'check-manifest'
+            'check-manifest',
+            'wheel',
         ],
         'test': [
             'coverage',
