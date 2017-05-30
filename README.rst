@@ -3,7 +3,8 @@ Pure Python RIS files parser
 
 Usage
 -----
-::
+
+.. code:: python
 
    >>> import os
    >>> from pprint import pprint
@@ -22,7 +23,8 @@ Usage
 
 Example RIS entry
 -----------------
-::
+
+.. code:: text
 
    1.
    TY  - JOUR
@@ -57,7 +59,8 @@ The most fields contain string values, but some like first_authors (A1) are pars
 
 Complete list of ListType tags
 ******************************
-::
+
+.. code:: python
 
     >>> from RISparser.config import LIST_TYPE_TAGS
     >>> pprint(LIST_TYPE_TAGS)
@@ -66,7 +69,8 @@ Complete list of ListType tags
 
 Complete default mapping
 ************************
-::
+
+.. code:: python
 
     >>> from RISparser.config import TAG_KEY_MAPPING
     >>> pprint(TAG_KEY_MAPPING)
@@ -139,9 +143,9 @@ Complete default mapping
 Override key mapping
 ********************
 
-The parser use a TAG_KEY_MAPPING, which one can override by calling readris() with a custom mapping.
+The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``readris()`` with a custom mapping.
 
-::
+.. code:: python
 
    >>> import os
    >>> from RISparser import readris, TAG_KEY_MAPPING
@@ -177,9 +181,11 @@ The parser use a TAG_KEY_MAPPING, which one can override by calling readris() wi
 Tests
 -----
 
-Tests can be easily launched via the command-line, using `pytest <https://pypi.python.org/pypi/pytest>`_:
+Tests are launched via the command-line using pytest_:
 
-::
+.. _pytest: https://pypi.python.org/pypi/pytest
+
+.. code:: python
 
    $ cd <path_to_the_repo>/RISparser
    $ py.test
