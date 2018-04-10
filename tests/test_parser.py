@@ -167,3 +167,9 @@ class TestRISparser():
         with open(filepath, 'r') as bibliography_file:
             entries = list(readris(bibliography_file))
             self.compare([result_entry], entries)
+
+    def test_starting_newline(self):
+        fn = os.path.join(CURRENT_DIR, 'example_starting_newlines.ris')
+        with open(fn, 'r') as f:
+            entries = list(readris(f))
+        assert len(entries) == 1

@@ -1,6 +1,11 @@
 History
 =======
 
+v0.4.3 (2018-04-10)
+-------------------
+* Allow for blank lines at beginning of input file [fixes #3]
+
+
 v0.4.2 (2017-05-29)
 -------------------
 * parser saves unknown tags into an ``unknown_tag`` key in dict

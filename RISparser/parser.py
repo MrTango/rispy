@@ -167,7 +167,7 @@ def readris(file_, mapping=None, wok=False):
     # Corrects for BOM in utf-8 encodings while keeping an 8-bit
     # string representation
     st = filelines[0]
-    if (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
+    if len(st) >= 3 and (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
         filelines[0] = st[3:]
 
     return read(filelines, mapping, wok)
