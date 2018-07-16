@@ -1,4 +1,4 @@
-LIST_TYPE_TAGS = (
+LIST_TYPE_TAGS = [
     'A1',
     'A2',
     'A3',
@@ -6,7 +6,7 @@ LIST_TYPE_TAGS = (
     'AU',
     'KW',
     'N1',
-)
+]
 
 
 TAG_KEY_MAPPING = {
