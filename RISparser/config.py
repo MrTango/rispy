@@ -6,7 +6,6 @@ LIST_TYPE_TAGS = [
     'AU',
     'KW',
     'N1',
-    'references',
     'References',
     'Funding details'
 ]
@@ -78,6 +77,7 @@ TAG_KEY_MAPPING = {
     'Y2': 'access_date',
     'ER': 'end_of_reference',
     'UK': 'unknown_tag',
+    'References': 'references',
     'Funding details': 'funding_details',
     'Export Date': 'export_date',
     'Funding text': 'funding text',
