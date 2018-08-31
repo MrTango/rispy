@@ -16,10 +16,12 @@ class Base(object):
     END_TAG = 'ER'
     IGNORE = []
     PATTERN = None
+    N1_PATTERN = None
 
     def __init__(self, lines, mapping):
         self.lines = lines
         self.pattern = re.compile(self.PATTERN)
+        self.n1_pattern = re.compile(self.N1_PATTERN)
         self.mapping = mapping
 
     def parse(self):
@@ -49,6 +51,12 @@ class Base(object):
         tag = self.get_tag(line)
         if tag in self.IGNORE:
             raise NextLine
+
+        if tag=="N1" and self.n1_pattern.match(line):
+            self.n1 = True
+            tag = self.n1_pattern.match(line).group(1)
+        else:
+            self.n1 = False
 
         if tag == self.END_TAG:
             return self.current
@@ -111,7 +119,10 @@ class Base(object):
         if all_line:
             new_value = line.strip()
         else:
-            new_value = self.get_content(line)
+            if self.n1:
+                new_value = self.get_n1_content(line,tag)
+            else:
+                new_value = self.get_content(line)
 
         if tag not in LIST_TYPE_TAGS:
             self.add_single_value(name, new_value, is_multi=all_line)
@@ -121,8 +132,11 @@ class Base(object):
 
     def add_unknown_tag(self, tag, line):
         name = self.mapping['UK']
-        tag = self.get_tag(line)
-        value = self.get_content(line)
+        #tag = self.get_tag(line)
+        if self.n1:
+            value = self.get_n1_content(line,tag)
+        else:
+            value = self.get_content(line)
         # check if unknown_tag dict exists
         if name not in self.current:
             self.current[name] = defaultdict(list)
@@ -151,8 +165,14 @@ class Wok(Base):
 class Ris(Base):
     START_TAG = 'TY'
     PATTERN = '^[A-Z][A-Z0-9]  - '
+    N1_PATTERN = '^.*- ([\w\s]*):'
 
     counter_re = re.compile('^[0-9]+.')
+
+    def get_n1_content(self,line,tag):
+        c = line[6:].strip()
+        tagpat = re.compile("{}:(.*)".format(tag))
+        return tagpat.match(c).group(1).strip()
 
     def get_content(self, line):
         return line[6:].strip()
