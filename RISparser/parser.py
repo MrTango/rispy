@@ -146,6 +146,9 @@ class Wok(Base):
 
     def get_content(self, line):
         return line[2:].strip()
+    
+    def is_counter(self, line):
+        return True
 
 
 class Ris(Base):
