@@ -142,7 +142,7 @@ class Base(object):
 class Wok(Base):
     START_TAG = 'PT'
     IGNORE = ['FN', 'VR', 'EF']
-    PATTERN = '^[A-Z][A-Z0-9] |^ER |^EF '
+    PATTERN = '^[A-Z][A-Z0-9] |^ER\s?|^EF\s?'
 
     def get_content(self, line):
         return line[2:].strip()
