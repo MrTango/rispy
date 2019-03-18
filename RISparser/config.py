@@ -55,6 +55,7 @@ TAG_KEY_MAPPING = {
     'NV': 'number_of_Volumes',
     'OP': 'original_publication',
     'PB': 'publisher',
+    'PT': 'publication_type',
     'PY': 'year',
     'RI': 'reviewed_item',
     'RN': 'research_notes',
