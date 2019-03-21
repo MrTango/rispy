@@ -173,3 +173,9 @@ class TestRISparser():
         with open(fn, 'r') as f:
             entries = list(readris(f))
         assert len(entries) == 1
+
+    def test_parse_wos_ris(self):
+        fn = os.path.join(CURRENT_DIR, 'example_wos.ris')
+        with open(fn, 'r') as f:
+            entries = list(readris(f, wok=True))
+        assert len(entries) == 2
