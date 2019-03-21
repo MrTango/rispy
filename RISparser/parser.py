@@ -1,7 +1,7 @@
 from collections import defaultdict
 import re
 
-from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
 __all__ = ['readris', 'read']
@@ -143,10 +143,11 @@ class Wok(Base):
     START_TAG = 'PT'
     IGNORE = ['FN', 'VR', 'EF']
     PATTERN = '^[A-Z][A-Z0-9] |^ER\s?|^EF\s?'
+    LIST_TYPE_TAGS = WOK_LIST_TYPE_TAGS
 
     def get_content(self, line):
         return line[2:].strip()
-    
+
     def is_counter(self, line):
         return True
 
@@ -193,10 +194,11 @@ def read(filelines, mapping=None, wok=False):
 
     """
 
-    if not mapping:
-        mapping = TAG_KEY_MAPPING
-
     if wok:
+        if not mapping:
+            mapping = WOK_TAG_KEY_MAPPING
         return Wok(filelines, mapping).parse()
-
-    return Ris(filelines, mapping).parse()
+    else:
+        if not mapping:
+            mapping = TAG_KEY_MAPPING
+        return Ris(filelines, mapping).parse()
