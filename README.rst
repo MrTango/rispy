@@ -4,6 +4,8 @@ Pure Python RIS files parser
 Usage
 -----
 
+Parsing:
+
 .. code:: python
 
    >>> import os
@@ -19,6 +21,16 @@ Usage
    ['Marx, Karl', 'Lindgren, Astrid']
    12345
    ['Marxus, Karlus', 'Lindgren, Astrid']
+
+Writing:
+
+.. code:: python
+
+   >>> import os
+   >>> import RISparser
+   >>> filepath = 'tests/example_export_full.ris'
+   >>> with open(filepath, 'w') as bibliography_file:
+   ...     RISparser.dump(entries, bibliography_file)
 
 
 Example RIS entry

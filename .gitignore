@@ -1,3 +1,5 @@
+tests/example_export_full.ris
+
 .coverage
 *.egg-info/
 *.egg
