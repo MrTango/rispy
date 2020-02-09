@@ -8,10 +8,10 @@ Usage
 
    >>> import os
    >>> from pprint import pprint
-   >>> from RISparser import readris
+   >>> import RISparser
    >>> filepath = 'tests/example_full.ris'
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = readris(bibliography_file)
+   ...     entries = RISparser.load(bibliography_file)
    ...     for entry in entries:
    ...         print(entry['id'])
    ...         print(entry['first_authors'])
@@ -64,7 +64,7 @@ Complete list of ListType tags
 
     >>> from RISparser.config import LIST_TYPE_TAGS
     >>> pprint(LIST_TYPE_TAGS)
-    ('A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1')
+    ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1']
 
 
 Complete default mapping
@@ -143,19 +143,20 @@ Complete default mapping
 Override key mapping
 ********************
 
-The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``readris()`` with a custom mapping.
+The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``RISparser.load()`` with a custom mapping.
 
 .. code:: python
 
    >>> import os
-   >>> from RISparser import readris, TAG_KEY_MAPPING
+   >>> import RISparser
+   >>> from RISparser import TAG_KEY_MAPPING
    >>> from pprint import pprint
 
    >>> filepath = 'tests/example_full.ris'
    >>> mapping = TAG_KEY_MAPPING
    >>> mapping["SP"] = "pages_this_is_my_fun"
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = list(readris(bibliography_file, mapping=mapping))
+   ...     entries = list(RISparser.load(bibliography_file, mapping=mapping))
    ...     pprint(sorted(entries[0].keys()))
    ['abstract',
     'alternate_title2',
