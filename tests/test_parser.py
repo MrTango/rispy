@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from collections import defaultdict
 import os
-import RISparser
-from RISparser import TAG_KEY_MAPPING
+import rispy
+from rispy import TAG_KEY_MAPPING
 
 pj = os.path.join
 
@@ -17,7 +17,7 @@ def nice_list(to_change, mapping=TAG_KEY_MAPPING):
     return [nice_keys(d, mapping) for d in to_change]
 
 
-class TestRISparser():
+class Testrispy():
     def cmp_dict(self, d0, d1):
         for key, value in d0.items():
             assert key in d1
@@ -54,7 +54,7 @@ class TestRISparser():
         })
 
         with open(filepath, 'r') as bibliography_file:
-            entries = list(RISparser.load(bibliography_file))
+            entries = list(rispy.load(bibliography_file))
             self.compare([result_entry], entries)
 
     def test_load_multiline_ris(self):
@@ -80,7 +80,7 @@ class TestRISparser():
             '27',
         })
         with open(filepath, 'r') as f:
-            entries = list(RISparser.load(f))
+            entries = list(rispy.load(f))
             self.compare([result_entry], entries)
 
     def test_load_example_full_ris(self):
@@ -133,7 +133,7 @@ class TestRISparser():
 
         results = nice_list([entry1, entry2])
         with open(filepath, 'r') as bibliography_file:
-            entries = list(RISparser.load(bibliography_file))
+            entries = list(rispy.load(bibliography_file))
             self.compare(results, entries)
 
     def test_load_single_unknown_tag_ris(self):
@@ -155,7 +155,7 @@ class TestRISparser():
         })
 
         with open(filepath, 'r') as bibliography_file:
-            entries = list(RISparser.load(bibliography_file))
+            entries = list(rispy.load(bibliography_file))
             self.compare([result_entry], entries)
 
     def test_load_multiple_unknown_tags_ris(self):
@@ -177,19 +177,19 @@ class TestRISparser():
         })
 
         with open(filepath, 'r') as bibliography_file:
-            entries = list(RISparser.load(bibliography_file))
+            entries = list(rispy.load(bibliography_file))
             self.compare([result_entry], entries)
 
     def test_starting_newline(self):
         fn = os.path.join(CURRENT_DIR, 'example_starting_newlines.ris')
         with open(fn, 'r') as f:
-            entries = list(RISparser.load(f))
+            entries = list(rispy.load(f))
         assert len(entries) == 1
 
     def test_load_wos_ris(self):
         fn = os.path.join(CURRENT_DIR, 'example_wos.ris')
         with open(fn, 'r') as f:
-            entries = list(RISparser.load(f, wok=True))
+            entries = list(rispy.load(f, wok=True))
         assert len(entries) == 2
 
 
@@ -245,7 +245,7 @@ def test_dump_example_full_ris(tmp_path):
     results = nice_list([entry1, entry2])
 
     with open(fp, 'w') as bibliography_file:
-        RISparser.dump(results, bibliography_file)
+        rispy.dump(results, bibliography_file)
 
     with open(fp, 'r') as test_file:
         lines = test_file.read().splitlines()
@@ -304,7 +304,7 @@ def test_dumps_example_full_ris():
 
     results = nice_list([entry1, entry2])
 
-    bytestring = RISparser.dumps(results)
+    bytestring = rispy.dumps(results)
     lines = bytestring.split("\n")
 
     assert lines[0] == "1."
@@ -323,7 +323,7 @@ def test_dumps_multiple_unknown_tags_ris(tmp_path):
     }]
 
     with open(fp, 'w') as bibliography_file:
-        RISparser.dump(results, bibliography_file)
+        rispy.dump(results, bibliography_file)
 
     with open(fp, 'r') as test_file:
         lines = test_file.read().splitlines()
@@ -340,11 +340,11 @@ def test_dump_and_load(tmp_path):
     source_fp = os.path.join('tests', 'example_full.ris')
 
     with open(source_fp, 'r') as bibliography_file1:
-        entries = RISparser.load(bibliography_file1)
+        entries = rispy.load(bibliography_file1)
 
     with open(temp_fp, 'w') as bibliography_file2:
-        RISparser.dump(entries, bibliography_file2)
+        rispy.dump(entries, bibliography_file2)
 
     with open(temp_fp, 'r') as bibliography_file3:
-        entries = list(RISparser.load(bibliography_file3))
+        entries = list(rispy.load(bibliography_file3))
         entries[0]['place_published'] = 'United States'

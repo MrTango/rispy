@@ -1,5 +1,7 @@
-Pure Python RIS files parser
-============================
+Pure Python RIS files parser and reader
+=======================================
+
+Before, this project was named 'RISparser'.
 
 Usage
 -----
@@ -10,10 +12,10 @@ Parsing:
 
    >>> import os
    >>> from pprint import pprint
-   >>> import RISparser
+   >>> import rispy
    >>> filepath = 'tests/example_full.ris'
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = RISparser.load(bibliography_file)
+   ...     entries = rispy.load(bibliography_file)
    ...     for entry in entries:
    ...         print(entry['id'])
    ...         print(entry['first_authors'])
@@ -27,10 +29,10 @@ Writing:
 .. code:: python
 
    >>> import os
-   >>> import RISparser
+   >>> import rispy
    >>> filepath = 'tests/example_export_full.ris'
    >>> with open(filepath, 'w') as bibliography_file:
-   ...     RISparser.dump(entries, bibliography_file)
+   ...     rispy.dump(entries, bibliography_file)
 
 
 Example RIS entry
@@ -74,7 +76,7 @@ Complete list of ListType tags
 
 .. code:: python
 
-    >>> from RISparser.config import LIST_TYPE_TAGS
+    >>> from rispy.config import LIST_TYPE_TAGS
     >>> pprint(LIST_TYPE_TAGS)
     ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1']
 
@@ -84,7 +86,7 @@ Complete default mapping
 
 .. code:: python
 
-    >>> from RISparser.config import TAG_KEY_MAPPING
+    >>> from rispy.config import TAG_KEY_MAPPING
     >>> pprint(TAG_KEY_MAPPING)
     {'A1': 'first_authors',
      'A2': 'secondary_authors',
@@ -155,20 +157,20 @@ Complete default mapping
 Override key mapping
 ********************
 
-The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``RISparser.load()`` with a custom mapping.
+The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.load()`` with a custom mapping.
 
 .. code:: python
 
    >>> import os
-   >>> import RISparser
-   >>> from RISparser import TAG_KEY_MAPPING
+   >>> import rispy
+   >>> from rispy import TAG_KEY_MAPPING
    >>> from pprint import pprint
 
    >>> filepath = 'tests/example_full.ris'
    >>> mapping = TAG_KEY_MAPPING
    >>> mapping["SP"] = "pages_this_is_my_fun"
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = list(RISparser.load(bibliography_file, mapping=mapping))
+   ...     entries = list(rispy.load(bibliography_file, mapping=mapping))
    ...     pprint(sorted(entries[0].keys()))
    ['abstract',
     'alternate_title2',
@@ -200,5 +202,5 @@ Tests are launched via the command-line using pytest_:
 
 .. code:: bash
 
-   $ cd <path_to_the_repo>/RISparser
+   $ cd <path_to_the_repo>/rispy
    $ py.test
