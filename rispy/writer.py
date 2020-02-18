@@ -57,7 +57,7 @@ class BaseWriter(object):
             try:
                 tag = self._rev_mapping[label.lower()]
             except KeyError:
-                logging.info("label {} not exported".format(label))
+                logging.warning("label {} not exported".format(label))
                 continue
 
             # ignore
@@ -100,10 +100,11 @@ def dump(references, file, mapping=None):
     or multiple key occurrences, the content is returned as a list
     of strings.
 
-    Keyword arguments:
-    references -- list of references
-    file -- ris filehandle
-    mapping -- custom RIS tags mapping
+    Args:
+        references (list): List of references.
+        file (object): File handle to store ris formatted data.
+        mapping (dict): Custom RIS tags mapping.
+
     """
     if not mapping:
         mapping = TAG_KEY_MAPPING

@@ -196,11 +196,13 @@ def load(file, mapping=None, wok=False):
     or multiple key occurrences, the content is returned as a list
     of strings.
 
-    Keyword arguments:
-    bibliography_file -- ris filehandle
-    mapping -- custom RIS tags mapping
-    wok -- flag, Web of Knowledge format is used if True, otherwise
-           Refman's RIS specifications are used.
+    Args:
+        file (object): File handle to read ris formatted data.
+        mapping (dict): Custom RIS tags mapping.
+        wok (bool): Use WOK format. Default False.
+
+    Returns:
+        list: Returns list of RIS entries.
     """
     c = file.read()
     # Corrects for BOM in utf-8 encodings while keeping an 8-bit
