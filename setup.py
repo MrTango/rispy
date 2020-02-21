@@ -12,7 +12,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 def find_version():
     # https://packaging.python.org/en/latest/single_source_version/
-    with open(path.join(here, 'RISparser/__init__.py')) as f:
+    with open(path.join(here, 'rispy/__init__.py')) as f:
         version_file = f.read()
         version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
                                   version_file, re.M)
@@ -21,7 +21,7 @@ def find_version():
         raise RuntimeError('Unable to find version string.')
 
 setup(
-    name='RISparser',
+    name='rispy',
 
     # Versions should comply with PEP440. For a discussion on single-sourcing
     # the version across setup.py and the project code, see

@@ -1,10 +1,14 @@
 from collections import defaultdict
 import re
+import warnings
 
-from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
+from .config import LIST_TYPE_TAGS
+from .config import TAG_KEY_MAPPING
+from .config import WOK_TAG_KEY_MAPPING
+from .config import WOK_LIST_TYPE_TAGS
 
 
-__all__ = ['readris', 'read']
+__all__ = ['load', 'loads']
 
 
 class NextLine(Exception):
@@ -20,7 +24,15 @@ class Base(object):
     def __init__(self, lines, mapping):
         self.lines = lines
         self.pattern = re.compile(self.PATTERN)
-        self.mapping = mapping
+        self._mapping = mapping
+
+    @property
+    def mapping(self):
+
+        if self._mapping is not None:
+            return self._mapping
+        else:
+            return self.default_mapping
 
     def parse(self):
         self.in_ref = False
@@ -144,6 +156,7 @@ class Wok(Base):
     IGNORE = ['FN', 'VR', 'EF']
     PATTERN = '^[A-Z][A-Z0-9] |^ER\s?|^EF\s?'
     LIST_TYPE_TAGS = WOK_LIST_TYPE_TAGS
+    default_mapping = WOK_TAG_KEY_MAPPING
 
     def get_content(self, line):
         return line[2:].strip()
@@ -155,6 +168,7 @@ class Wok(Base):
 class Ris(Base):
     START_TAG = 'TY'
     PATTERN = '^[A-Z][A-Z0-9]  - '
+    default_mapping = TAG_KEY_MAPPING
 
     counter_re = re.compile('^[0-9]+.')
 
@@ -166,19 +180,15 @@ class Ris(Base):
         return bool(none_or_match)
 
 
-def readris(file_, mapping=None, wok=False):
-    filelines = file_.readlines()
-    # Corrects for BOM in utf-8 encodings while keeping an 8-bit
-    # string representation
-    st = filelines[0]
-    if len(st) >= 3 and (st[0], st[1], st[2]) == ('\xef', '\xbb', '\xbf'):
-        filelines[0] = st[3:]
+def readris(*args, **kwargs):
 
-    return read(filelines, mapping, wok)
+    warnings.warn("Please use 'load' instead of 'readris'", FutureWarning)
+
+    load(*args, **kwargs)
 
 
-def read(filelines, mapping=None, wok=False):
-    """Parse a ris lines and return a list of entries.
+def load(file, mapping=None, wok=False):
+    """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly occurring tags,
@@ -186,19 +196,28 @@ def read(filelines, mapping=None, wok=False):
     or multiple key occurrences, the content is returned as a list
     of strings.
 
-    Keyword arguments:
-    bibliography_file -- ris filehandle
-    mapping -- custom RIS tags mapping
-    wok -- flag, Web of Knowledge format is used if True, otherwise
-           Refman's RIS specifications are used.
+    Args:
+        file (object): File handle to read ris formatted data.
+        mapping (dict): Custom RIS tags mapping.
+        wok (bool): Use WOK format. Default False.
 
+    Returns:
+        list: Returns list of RIS entries.
     """
+    c = file.read()
+    # Corrects for BOM in utf-8 encodings while keeping an 8-bit
+    # string representation
+    if (c[0], c[1], c[2]) == ('\xef', '\xbb', '\xbf'):
+        c = c[3:]
+
+    return loads(c, mapping, wok)
+
+
+def loads(obj, mapping=None, wok=False):
+
+    filelines = obj.split("\n")
 
     if wok:
-        if not mapping:
-            mapping = WOK_TAG_KEY_MAPPING
         return Wok(filelines, mapping).parse()
-    else:
-        if not mapping:
-            mapping = TAG_KEY_MAPPING
-        return Ris(filelines, mapping).parse()
+
+    return Ris(filelines, mapping).parse()
