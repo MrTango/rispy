@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 98
+ignore =
+  E203
+  E266
+exclude =
+  .git,
+  .tox,
+  venv
