@@ -15,9 +15,12 @@ Breaking changes:
 
 * Rename package from `RISparser` to `rispy`
 * Revise API for reading RIS files to mirror python APIs (like `json`, `pickle`)
+* `SE` RIS key mapped to `section` instead of `version` (per wikipedia_)
 * `NV` RIS key mapped to `number_of_volumes` instead of `number_of_Volumes`
 * `N2` RIS key mapped to `notes_abstract` instead of `abstract`
 * Python ≥ 3.6 required
+
+.. _wikipedia: https://en.wikipedia.org/wiki/RIS_(file_format)
 
 v0.4.3 (2018-04-10)
 -------------------

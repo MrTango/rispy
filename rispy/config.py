@@ -58,7 +58,7 @@ TAG_KEY_MAPPING = {
     "RI": "reviewed_item",
     "RN": "research_notes",
     "RP": "reprint_edition",
-    "SE": "version",
+    "SE": "section",
     "SN": "issn",
     "SP": "start_page",
     "ST": "short_title",

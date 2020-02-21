@@ -187,4 +187,3 @@ class Testrispy:
         with open(fn, "r") as f:
             entries = list(rispy.load(f, wok=True))
         assert len(entries) == 2
-
