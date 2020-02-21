@@ -1,21 +1,23 @@
-tests/example_export_full.ris
-
-.coverage
-*.egg-info/
-*.egg
-/.installed.cfg
-*.pyc
+# python/editors
 *.codeintel
+*.egg
+*.egg-info/
+*.mo
+*.nja
+*.pyc
+.cache
+.coverage
+.idea
+.ropeproject
+.tmp
 /.Python
+/.installed.cfg
+/.mr.developer.cfg
 /.project
 /.pydevproject
-/.mr.developer.cfg
-*.nja
-*.mo
-.tmp
-.ropeproject
-.idea
-.cache
 build
 dist
 venv
+
+# created from tests
+export.ris

@@ -1,11 +1,7 @@
 from collections import defaultdict
 import re
-import warnings
 
-from .config import LIST_TYPE_TAGS
-from .config import TAG_KEY_MAPPING
-from .config import WOK_TAG_KEY_MAPPING
-from .config import WOK_LIST_TYPE_TAGS
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
 __all__ = ["load", "loads"]
@@ -28,7 +24,6 @@ class Base(object):
 
     @property
     def mapping(self):
-
         if self._mapping is not None:
             return self._mapping
         else:
@@ -179,13 +174,6 @@ class Ris(Base):
     def is_counter(self, line):
         none_or_match = self.counter_re.match(line)
         return bool(none_or_match)
-
-
-def readris(*args, **kwargs):
-
-    warnings.warn("Please use 'load' instead of 'readris'", FutureWarning)
-
-    load(*args, **kwargs)
 
 
 def load(file, mapping=None, wok=False):
