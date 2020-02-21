@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
 
   backend:
-    name: backend
+    name: lint + test
     runs-on: ubuntu-18.04
 
     steps:
