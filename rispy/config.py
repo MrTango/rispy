@@ -50,8 +50,8 @@ TAG_KEY_MAPPING = {
     'M1': 'note',
     'M3': 'type_of_work',
     'N1': 'notes',  # ListType
-    'N2': 'abstract',
-    'NV': 'number_of_Volumes',
+    'N2': 'notes_abstract',
+    'NV': 'number_of_volumes',
     'OP': 'original_publication',
     'PB': 'publisher',
     'PY': 'year',
