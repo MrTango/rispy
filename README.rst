@@ -1,8 +1,6 @@
 Pure Python RIS files parser and reader
 =======================================
 
-Before, this project was named 'RISparser'.
-
 Usage
 -----
 
@@ -13,7 +11,7 @@ Parsing:
    >>> import os
    >>> from pprint import pprint
    >>> import rispy
-   >>> filepath = 'tests/example_full.ris'
+   >>> filepath = 'tests/data/example_full.ris'
    >>> with open(filepath, 'r') as bibliography_file:
    ...     entries = rispy.load(bibliography_file)
    ...     for entry in entries:
@@ -140,8 +138,8 @@ Complete default mapping
      'M1': 'note',
      'M3': 'type_of_work',
      'N1': 'notes',
-     'N2': 'abstract',
-     'NV': 'number_of_Volumes',
+     'N2': 'notes_abstract',
+     'NV': 'number_of_volumes',
      'OP': 'original_publication',
      'PB': 'publisher',
      'PY': 'year',
@@ -173,18 +171,17 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
 .. code:: python
 
    >>> import os
+   >>> from copy import deepcopy
    >>> import rispy
-   >>> from rispy import TAG_KEY_MAPPING
    >>> from pprint import pprint
 
-   >>> filepath = 'tests/example_full.ris'
-   >>> mapping = TAG_KEY_MAPPING
+   >>> filepath = 'tests/data/example_full.ris'
+   >>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
    >>> mapping["SP"] = "pages_this_is_my_fun"
    >>> with open(filepath, 'r') as bibliography_file:
    ...     entries = list(rispy.load(bibliography_file, mapping=mapping))
    ...     pprint(sorted(entries[0].keys()))
-   ['abstract',
-    'alternate_title2',
+   ['alternate_title2',
     'alternate_title3',
     'file_attachments2',
     'first_authors',
@@ -192,6 +189,7 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'issn',
     'keywords',
     'note',
+    'notes_abstract',
     'number',
     'pages_this_is_my_fun',
     'place_published',
@@ -204,8 +202,8 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'volume']
 
 
-Tests
------
+Developer instructions
+----------------------
 
 Tests are launched via the command-line using pytest_:
 
@@ -213,5 +211,11 @@ Tests are launched via the command-line using pytest_:
 
 .. code:: bash
 
-   $ cd <path_to_the_repo>/rispy
-   $ py.test
+   # setup environment
+   python -m venv venv
+   source venv/bin/activate
+   pip install -e .[dev,test]
+
+   # execute tests
+   py.test
+

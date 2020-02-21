@@ -18,3 +18,4 @@ tests/example_export_full.ris
 .cache
 build
 dist
+venv

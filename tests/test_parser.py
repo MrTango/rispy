@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 from collections import defaultdict
 import os
+
 import rispy
-from rispy import TAG_KEY_MAPPING
 
 pj = os.path.join
-
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-def nice_keys(to_change, mapping=TAG_KEY_MAPPING):
+def nice_keys(to_change, mapping=rispy.TAG_KEY_MAPPING):
     return {mapping[k]: v for k, v in to_change.items()}
 
 
-def nice_list(to_change, mapping=TAG_KEY_MAPPING):
+def nice_list(to_change, mapping=rispy.TAG_KEY_MAPPING):
     return [nice_keys(d, mapping) for d in to_change]
 
 
@@ -41,7 +40,7 @@ class Testrispy():
         assert v0 == v1
 
     def test_load_example_basic_ris(self):
-        filepath = os.path.join(CURRENT_DIR, 'example_basic.ris')
+        filepath = os.path.join(CURRENT_DIR, 'data', 'example_basic.ris')
         result_entry = nice_keys({
             'TY': 'JOUR',
             'AU': ['Shannon,Claude E.'],
@@ -58,7 +57,7 @@ class Testrispy():
             self.compare([result_entry], entries)
 
     def test_load_multiline_ris(self):
-        filepath = os.path.join(CURRENT_DIR, 'multiline.ris')
+        filepath = os.path.join(CURRENT_DIR, 'data', 'multiline.ris')
         result_entry = nice_keys({
             'TY':
             'JOUR',
@@ -84,7 +83,7 @@ class Testrispy():
             self.compare([result_entry], entries)
 
     def test_load_example_full_ris(self):
-        filepath = os.path.join(CURRENT_DIR, 'example_full.ris')
+        filepath = os.path.join(CURRENT_DIR, 'data', 'example_full.ris')
         entry1 = {
             'TY': 'JOUR',
             'ID': '12345',
@@ -137,7 +136,7 @@ class Testrispy():
             self.compare(results, entries)
 
     def test_load_single_unknown_tag_ris(self):
-        filepath = os.path.join(CURRENT_DIR, 'example_single_unknown_tag.ris')
+        filepath = os.path.join(CURRENT_DIR, 'data', 'example_single_unknown_tag.ris')
         unknowns = defaultdict(list)
         unknowns['JP'].append('CRISPR')
         unknowns['JP'].append('Direct Current')
@@ -154,12 +153,13 @@ class Testrispy():
             'UK': unknowns,
         })
 
-        with open(filepath, 'r') as bibliography_file:
-            entries = list(rispy.load(bibliography_file))
-            self.compare([result_entry], entries)
+        with open(filepath, 'r') as f:
+            entries = list(rispy.load(f))
+
+        self.compare([result_entry], entries)
 
     def test_load_multiple_unknown_tags_ris(self):
-        filepath = os.path.join(CURRENT_DIR, 'example_multi_unknown_tags.ris')
+        filepath = os.path.join(CURRENT_DIR, 'data', 'example_multi_unknown_tags.ris')
         unknowns = defaultdict(list)
         unknowns['JP'].append('CRISPR')
         unknowns['DC'].append('Direct Current')
@@ -169,25 +169,23 @@ class Testrispy():
             'PY': '1948/07//',
             'TI': 'A Mathematical Theory of Communication',
             'JF': 'Bell System Technical Journal',
-            'SP': '379',
             'EP': '423',
             'VL': '27',
-            # {'JP': ['CRISPR'], 'DC': ['Direct Current']}
             'UK': unknowns,
         })
 
-        with open(filepath, 'r') as bibliography_file:
-            entries = list(rispy.load(bibliography_file))
+        with open(filepath, 'r') as f:
+            entries = list(rispy.load(f))
             self.compare([result_entry], entries)
 
     def test_starting_newline(self):
-        fn = os.path.join(CURRENT_DIR, 'example_starting_newlines.ris')
+        fn = os.path.join(CURRENT_DIR, 'data', 'example_starting_newlines.ris')
         with open(fn, 'r') as f:
             entries = list(rispy.load(f))
         assert len(entries) == 1
 
     def test_load_wos_ris(self):
-        fn = os.path.join(CURRENT_DIR, 'example_wos.ris')
+        fn = os.path.join(CURRENT_DIR, 'data', 'example_wos.ris')
         with open(fn, 'r') as f:
             entries = list(rispy.load(f, wok=True))
         assert len(entries) == 2
@@ -252,7 +250,7 @@ def test_dump_example_full_ris(tmp_path):
 
         assert lines[0] == "1."
         assert lines[1] == "TY  - JOUR"
-        assert lines[23] == "ER  - "
+        assert lines[22] == "ER  - "
 
 
 def test_dumps_example_full_ris():
@@ -309,7 +307,7 @@ def test_dumps_example_full_ris():
 
     assert lines[0] == "1."
     assert lines[1] == "TY  - JOUR"
-    assert lines[23] == "ER  - "
+    assert lines[22] == "ER  - "
 
 
 def test_dumps_multiple_unknown_tags_ris(tmp_path):
@@ -337,7 +335,7 @@ def test_dump_and_load(tmp_path):
 
     temp_fp = tmp_path / "test_dump_and_load.ris"
 
-    source_fp = os.path.join('tests', 'example_full.ris')
+    source_fp = os.path.join('tests', 'data', 'example_full.ris')
 
     with open(source_fp, 'r') as bibliography_file1:
         entries = rispy.load(bibliography_file1)

@@ -1,0 +1,25 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+    
+    backend:
+        name: backend
+        runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.6'
+        architecture: 'x64'
+    - name: install
+      run: |
+        pip install -e .[dev,test]
+    - name: lint
+      run: |
+        make lint
+    - name: test
+      run: |
+        make test
