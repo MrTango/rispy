@@ -5,18 +5,19 @@ import logging
 from .config import LIST_TYPE_TAGS
 from .config import TAG_KEY_MAPPING
 
-__all__ = ['dump', 'dumps']
+__all__ = ["dump", "dumps"]
 
 
 def _inverse_mapping(mapping):
-
-    # See PR #16 (if k is not 'N2')
-    return {v: k for k, v in mapping.items() if k is not 'N2'}
+    remap = {v: k for k, v in mapping.items()}
+    if len(remap) != len(mapping):
+        raise ValueError("Mapping cannot be inverted; some values were not unique")
+    return remap
 
 
 class BaseWriter(object):
     START_TAG = None
-    END_TAG = 'ER'
+    END_TAG = "ER"
     IGNORE = []
     PATTERN = None
 
@@ -46,10 +47,7 @@ class BaseWriter(object):
         lines = []
 
         lines.append("{i}.".format(i=count))
-        lines.append(self._format_line(
-            self.START_TAG,
-            self._get_reference_type(ref)
-        ))
+        lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
         for label, value in ref.items():
 
@@ -87,8 +85,8 @@ class BaseWriter(object):
 
 class RISWriter(BaseWriter):
 
-    START_TAG = 'TY'
-    PATTERN = '{tag}  - {value}'
+    START_TAG = "TY"
+    PATTERN = "{tag}  - {value}"
 
 
 def dump(references, file, mapping=None):
@@ -109,8 +107,7 @@ def dump(references, file, mapping=None):
     if not mapping:
         mapping = TAG_KEY_MAPPING
 
-    for line in RISWriter(
-            references, mapping, type_of_reference="JOUR").format():
+    for line in RISWriter(references, mapping, type_of_reference="JOUR").format():
         file.write(line + "\n")
 
 

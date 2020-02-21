@@ -16,6 +16,7 @@ def get_version():
         text = f.read()
     return re.findall(regex, text, re.MULTILINE)[0]
 
+
 setup(
     name="rispy",
     version=get_version(),
