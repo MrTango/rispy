@@ -55,7 +55,7 @@ class Testrispy:
         )
 
         with open(filepath, "r") as bibliography_file:
-            entries = list(rispy.load(bibliography_file))
+            entries = rispy.load(bibliography_file)
             self.compare([result_entry], entries)
 
     def test_load_multiline_ris(self):
@@ -75,7 +75,7 @@ class Testrispy:
             }
         )
         with open(filepath, "r") as f:
-            entries = list(rispy.load(f))
+            entries = rispy.load(f)
             self.compare([result_entry], entries)
 
     def test_load_example_full_ris(self):
@@ -126,7 +126,7 @@ class Testrispy:
 
         results = nice_list([entry1, entry2])
         with open(filepath, "r") as bibliography_file:
-            entries = list(rispy.load(bibliography_file))
+            entries = rispy.load(bibliography_file)
             self.compare(results, entries)
 
     def test_load_single_unknown_tag_ris(self):
@@ -150,7 +150,7 @@ class Testrispy:
         )
 
         with open(filepath, "r") as f:
-            entries = list(rispy.load(f))
+            entries = rispy.load(f)
 
         self.compare([result_entry], entries)
 
@@ -173,17 +173,17 @@ class Testrispy:
         )
 
         with open(filepath, "r") as f:
-            entries = list(rispy.load(f))
+            entries = rispy.load(f)
             self.compare([result_entry], entries)
 
     def test_starting_newline(self):
         fn = os.path.join(CURRENT_DIR, "data", "example_starting_newlines.ris")
         with open(fn, "r") as f:
-            entries = list(rispy.load(f))
+            entries = rispy.load(f)
         assert len(entries) == 1
 
     def test_load_wos_ris(self):
         fn = os.path.join(CURRENT_DIR, "data", "example_wos.ris")
         with open(fn, "r") as f:
-            entries = list(rispy.load(f, wok=True))
+            entries = rispy.load(f, is_wok=True)
         assert len(entries) == 2

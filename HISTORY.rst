@@ -9,6 +9,7 @@ New features:
 * Rename the package from `RISpy` to `rispy` (PEP8 https://www.python.org/dev/peps/pep-0008/#package-and-module-names)
 * Added the ability to write RIS files (via `dump`) in addition to read (@J535D165)
 * Code formatting rules via black and flake8
+* All methods by default return an evaluated list of references, not a generator (to be consistent w/ load/dump behavior)
 * Github actions - code formatting check and unit-tests
 
 Breaking changes:

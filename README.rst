@@ -179,7 +179,7 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
    >>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
    >>> mapping["SP"] = "pages_this_is_my_fun"
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = list(rispy.load(bibliography_file, mapping=mapping))
+   ...     entries = rispy.load(bibliography_file, mapping=mapping)
    ...     pprint(sorted(entries[0].keys()))
    ['alternate_title2',
     'alternate_title3',

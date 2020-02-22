@@ -8,6 +8,7 @@
 .cache
 .coverage
 .idea
+.mypy_cache
 .ropeproject
 .tmp
 /.Python
