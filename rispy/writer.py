@@ -1,6 +1,6 @@
 """RIS Writer"""
 
-import logging
+import warnings
 from typing import Dict, List, Optional, TextIO
 
 from .config import LIST_TYPE_TAGS
@@ -56,7 +56,7 @@ class BaseWriter:
             try:
                 tag = self._rev_mapping[label.lower()]
             except KeyError:
-                logging.warning(f"label {label} not exported")
+                warnings.warn(UserWarning(f"label `{label}` not exported"))
                 continue
 
             # ignore
@@ -71,7 +71,6 @@ class BaseWriter:
                 lines.append(self._format_line(tag, value))
 
         lines.append(self._format_line("ER"))
-        lines.append("")
         lines.append("")
 
         return lines
@@ -128,4 +127,4 @@ def dumps(references: List[Dict], mapping: Optional[Dict] = None) -> str:
         mapping = TAG_KEY_MAPPING
 
     lines = RISWriter(references, mapping, type_of_reference="JOUR").format()
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines)

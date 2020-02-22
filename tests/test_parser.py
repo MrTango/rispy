@@ -1,189 +1,155 @@
-# -*- coding: utf-8 -*-
-from collections import defaultdict
-import os
+from pathlib import Path
 
 import rispy
 
-pj = os.path.join
-CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+DATA_DIR = Path(__file__).parent.resolve() / "data"
 
 
-def nice_keys(to_change, mapping=rispy.TAG_KEY_MAPPING):
-    return {mapping[k]: v for k, v in to_change.items()}
+def test_load_example_basic_ris():
+    filepath = DATA_DIR / "example_basic.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "start_page": "379",
+        "end_page": "423",
+        "volume": "27",
+    }
+
+    with open(filepath, "r") as f:
+        entries = rispy.load(f)
+
+    assert expected == entries[0]
 
 
-def nice_list(to_change, mapping=rispy.TAG_KEY_MAPPING):
-    return [nice_keys(d, mapping) for d in to_change]
+def test_load_multiline_ris():
+    filepath = DATA_DIR / "multiline.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "start_page": "379",
+        "end_page": "423",
+        "notes_abstract": "first line, then second line and at the end the last line",
+        "notes": ["first line", "* second line", "* last line"],
+        "volume": "27",
+    }
+    with open(filepath, "r") as f:
+        entries = rispy.load(f)
+
+    assert expected == entries[0]
 
 
-class Testrispy:
-    def cmp_dict(self, d0, d1):
-        for key, value in d0.items():
-            assert key in d1
-            self.compare(value, d1.pop(key))
-        assert not len(d1)
+def test_load_example_full_ris():
+    filepath = DATA_DIR / "example_full.ris"
+    expected = [
+        {
+            "type_of_reference": "JOUR",
+            "id": "12345",
+            "primary_title": "Title of reference",
+            "first_authors": ["Marx, Karl", "Lindgren, Astrid"],
+            "secondary_authors": ["Glattauer, Daniel"],
+            "publication_year": "2014//",
+            "notes_abstract": "BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.",  # noqa: E501
+            "keywords": ["Pippi", "Nordwind", "Piraten"],
+            "alternate_title3": "Lorem",
+            "alternate_title2": "lorem",
+            "volume": "9",
+            "number": "3",
+            "start_page": "e0815",
+            "place_published": "United States",
+            "publisher": "Fun Factory",
+            "issn": "1932-6208",
+            "note": "1008150341",
+            "file_attachments2": "http://example.com",
+            "url": "http://example_url.com",
+        },
+        {
+            "type_of_reference": "JOUR",
+            "id": "12345",
+            "primary_title": "The title of the reference",
+            "first_authors": ["Marxus, Karlus", "Lindgren, Astrid"],
+            "secondary_authors": ["Glattauer, Daniel"],
+            "publication_year": "2006//",
+            "notes_abstract": "BACKGROUND: Lorem dammed ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.",  # noqa: E501
+            "keywords": ["Pippi Langstrumpf", "Nordwind", "Piraten"],
+            "alternate_title3": "Lorem",
+            "alternate_title2": "lorem",
+            "volume": "6",
+            "number": "3",
+            "start_page": "e0815341",
+            "place_published": "Germany",
+            "publisher": "Dark Factory",
+            "issn": "1732-4208",
+            "note": "1228150341",
+            "file_attachments2": "http://example2.com",
+            "url": "http://example_url.com",
+        },
+    ]
 
-    def cmp_list(self, l0, l1):
-        assert len(l0) == len(l1)
-        for v0, v1 in zip(l0, l1):
-            self.compare(v0, v1)
+    with open(filepath, "r") as f:
+        entries = rispy.loads(f.read())
+    assert expected == entries
 
-    def compare(self, v0, v1):
-        assert type(v0) == type(v1)
-        if hasattr(v0, "items"):
-            self.cmp_dict(v0, v1)
-            return
 
-        if isinstance(v0, (list, dict)):
-            self.cmp_list(v0, v1)
-            return
-        assert v0 == v1
+def test_load_single_unknown_tag_ris():
+    filepath = DATA_DIR / "example_single_unknown_tag.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "start_page": "379",
+        "end_page": "423",
+        "volume": "27",
+        "unknown_tag": {"JP": ["CRISPR", "Direct Current"]},
+    }
 
-    def test_load_example_basic_ris(self):
-        filepath = os.path.join(CURRENT_DIR, "data", "example_basic.ris")
-        result_entry = nice_keys(
-            {
-                "TY": "JOUR",
-                "AU": ["Shannon,Claude E."],
-                "PY": "1948/07//",
-                "TI": "A Mathematical Theory of Communication",
-                "JF": "Bell System Technical Journal",
-                "SP": "379",
-                "EP": "423",
-                "VL": "27",
-            }
-        )
+    with open(filepath, "r") as f:
+        entries = rispy.load(f)
 
-        with open(filepath, "r") as bibliography_file:
-            entries = rispy.load(bibliography_file)
-            self.compare([result_entry], entries)
+    assert expected == entries[0]
 
-    def test_load_multiline_ris(self):
-        filepath = os.path.join(CURRENT_DIR, "data", "multiline.ris")
-        result_entry = nice_keys(
-            {
-                "TY": "JOUR",
-                "AU": ["Shannon,Claude E."],
-                "PY": "1948/07//",
-                "TI": "A Mathematical Theory of Communication",
-                "JF": "Bell System Technical Journal",
-                "N2": "first line, then second line and at the end the last line",
-                "N1": ["first line", "* second line", "* last line"],
-                "SP": "379",
-                "EP": "423",
-                "VL": "27",
-            }
-        )
-        with open(filepath, "r") as f:
-            entries = rispy.load(f)
-            self.compare([result_entry], entries)
 
-    def test_load_example_full_ris(self):
-        filepath = os.path.join(CURRENT_DIR, "data", "example_full.ris")
-        entry1 = {
-            "TY": "JOUR",
-            "ID": "12345",
-            "T1": "Title of reference",
-            "A1": ["Marx, Karl", "Lindgren, Astrid"],
-            "A2": ["Glattauer, Daniel"],
-            "Y1": "2014//",
-            "N2": "BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.",  # noqa: E501
-            "KW": ["Pippi", "Nordwind", "Piraten"],
-            "JF": "Lorem",
-            "JA": "lorem",
-            "VL": "9",
-            "IS": "3",
-            "SP": "e0815",
-            "CY": "United States",
-            "PB": "Fun Factory",
-            "SN": "1932-6208",
-            "M1": "1008150341",
-            "L2": "http://example.com",
-            "UR": "http://example_url.com",
-        }
+def test_load_multiple_unknown_tags_ris():
+    filepath = DATA_DIR / "example_multi_unknown_tags.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "end_page": "423",
+        "volume": "27",
+        "unknown_tag": {"JP": ["CRISPR"], "DC": ["Direct Current"]},
+    }
+    with open(filepath, "r") as f:
+        entries = rispy.load(f)
+    assert expected == entries[0]
 
-        entry2 = {
-            "TY": "JOUR",
-            "ID": "12345",
-            "T1": "The title of the reference",
-            "A1": ["Marxus, Karlus", "Lindgren, Astrid"],
-            "A2": ["Glattauer, Daniel"],
-            "Y1": "2006//",
-            "N2": "BACKGROUND: Lorem dammed ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.",  # noqa: E501
-            "KW": ["Pippi Langstrumpf", "Nordwind", "Piraten"],
-            "JF": "Lorem",
-            "JA": "lorem",
-            "VL": "6",
-            "IS": "3",
-            "SP": "e0815341",
-            "CY": "Germany",
-            "PB": "Dark Factory",
-            "SN": "1732-4208",
-            "M1": "1228150341",
-            "L2": "http://example2.com",
-            "UR": "http://example_url.com",
-        }
 
-        results = nice_list([entry1, entry2])
-        with open(filepath, "r") as bibliography_file:
-            entries = rispy.load(bibliography_file)
-            self.compare(results, entries)
+def test_starting_newline():
+    fn = DATA_DIR / "example_starting_newlines.ris"
+    with open(fn, "r") as f:
+        entries = rispy.load(f)
+    assert len(entries) == 1
 
-    def test_load_single_unknown_tag_ris(self):
-        filepath = os.path.join(CURRENT_DIR, "data", "example_single_unknown_tag.ris")
-        unknowns = defaultdict(list)
-        unknowns["JP"].append("CRISPR")
-        unknowns["JP"].append("Direct Current")
-        result_entry = nice_keys(
-            {
-                "TY": "JOUR",
-                "AU": ["Shannon,Claude E."],
-                "PY": "1948/07//",
-                "TI": "A Mathematical Theory of Communication",
-                "JF": "Bell System Technical Journal",
-                "SP": "379",
-                "EP": "423",
-                "VL": "27",
-                # {'JP': ['CRISPR', 'Direct Current']}
-                "UK": unknowns,
-            }
-        )
 
-        with open(filepath, "r") as f:
-            entries = rispy.load(f)
+def test_wos_ris():
+    fn = DATA_DIR / "example_wos.ris"
+    with open(fn, "r") as f:
+        entries = rispy.load(f, is_wok=True)
 
-        self.compare([result_entry], entries)
+    assert len(entries) == 2
 
-    def test_load_multiple_unknown_tags_ris(self):
-        filepath = os.path.join(CURRENT_DIR, "data", "example_multi_unknown_tags.ris")
-        unknowns = defaultdict(list)
-        unknowns["JP"].append("CRISPR")
-        unknowns["DC"].append("Direct Current")
-        result_entry = nice_keys(
-            {
-                "TY": "JOUR",
-                "AU": ["Shannon,Claude E."],
-                "PY": "1948/07//",
-                "TI": "A Mathematical Theory of Communication",
-                "JF": "Bell System Technical Journal",
-                "EP": "423",
-                "VL": "27",
-                "UK": unknowns,
-            }
-        )
+    title = "Interactions stabilizing the structure of the core light-harvesting complex (LHl) of photosynthetic bacteria and its subunit (B820)"  # noqa: E501
+    assert entries[0]["document_title"] == title
 
-        with open(filepath, "r") as f:
-            entries = rispy.load(f)
-            self.compare([result_entry], entries)
-
-    def test_starting_newline(self):
-        fn = os.path.join(CURRENT_DIR, "data", "example_starting_newlines.ris")
-        with open(fn, "r") as f:
-            entries = rispy.load(f)
-        assert len(entries) == 1
-
-    def test_load_wos_ris(self):
-        fn = os.path.join(CURRENT_DIR, "data", "example_wos.ris")
-        with open(fn, "r") as f:
-            entries = rispy.load(f, is_wok=True)
-        assert len(entries) == 2
+    title = "Proximal and distal influences on ligand binding kinetics in microperoxidase and heme model compounds"  # noqa: E501
+    assert entries[1]["document_title"] == title
