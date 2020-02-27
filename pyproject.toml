@@ -1,11 +1,21 @@
+[build-system]
+requires = ["setuptools>=43", "wheel", "setuptools_scm[toml]>=3.4"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "rispy/version.py"
+write_to_template = "__version__ = \"{version}\"\n"
+
 [tool.black]
 line-length = 98
 target-version = ['py36', 'py37', 'py38']
 include = '\.pyi?$'
 exclude = '''
 /(
-    \.git
+  \.eggs
+  | \.git
   | \.tox
+  | build
   | venv
 )/
 '''
