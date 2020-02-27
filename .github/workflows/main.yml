@@ -16,7 +16,10 @@ jobs:
         architecture: 'x64'
     - name: install
       run: |
-        pip install -e .[dev,test]
+        python3 ./setup.py bdist_wheel
+        export WHLNAME="./dist/rispy-0.CI-py3-none-any.whl"
+        mv ./dist/*.whl $WHLNAME.
+        pip install --upgrade "$WHLNAME[dev,test]"
     - name: lint
       run: |
         make lint
