@@ -90,8 +90,7 @@ class RISWriter(BaseWriter):
 
 
 def dump(references: List[Dict], file: TextIO, mapping: Optional[Dict] = None):
-    """
-    Write an RIS file to file or file-like object.
+    """Write an RIS file to file or file-like object.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly occurring tags,
@@ -109,8 +108,7 @@ def dump(references: List[Dict], file: TextIO, mapping: Optional[Dict] = None):
 
 
 def dumps(references: List[Dict], mapping: Optional[Dict] = None) -> str:
-    """
-    Return an RIS formatted string.
+    """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly occurring tags,

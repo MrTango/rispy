@@ -1,3 +1,4 @@
+from enum import Enum
 from collections import defaultdict
 from typing import Dict, List, Optional, TextIO
 import re
@@ -6,6 +7,11 @@ from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LI
 
 
 __all__ = ["load", "loads"]
+
+
+class RisImplementation(Enum):
+    BASE = "base"
+    WOK = "wok"
 
 
 class NextLine(Exception):
@@ -172,9 +178,12 @@ class Ris(Base):
         return bool(none_or_match)
 
 
-def load(file: TextIO, mapping: Optional[Dict] = None, is_wok: bool = False) -> List[Dict]:
-    """
-    Load a RIS file and return a list of entries.
+def load(
+    file: TextIO,
+    mapping: Optional[Dict] = None,
+    implementation: RisImplementation = RisImplementation.BASE,
+) -> List[Dict]:
+    """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly occurring tags,
@@ -185,7 +194,7 @@ def load(file: TextIO, mapping: Optional[Dict] = None, is_wok: bool = False) -> 
     Args:
         file (TextIO): File handle to read ris formatted data.
         mapping (Dict, optional): a tag mapping dictionary.
-        is_wok (bool): Use WOK format. Default False.
+        implementation (RisImplementation): RIS implementation; base by default.
 
     Returns:
         list: Returns list of RIS entries.
@@ -197,12 +206,15 @@ def load(file: TextIO, mapping: Optional[Dict] = None, is_wok: bool = False) -> 
     if len(c) > 3 and (c[0], c[1], c[2]) == ("\xef", "\xbb", "\xbf"):
         c = c[3:]
 
-    return list(loads(c, mapping, is_wok))
+    return list(loads(c, mapping, implementation))
 
 
-def loads(obj: str, mapping: Optional[Dict] = None, is_wok: bool = False) -> List[Dict]:
-    """
-    Load a RIS file and return a list of entries.
+def loads(
+    obj: str,
+    mapping: Optional[Dict] = None,
+    implementation: RisImplementation = RisImplementation.BASE,
+) -> List[Dict]:
+    """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly occurring tags,
@@ -213,7 +225,7 @@ def loads(obj: str, mapping: Optional[Dict] = None, is_wok: bool = False) -> Lis
     Args:
         obj (str): A string version of an RIS file.
         mapping (Dict, optional): a tag mapping dictionary.
-        is_wok (bool): Use WOK format. Default False.
+        implementation (RisImplementation): RIS implementation; base by default.
 
     Returns:
         list: Returns list of RIS entries.
@@ -221,7 +233,11 @@ def loads(obj: str, mapping: Optional[Dict] = None, is_wok: bool = False) -> Lis
 
     filelines = obj.split("\n")
 
-    if is_wok:
-        return Wok(filelines, mapping).parse()
+    implementation = RisImplementation(implementation)
 
-    return list(Ris(filelines, mapping).parse())
+    if implementation == RisImplementation.WOK:
+        return Wok(filelines, mapping).parse()
+    elif implementation == RisImplementation.BASE:
+        return list(Ris(filelines, mapping).parse())
+    else:
+        raise ValueError(f"Unknown implementation: {implementation}")

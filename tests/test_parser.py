@@ -144,7 +144,7 @@ def test_starting_newline():
 def test_wos_ris():
     fn = DATA_DIR / "example_wos.ris"
     with open(fn, "r") as f:
-        entries = rispy.load(f, is_wok=True)
+        entries = rispy.load(f, implementation="wok")
 
     assert len(entries) == 2
 
@@ -153,3 +153,16 @@ def test_wos_ris():
 
     title = "Proximal and distal influences on ligand binding kinetics in microperoxidase and heme model compounds"  # noqa: E501
     assert entries[1]["document_title"] == title
+
+
+def test_implementation_constructor():
+    # check that both calls are valid
+    fn = DATA_DIR / "example_wos.ris"
+
+    with open(fn, "r") as f:
+        entries1 = rispy.load(f, implementation="wok")
+
+    with open(fn, "r") as f:
+        entries2 = rispy.load(f, implementation=rispy.RisImplementation.WOK)
+
+    assert entries1 == entries2
