@@ -1,7 +1,7 @@
-Pure Python RIS files parser and reader
-=======================================
+Python RIS files parser and reader
+==================================
 
-Before, this project was named 'RISparser'.
+A Python 3.6+ reader/writer of RIS reference files.
 
 Usage
 -----
@@ -13,7 +13,7 @@ Parsing:
    >>> import os
    >>> from pprint import pprint
    >>> import rispy
-   >>> filepath = 'tests/example_full.ris'
+   >>> filepath = 'tests/data/example_full.ris'
    >>> with open(filepath, 'r') as bibliography_file:
    ...     entries = rispy.load(bibliography_file)
    ...     for entry in entries:
@@ -41,7 +41,7 @@ Writing:
    ...  'primary_title': 'Reference 43',
    ...  'abstract': 'Lorem ipsum'
    ...  }]
-   >>> filepath = 'tests/example_export_full.ris'
+   >>> filepath = 'export.ris'
    >>> with open(filepath, 'w') as bibliography_file:
    ...     rispy.dump(entries, bibliography_file)
 
@@ -80,7 +80,19 @@ Example RIS entry
 TAG_KEY_MAPPING
 ---------------
 
-The most fields contain string values, but some like first_authors (A1) are parsed into lists.
+The most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping were created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth, so these may need to be modified for specific export systems:
+
+- Wikipedia_
+- ResearcherId_
+- Refman_
+- `Refman (RIS format)`_
+- Zotero_
+
+.. _Wikipedia: https://en.wikipedia.org/wiki/RIS_(file_format)
+.. _ResearcherId: https://web.archive.org/web/20170707033254/http://www.researcherid.com/resources/html/help_upload.htm
+.. _Refman: https://web.archive.org/web/20110930172154/http://www.refman.com/support/risformat_intro.asp
+.. _`Refman (RIS format)`: https://web.archive.org/web/20120526103719/http://refman.com/support/risformat_intro.asp
+.. _Zotero: https://github.com/zotero/translators/blob/master/RIS.js
 
 Complete list of ListType tags
 ******************************
@@ -140,15 +152,15 @@ Complete default mapping
      'M1': 'note',
      'M3': 'type_of_work',
      'N1': 'notes',
-     'N2': 'abstract',
-     'NV': 'number_of_Volumes',
+     'N2': 'notes_abstract',
+     'NV': 'number_of_volumes',
      'OP': 'original_publication',
      'PB': 'publisher',
      'PY': 'year',
      'RI': 'reviewed_item',
      'RN': 'research_notes',
      'RP': 'reprint_edition',
-     'SE': 'version',
+     'SE': 'section',
      'SN': 'issn',
      'SP': 'start_page',
      'ST': 'short_title',
@@ -173,18 +185,17 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
 .. code:: python
 
    >>> import os
+   >>> from copy import deepcopy
    >>> import rispy
-   >>> from rispy import TAG_KEY_MAPPING
    >>> from pprint import pprint
 
-   >>> filepath = 'tests/example_full.ris'
-   >>> mapping = TAG_KEY_MAPPING
+   >>> filepath = 'tests/data/example_full.ris'
+   >>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
    >>> mapping["SP"] = "pages_this_is_my_fun"
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = list(rispy.load(bibliography_file, mapping=mapping))
+   ...     entries = rispy.load(bibliography_file, mapping=mapping)
    ...     pprint(sorted(entries[0].keys()))
-   ['abstract',
-    'alternate_title2',
+   ['alternate_title2',
     'alternate_title3',
     'file_attachments2',
     'first_authors',
@@ -192,6 +203,7 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'issn',
     'keywords',
     'note',
+    'notes_abstract',
     'number',
     'pages_this_is_my_fun',
     'place_published',
@@ -204,14 +216,25 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'volume']
 
 
-Tests
------
+Developer instructions
+----------------------
 
-Tests are launched via the command-line using pytest_:
-
-.. _pytest: https://pypi.python.org/pypi/pytest
+Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make commands and run the commands from the command-line manually:
 
 .. code:: bash
 
-   $ cd <path_to_the_repo>/rispy
-   $ py.test
+   # setup environment
+   python -m venv venv
+   source venv/bin/activate
+   pip install -e .[dev,test]
+
+   # check if code format changes are required
+   make lint
+   
+   # reformat code
+   make format
+
+   # run tests
+   make test 
+
+Github Actions are currently enabled to run `lint` and `test` when submitting a pull-request.

@@ -1,4 +1,4 @@
-1. 
+1.
 TY  - JOUR
 ID  - 12345
 T1  - Title of reference
@@ -17,15 +17,13 @@ IS  - 3
 SP  - e0815
 CY  - United States
 PB  - Fun Factory
-PB  - Fun Factory USA
 SN  - 1932-6208
 M1  - 1008150341
 L2  - http://example.com
 UR  - http://example_url.com
-ER  -  
- 
+ER  - 
 
-2. 
+2.
 TY  - JOUR
 ID  - 12345
 T1  - The title of the reference
@@ -44,12 +42,8 @@ IS  - 3
 SP  - e0815341
 CY  - Germany
 PB  - Dark Factory
-PB  - Dark Factory GER
 SN  - 1732-4208
 M1  - 1228150341
 L2  - http://example2.com
 UR  - http://example_url.com
-ER  -  
-
- 
-
+ER  - 

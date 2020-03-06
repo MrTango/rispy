@@ -1,25 +1,28 @@
+from enum import Enum
 from collections import defaultdict
+from typing import Dict, List, Optional, TextIO
 import re
-import warnings
 
-from .config import LIST_TYPE_TAGS
-from .config import TAG_KEY_MAPPING
-from .config import WOK_TAG_KEY_MAPPING
-from .config import WOK_LIST_TYPE_TAGS
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
-__all__ = ['load', 'loads']
+__all__ = ["load", "loads"]
+
+
+class RisImplementation(Enum):
+    BASE = "base"
+    WOK = "wok"
 
 
 class NextLine(Exception):
     pass
 
 
-class Base(object):
-    START_TAG = None
-    END_TAG = 'ER'
-    IGNORE = []
-    PATTERN = None
+class Base:
+    START_TAG: str = None
+    END_TAG: str = "ER"
+    IGNORE: List[str] = []
+    PATTERN: str = None
 
     def __init__(self, lines, mapping):
         self.lines = lines
@@ -28,7 +31,6 @@ class Base(object):
 
     @property
     def mapping(self):
-
         if self._mapping is not None:
             return self._mapping
         else:
@@ -68,15 +70,13 @@ class Base(object):
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise IOError('Missing end of record tag in line '
-                              '%d:\n %s' % (line_number, line))
+                raise IOError(f"Missing end of record tag in line {line_number}:\n {line}")
             self.add_tag(tag, line)
             self.in_ref = True
             raise NextLine
 
         if not self.in_ref:
-            text = 'Invalid start tag in line %d:\n %s' % (line_number, line)
-            raise IOError(text)
+            raise IOError(f"Invalid start tag in line {line_number}:\n {line}")
 
         if tag in self.mapping:
             self.add_tag(tag, line)
@@ -91,16 +91,14 @@ class Base(object):
         if self.in_ref:
             # Active reference
             if self.last_tag is None:
-                text = 'Expected tag in line %d:\n %s' % (line_number, line)
-                raise IOError(text)
+                raise IOError(f"Expected tag in line {line_number}:\n {line}")
             # Active tag
             self.add_tag(self.last_tag, line, all_line=True)
             raise NextLine
 
         if self.is_counter(line):
             raise NextLine
-        text = 'Expected start tag in line %d:\n %s' % (line_number, line)
-        raise IOError(text)
+        raise IOError(f"Expected start tag in line {line_number}:\n {line}")
 
     def add_single_value(self, name, value, is_multi=False):
         if not is_multi:
@@ -109,7 +107,7 @@ class Base(object):
             return
 
         value_must_exist_or_is_bug = self.current[name]
-        self.current[name] = ' '.join((value_must_exist_or_is_bug, value))
+        self.current[name] = " ".join((value_must_exist_or_is_bug, value))
 
     def add_list_value(self, name, value):
         try:
@@ -132,7 +130,7 @@ class Base(object):
         self.add_list_value(name, new_value)
 
     def add_unknown_tag(self, tag, line):
-        name = self.mapping['UK']
+        name = self.mapping["UK"]
         tag = self.get_tag(line)
         value = self.get_content(line)
         # check if unknown_tag dict exists
@@ -152,9 +150,9 @@ class Base(object):
 
 
 class Wok(Base):
-    START_TAG = 'PT'
-    IGNORE = ['FN', 'VR', 'EF']
-    PATTERN = '^[A-Z][A-Z0-9] |^ER\s?|^EF\s?'
+    START_TAG = "PT"
+    IGNORE = ["FN", "VR", "EF"]
+    PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
     LIST_TYPE_TAGS = WOK_LIST_TYPE_TAGS
     default_mapping = WOK_TAG_KEY_MAPPING
 
@@ -166,11 +164,11 @@ class Wok(Base):
 
 
 class Ris(Base):
-    START_TAG = 'TY'
-    PATTERN = '^[A-Z][A-Z0-9]  - '
+    START_TAG = "TY"
+    PATTERN = "^[A-Z][A-Z0-9]  - "
     default_mapping = TAG_KEY_MAPPING
 
-    counter_re = re.compile('^[0-9]+.')
+    counter_re = re.compile("^[0-9]+.")
 
     def get_content(self, line):
         return line[6:].strip()
@@ -180,14 +178,11 @@ class Ris(Base):
         return bool(none_or_match)
 
 
-def readris(*args, **kwargs):
-
-    warnings.warn("Please use 'load' instead of 'readris'", FutureWarning)
-
-    load(*args, **kwargs)
-
-
-def load(file, mapping=None, wok=False):
+def load(
+    file: TextIO,
+    mapping: Optional[Dict] = None,
+    implementation: RisImplementation = RisImplementation.BASE,
+) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -197,27 +192,52 @@ def load(file, mapping=None, wok=False):
     of strings.
 
     Args:
-        file (object): File handle to read ris formatted data.
-        mapping (dict): Custom RIS tags mapping.
-        wok (bool): Use WOK format. Default False.
+        file (TextIO): File handle to read ris formatted data.
+        mapping (Dict, optional): a tag mapping dictionary.
+        implementation (RisImplementation): RIS implementation; base by default.
 
     Returns:
         list: Returns list of RIS entries.
     """
     c = file.read()
+
     # Corrects for BOM in utf-8 encodings while keeping an 8-bit
     # string representation
-    if (c[0], c[1], c[2]) == ('\xef', '\xbb', '\xbf'):
+    if len(c) > 3 and (c[0], c[1], c[2]) == ("\xef", "\xbb", "\xbf"):
         c = c[3:]
 
-    return loads(c, mapping, wok)
+    return list(loads(c, mapping, implementation))
 
 
-def loads(obj, mapping=None, wok=False):
+def loads(
+    obj: str,
+    mapping: Optional[Dict] = None,
+    implementation: RisImplementation = RisImplementation.BASE,
+) -> List[Dict]:
+    """Load a RIS file and return a list of entries.
+
+    Entries are codified as dictionaries whose keys are the
+    different tags. For single line and singly occurring tags,
+    the content is codified as a string. In the case of multiline
+    or multiple key occurrences, the content is returned as a list
+    of strings.
+
+    Args:
+        obj (str): A string version of an RIS file.
+        mapping (Dict, optional): a tag mapping dictionary.
+        implementation (RisImplementation): RIS implementation; base by default.
+
+    Returns:
+        list: Returns list of RIS entries.
+    """
 
     filelines = obj.split("\n")
 
-    if wok:
-        return Wok(filelines, mapping).parse()
+    implementation = RisImplementation(implementation)
 
-    return Ris(filelines, mapping).parse()
+    if implementation == RisImplementation.WOK:
+        return Wok(filelines, mapping).parse()
+    elif implementation == RisImplementation.BASE:
+        return list(Ris(filelines, mapping).parse())
+    else:
+        raise ValueError(f"Unknown implementation: {implementation}")

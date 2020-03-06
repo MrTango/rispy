@@ -1,12 +1,12 @@
-.PHONY: clean clean-test clean-pyc clean-build docs help
+.PHONY: clean lint format test release dist
+
 .DEFAULT_GOAL := help
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
 try:
-	from urllib import pathname2url
+    from urllib import pathname2url
 except:
-	from urllib.request import pathname2url
-
+    from urllib.request import pathname2url
 webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
 endef
 export BROWSER_PYSCRIPT
@@ -26,35 +26,30 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-clean: clean-build clean-pyc clean-test ## remove all build, test and Python artifacts
-
-clean-build: ## remove build artifacts
+clean:  ## remove all build, test and Python artifacts
+	# build artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
-
-clean-pyc: ## remove Python file artifacts
+	# test artifacts
+	rm -fr .tox/
+	rm -fr htmlcov/
+	# python artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
-clean-test: ## remove test and coverage artifacts
-	rm -fr .tox/
-	rm -fr htmlcov/
+lint:  ## Check for python formatting issues via black & flake8
+	@black . --check && flake8 .
 
-test:
-	# This runs all of the tests.
-	#
-	# To run an individual test, use the -k flag to grep for matching:
-	# 	$ py.test -k test_monkey_has_tail
-	#
-	# To show print statements when debugging tests, use the -s flag:
-	# 	$ py.test -k test_monkey_has_tail -s
-	#
-	py.test tests
+format:  ## Modify python code using black & show flake8 issues
+	@black . && flake8 .
+
+test:  ## Run unit test suite
+	@py.test
 
 release: clean ## package and upload a release
 	python setup.py sdist upload
@@ -66,6 +61,3 @@ dist: clean ## builds source and wheel package
 	python setup.py sdist
 	python setup.py bdist_wheel
 	ls -l dist
-
-install: clean ## install the package to the active Python's site-packages
-	python setup.py install

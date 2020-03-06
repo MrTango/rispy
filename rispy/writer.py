@@ -1,29 +1,31 @@
 """RIS Writer"""
 
-import logging
+import warnings
+from typing import Dict, List, Optional, TextIO
 
 from .config import LIST_TYPE_TAGS
 from .config import TAG_KEY_MAPPING
 
-__all__ = ['dump', 'dumps']
+__all__ = ["dump", "dumps"]
 
 
-def _inverse_mapping(mapping):
+def invert_dictionary(mapping):
+    remap = {v: k for k, v in mapping.items()}
+    if len(remap) != len(mapping):
+        raise ValueError("Dictionary cannot be inverted; some values were not unique")
+    return remap
 
-    # See PR #16 (if k is not 'N2')
-    return {v: k for k, v in mapping.items() if k is not 'N2'}
 
-
-class BaseWriter(object):
-    START_TAG = None
-    END_TAG = 'ER'
-    IGNORE = []
-    PATTERN = None
+class BaseWriter:
+    START_TAG: str = None
+    END_TAG: str = "ER"
+    IGNORE: List[str] = []
+    PATTERN: str = None
 
     def __init__(self, references, mapping, type_of_reference):
         self.references = references
         self.mapping = mapping
-        self._rev_mapping = _inverse_mapping(mapping)
+        self._rev_mapping = invert_dictionary(mapping)
         self.type_of_reference = type_of_reference
 
     def _get_reference_type(self, ref):
@@ -46,10 +48,7 @@ class BaseWriter(object):
         lines = []
 
         lines.append("{i}.".format(i=count))
-        lines.append(self._format_line(
-            self.START_TAG,
-            self._get_reference_type(ref)
-        ))
+        lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
         for label, value in ref.items():
 
@@ -57,7 +56,7 @@ class BaseWriter(object):
             try:
                 tag = self._rev_mapping[label.lower()]
             except KeyError:
-                logging.warning("label {} not exported".format(label))
+                warnings.warn(UserWarning(f"label `{label}` not exported"))
                 continue
 
             # ignore
@@ -73,7 +72,6 @@ class BaseWriter(object):
 
         lines.append(self._format_line("ER"))
         lines.append("")
-        lines.append("")
 
         return lines
 
@@ -87,12 +85,12 @@ class BaseWriter(object):
 
 class RISWriter(BaseWriter):
 
-    START_TAG = 'TY'
-    PATTERN = '{tag}  - {value}'
+    START_TAG = "TY"
+    PATTERN = "{tag}  - {value}"
 
 
-def dump(references, file, mapping=None):
-    """Dump a ris lines to file.
+def dump(references: List[Dict], file: TextIO, mapping: Optional[Dict] = None):
+    """Write an RIS file to file or file-like object.
 
     Entries are codified as dictionaries whose keys are the
     different tags. For single line and singly occurring tags,
@@ -101,23 +99,30 @@ def dump(references, file, mapping=None):
     of strings.
 
     Args:
-        references (list): List of references.
-        file (object): File handle to store ris formatted data.
-        mapping (dict): Custom RIS tags mapping.
+        references (List[Dict]): List of references.
+        file (TextIO): File handle to store ris formatted data.
+        mapping (Dict, optional): Custom RIS tags mapping.
+    """
+    text = dumps(references, mapping)
+    file.writelines(text)
 
+
+def dumps(references: List[Dict], mapping: Optional[Dict] = None) -> str:
+    """Return an RIS formatted string.
+
+    Entries are codified as dictionaries whose keys are the
+    different tags. For single line and singly occurring tags,
+    the content is codified as a string. In the case of multiline
+    or multiple key occurrences, the content is returned as a list
+    of strings.
+
+    Args:
+        references (List[Dict]): List of references.
+        file (TextIO): File handle to store ris formatted data.
+        mapping (Dict, optional): Custom RIS tags mapping.
     """
     if not mapping:
         mapping = TAG_KEY_MAPPING
 
-    for line in RISWriter(
-            references, mapping, type_of_reference="JOUR").format():
-        file.write(line + "\n")
-
-
-def dumps(references, mapping=None):
-
-    if not mapping:
-        mapping = TAG_KEY_MAPPING
-
     lines = RISWriter(references, mapping, type_of_reference="JOUR").format()
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines)
