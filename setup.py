@@ -37,7 +37,7 @@ setup(
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[],
     extras_require={
-        "dev": ["black==19.10b0", "flake8==3.7.9", "check-manifest", "wheel"],
+        "dev": ["black==19.10b0", "flake8==3.7.9", "check-manifest", "twine", "wheel"],
         "test": ["coverage", "pytest"],
     },
 )

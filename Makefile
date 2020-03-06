@@ -51,13 +51,12 @@ format:  ## Modify python code using black & show flake8 issues
 test:  ## Run unit test suite
 	@py.test
 
-release: clean ## package and upload a release
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
-	git tag -a "$(shell python setup.py --version)" -m ""
-	git push --tags
-
-dist: clean ## builds source and wheel package
+build: clean ## builds source and wheel package
 	python setup.py sdist
 	python setup.py bdist_wheel
 	ls -l dist
+
+release: clean build ## package and upload a release
+	twine upload dist/*
+	git tag -a "$(shell python setup.py --version)" -m ""
+	git push --tags
