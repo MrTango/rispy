@@ -20,9 +20,9 @@ def get_version():
 setup(
     name="rispy",
     version=get_version(),
-    description="Reads RIS files into dictionaries via a generator for large files",
+    description="A Python reader/writer of RIS reference files",
     long_description=long_description,
-    url="https://github.com/mrtango/RISparser",
+    url="https://github.com/mrtango/rispy",
     author="Maik Derstappen (MrTango)",
     author_email="md@derico.de",
     license="GNU General Public License v2 (GPLv2)",
