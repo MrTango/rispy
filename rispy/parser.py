@@ -199,14 +199,7 @@ def load(
     Returns:
         list: Returns list of RIS entries.
     """
-    c = file.read()
-
-    # Corrects for BOM in utf-8 encodings while keeping an 8-bit
-    # string representation
-    if len(c) > 3 and (c[0], c[1], c[2]) == ("\xef", "\xbb", "\xbf"):
-        c = c[3:]
-
-    return list(loads(c, mapping, implementation))
+    return list(loads(file.read(), mapping, implementation))
 
 
 def loads(
@@ -230,6 +223,9 @@ def loads(
     Returns:
         list: Returns list of RIS entries.
     """
+
+    # remove BOM if present
+    obj = obj.lstrip("\ufeff")
 
     filelines = obj.split("\n")
 
