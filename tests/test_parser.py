@@ -141,6 +141,19 @@ def test_starting_newline():
     assert len(entries) == 1
 
 
+def test_strip_bom():
+    expected = {"type_of_reference": "JOUR", "doi": "10.1186/s40981-020-0316-0"}
+
+    filepath = DATA_DIR / "example_bom.ris"
+
+    # we properly decode the content of this file as UTF-8, but leave the BOM
+    with open(filepath, "r", encoding="utf-8") as f:
+        entries = rispy.load(f)
+
+    print(entries)
+    assert expected == entries[0]
+
+
 def test_wos_ris():
     fn = DATA_DIR / "example_wos.ris"
     with open(fn, "r") as f:
