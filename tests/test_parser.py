@@ -98,10 +98,10 @@ def test_load_example_full_ris():
 
 
 def test_load_example_full_ris_without_whitespace():
-    
-    # Parse files without whitespace after ER tag. 
+
+    # Parse files without whitespace after ER tag.
     # Resolves https://github.com/MrTango/rispy/pull/25
-    
+
     filepath = DATA_DIR / "example_full_without_whitespace.ris"
     expected = [
         {
