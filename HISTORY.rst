@@ -1,6 +1,14 @@
 History
 =======
 
+v0.5.1 (2020-09-29)
+-----------------
+
+New features:
+
+* Strip BOM before processing records
+* Accept ER tag without trailing whitespace
+
 v0.5 (2020-02-21)
 -----------------
 
