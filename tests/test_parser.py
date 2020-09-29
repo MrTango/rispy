@@ -97,6 +97,63 @@ def test_load_example_full_ris():
     assert expected == entries
 
 
+
+def test_load_example_full_ris_with_whitespace():
+    
+    # Parse files without whitespace after ER tag. 
+    # Resolves https://github.com/MrTango/rispy/pull/25
+    
+    filepath = DATA_DIR / "example_full_without_whitespace.ris"
+    expected = [
+        {
+            "type_of_reference": "JOUR",
+            "id": "12345",
+            "primary_title": "Title of reference",
+            "first_authors": ["Marx, Karl", "Lindgren, Astrid"],
+            "secondary_authors": ["Glattauer, Daniel"],
+            "publication_year": "2014//",
+            "notes_abstract": "BACKGROUND: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.",  # noqa: E501
+            "keywords": ["Pippi", "Nordwind", "Piraten"],
+            "alternate_title3": "Lorem",
+            "alternate_title2": "lorem",
+            "volume": "9",
+            "number": "3",
+            "start_page": "e0815",
+            "place_published": "United States",
+            "publisher": "Fun Factory",
+            "issn": "1932-6208",
+            "note": "1008150341",
+            "file_attachments2": "http://example.com",
+            "url": "http://example_url.com",
+        },
+        {
+            "type_of_reference": "JOUR",
+            "id": "12345",
+            "primary_title": "The title of the reference",
+            "first_authors": ["Marxus, Karlus", "Lindgren, Astrid"],
+            "secondary_authors": ["Glattauer, Daniel"],
+            "publication_year": "2006//",
+            "notes_abstract": "BACKGROUND: Lorem dammed ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  RESULTS: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. CONCLUSIONS: Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.",  # noqa: E501
+            "keywords": ["Pippi Langstrumpf", "Nordwind", "Piraten"],
+            "alternate_title3": "Lorem",
+            "alternate_title2": "lorem",
+            "volume": "6",
+            "number": "3",
+            "start_page": "e0815341",
+            "place_published": "Germany",
+            "publisher": "Dark Factory",
+            "issn": "1732-4208",
+            "note": "1228150341",
+            "file_attachments2": "http://example2.com",
+            "url": "http://example_url.com",
+        },
+    ]
+
+    with open(filepath, "r") as f:
+        entries = rispy.loads(f.read())
+    assert expected == entries
+
+
 def test_load_single_unknown_tag_ris():
     filepath = DATA_DIR / "example_single_unknown_tag.ris"
     expected = {
