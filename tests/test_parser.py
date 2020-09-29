@@ -97,8 +97,7 @@ def test_load_example_full_ris():
     assert expected == entries
 
 
-
-def test_load_example_full_ris_with_whitespace():
+def test_load_example_full_ris_without_whitespace():
     
     # Parse files without whitespace after ER tag. 
     # Resolves https://github.com/MrTango/rispy/pull/25
