@@ -165,7 +165,7 @@ class Wok(Base):
 
 class Ris(Base):
     START_TAG = "TY"
-    PATTERN = "^[A-Z][A-Z0-9]  - |^ER  -[\s|]$"
+    PATTERN = r"^[A-Z][A-Z0-9]  - |^ER  -[\s|]$"
     default_mapping = TAG_KEY_MAPPING
 
     counter_re = re.compile("^[0-9]+.")
