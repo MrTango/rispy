@@ -8,12 +8,16 @@ jobs:
     name: lint + test
     runs-on: ubuntu-18.04
 
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
       with:
-        python-version: '3.6'
-        architecture: 'x64'
+        python-version: ${{ matrix.python-version }}
     - name: install
       run: |
         pip install -e .[dev,test]
