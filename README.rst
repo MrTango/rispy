@@ -215,6 +215,13 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'url',
     'volume']
 
+Software for other RIS-like formats
+-----------------------------------
+Some RIS-like formats contain rich citation data, for example lists and nested attributes, that :code:`rispy` does not
+support. Software specializing on these formats include:
+
+* `nbib <https://pypi.org/project/nbib/>`_ parses the "PubMed" or "MEDLINE" format
+
 
 Developer instructions
 ----------------------
