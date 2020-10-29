@@ -96,6 +96,7 @@ def test_load_example_full_ris():
         entries = rispy.loads(f.read())
     assert expected == entries
 
+
 def test_load_example_extraneous_data_ris():
     filepath = DATA_DIR / "example_extraneous_data.ris"
     expected = [
@@ -146,6 +147,7 @@ def test_load_example_extraneous_data_ris():
     with open(filepath, "r") as f:
         entries = rispy.loads(f.read(), strict=False)
     assert expected == entries
+
 
 def test_load_example_full_ris_without_whitespace():
 
