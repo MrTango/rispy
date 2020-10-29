@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import Dict, List, Optional, TextIO
 import re
 
-from config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
 __all__ = ["load", "loads"]
