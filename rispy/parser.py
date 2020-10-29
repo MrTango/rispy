@@ -24,7 +24,7 @@ class Base:
     IGNORE: List[str] = []
     PATTERN: str = None
 
-    def __init__(self, lines, mapping, strict):
+    def __init__(self, lines, mapping, strict=True):
         self.lines = lines
         self.pattern = re.compile(self.PATTERN)
         self._mapping = mapping
