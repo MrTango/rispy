@@ -199,7 +199,7 @@ def load(
         file (TextIO): File handle to read ris formatted data.
         mapping (Dict, optional): a tag mapping dictionary.
         implementation (RisImplementation): RIS implementation; base by default.
-        strict (bool): A boolean parameter that allows non-tag data between records to be silently ignored.
+        strict (bool): Boolean to allow non-tag data between records to be ignored.
 
     Returns:
         list: Returns list of RIS entries.
@@ -225,8 +225,8 @@ def loads(
         obj (str): A string version of an RIS file.
         mapping (Dict, optional): a tag mapping dictionary.
         implementation (RisImplementation): RIS implementation; base by default.
-        strict (bool): A boolean parameter that allows non-tag data between records to be silently ignored.
-        
+        strict (bool): Boolean to allow non-tag data between records to be ignored.
+
     Returns:
         list: Returns list of RIS entries.
     """
