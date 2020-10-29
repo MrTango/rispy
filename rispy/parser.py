@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import Dict, List, Optional, TextIO
 import re
 
-from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
+from config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
 __all__ = ["load", "loads"]
@@ -24,10 +24,11 @@ class Base:
     IGNORE: List[str] = []
     PATTERN: str = None
 
-    def __init__(self, lines, mapping):
+    def __init__(self, lines, mapping, strict):
         self.lines = lines
         self.pattern = re.compile(self.PATTERN)
         self._mapping = mapping
+        self.strict = strict
 
     @property
     def mapping(self):
@@ -88,6 +89,8 @@ class Base:
         raise NextLine
 
     def parse_other(self, line, line_number):
+        if not self.strict:
+            raise NextLine
         if self.in_ref:
             # Active reference
             if self.last_tag is None:
@@ -182,6 +185,7 @@ def load(
     file: TextIO,
     mapping: Optional[Dict] = None,
     implementation: RisImplementation = RisImplementation.BASE,
+    strict: bool = True,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
@@ -195,17 +199,19 @@ def load(
         file (TextIO): File handle to read ris formatted data.
         mapping (Dict, optional): a tag mapping dictionary.
         implementation (RisImplementation): RIS implementation; base by default.
+        strict (bool): A boolean parameter that allows non-tag data between records to be silently ignored.
 
     Returns:
         list: Returns list of RIS entries.
     """
-    return list(loads(file.read(), mapping, implementation))
+    return list(loads(file.read(), mapping, implementation, strict))
 
 
 def loads(
     obj: str,
     mapping: Optional[Dict] = None,
     implementation: RisImplementation = RisImplementation.BASE,
+    strict: bool = True,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
@@ -219,7 +225,8 @@ def loads(
         obj (str): A string version of an RIS file.
         mapping (Dict, optional): a tag mapping dictionary.
         implementation (RisImplementation): RIS implementation; base by default.
-
+        strict (bool): A boolean parameter that allows non-tag data between records to be silently ignored.
+        
     Returns:
         list: Returns list of RIS entries.
     """
@@ -234,6 +241,6 @@ def loads(
     if implementation == RisImplementation.WOK:
         return Wok(filelines, mapping).parse()
     elif implementation == RisImplementation.BASE:
-        return list(Ris(filelines, mapping).parse())
+        return list(Ris(filelines, mapping, strict).parse())
     else:
         raise ValueError(f"Unknown implementation: {implementation}")
