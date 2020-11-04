@@ -19,9 +19,14 @@ def test_load_example_basic_ris():
         "volume": "27",
     }
 
+    # test with file object
     with open(filepath, "r") as f:
         entries = rispy.load(f)
+    assert expected == entries[0]
 
+    # test with pathlib object
+    p = Path(filepath)
+    entries = rispy.load(p)
     assert expected == entries[0]
 
 

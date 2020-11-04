@@ -1,6 +1,7 @@
 from enum import Enum
 from collections import defaultdict
-from typing import Dict, List, Optional, TextIO
+from pathlib import Path
+from typing import Dict, List, Optional, TextIO, Union
 import re
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
@@ -182,7 +183,7 @@ class Ris(Base):
 
 
 def load(
-    file: TextIO,
+    file: Union[TextIO, Path],
     mapping: Optional[Dict] = None,
     implementation: RisImplementation = RisImplementation.BASE,
     strict: bool = True,
@@ -196,7 +197,7 @@ def load(
     of strings.
 
     Args:
-        file (TextIO): File handle to read ris formatted data.
+        file (Union[TextIO, Path]): File handle to read ris formatted data.
         mapping (Dict, optional): a tag mapping dictionary.
         implementation (RisImplementation): RIS implementation; base by default.
         strict (bool): Boolean to allow non-tag data between records to be ignored.
@@ -204,7 +205,8 @@ def load(
     Returns:
         list: Returns list of RIS entries.
     """
-    return list(loads(file.read(), mapping, implementation, strict))
+    text = file.read_text() if isinstance(file, Path) else file.read()
+    return list(loads(text, mapping, implementation, strict))
 
 
 def loads(
