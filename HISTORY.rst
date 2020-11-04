@@ -1,8 +1,17 @@
 History
 =======
 
+v0.6.0 (2020-11-04)
+-------------------
+
+New features:
+
+* Add new optional `strict=True` parameter to rispy.load/loads to allow parsing of RIS files with comments or additional metadata which aren't allowed/forbidden in spec (@ShreyRavi)
+* Allow pathlib.Path objects in rispy.load in addition to file objects
+* Enable multiple python environments in github test matrix (python 3.6, 3.7, and 3.8)
+
 v0.5.1 (2020-09-29)
------------------
+-------------------
 
 New features:
 

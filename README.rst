@@ -46,6 +46,29 @@ Writing:
    ...     rispy.dump(entries, bibliography_file)
 
 
+Some RIS files contain additional metadata that by default will raise an exception in the parsing. To ignore metadata which is not officially part of the RIS spec, you can use the optional `strict` flag:
+
+.. code:: python
+
+   >>> from pathlib import Path
+   >>> import rispy
+   >>> p = Path('tests/data/example_extraneous_data.ris')   
+   >>> print("\n".join(p.read_text().splitlines()[:10]))
+   Record #1 of 2
+   Provider: Provider
+   Content: text/plain; charset="UTF-8"
+   1.
+   TY  - JOUR
+   ID  - 12345
+   T1  - Title of reference
+   A1  - Marx, Karl
+   A1  - Lindgren, Astrid
+   A2  - Glattauer, Daniel
+   >>> entries = rispy.load(p, strict=False)
+   >>> print(entries[0]['id'])
+   12345
+   
+
 Example RIS entry
 -----------------
 
