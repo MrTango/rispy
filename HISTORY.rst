@@ -1,6 +1,11 @@
 History
 =======
 
+v0.4.4 (2021-04-01)
+-------------------
+* Add deprecation warning to README; use `rispy` instead.
+
+
 v0.4.3 (2018-04-10)
 -------------------
 * Allow for blank lines at beginning of input file [fixes #3]

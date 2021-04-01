@@ -1,6 +1,10 @@
 Pure Python RIS files parser
 ============================
 
+**Deprecation warning:** This package is no longer supported; use rispy_ instead.
+
+.. _rispy: https://pypi.python.org/pypi/rispy
+
 Usage
 -----
 

@@ -1,6 +1,6 @@
 """Parse WOK and Refman's RIS files"""
 
-__version__ = '0.4.3'
+__version__ = "0.4.4"
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING  # noqa
 from .parser import *  # noqa
