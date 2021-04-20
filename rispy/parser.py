@@ -82,7 +82,7 @@ class Base:
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise IOError("Missing end of record tag in line " f"{line_number}:\n {line}")
+                raise IOError(f"Missing end of record tag in line {line_number}:\n {line}")
             self.add_tag(tag, line)
             self.in_ref = True
             raise NextLine

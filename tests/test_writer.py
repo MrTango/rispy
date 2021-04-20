@@ -29,7 +29,7 @@ def test_dumps_multiple_unknown_tags_ris(tmp_path):
     results = [{"title": "my-title", "abstract": "my-abstract", "does_not_exists": "test"}]
 
     # check that we get a warning
-    with pytest.warns(UserWarning, match="label `does_not_exists` not exported"):  # noqa
+    with pytest.warns(UserWarning, match="label `does_not_exists` not exported"):
         with open(fp, "w") as f:
             rispy.dump(results, f)
 

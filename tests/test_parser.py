@@ -40,7 +40,7 @@ def test_load_multiline_ris():
         "alternate_title3": "Bell System Technical Journal",
         "start_page": "379",
         "end_page": "423",
-        "notes_abstract": "first line, then second line and at the end the last line",  # noqa
+        "notes_abstract": "first line, then second line and at the end the last line",
         "notes": ["first line", "* second line", "* last line"],
         "volume": "27",
     }
