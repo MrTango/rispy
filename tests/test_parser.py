@@ -1,5 +1,4 @@
 from pathlib import Path
-from copy import deepcopy
 
 import rispy
 
@@ -256,9 +255,10 @@ def test_starting_newline():
 
 
 def test_strip_bom():
-    expected = {"type_of_reference": "JOUR",
-                "doi": "10.1186/s40981-020-0316-0",
-                }
+    expected = {
+        "type_of_reference": "JOUR",
+        "doi": "10.1186/s40981-020-0316-0",
+    }
 
     filepath = DATA_DIR / "example_bom.ris"
 

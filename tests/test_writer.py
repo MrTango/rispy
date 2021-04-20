@@ -26,9 +26,7 @@ def test_dumps_multiple_unknown_tags_ris(tmp_path):
 
     fp = tmp_path / "test_dump_unknown_tags.ris"
 
-    results = [{"title": "my-title",
-                "abstract": "my-abstract",
-                "does_not_exists": "test"}]
+    results = [{"title": "my-title", "abstract": "my-abstract", "does_not_exists": "test"}]
 
     # check that we get a warning
     with pytest.warns(UserWarning, match="label `does_not_exists` not exported"):  # noqa
@@ -55,7 +53,7 @@ def test_dumps_multiple_unknown_tags_ris(tmp_path):
 def test_custom_list_tags():
     filepath = DATA_DIR / "example_custom_list_tags.ris"
     list_tags = deepcopy(rispy.LIST_TYPE_TAGS)
-    list_tags.append('SN')
+    list_tags.append("SN")
 
     expected = {
         "type_of_reference": "JOUR",

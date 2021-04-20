@@ -7,12 +7,12 @@ from .parser import RisImplementation, load, loads
 from .writer import dump, dumps
 
 __all__ = [
-    'LIST_TYPE_TAGS',
-    'TAG_KEY_MAPPING',
-    'TYPE_OF_REFERENCE_MAPPING',
-    'RisImplementation',
-    'load',
-    'loads',
-    'dump',
-    'dumps',
-    ]
+    "LIST_TYPE_TAGS",
+    "TAG_KEY_MAPPING",
+    "TYPE_OF_REFERENCE_MAPPING",
+    "RisImplementation",
+    "load",
+    "loads",
+    "dump",
+    "dumps",
+]

@@ -6,8 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, TextIO, Union
 import re
 
-from .config import (LIST_TYPE_TAGS, TAG_KEY_MAPPING,
-                     WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS)
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
 __all__ = ["load", "loads"]
@@ -83,10 +82,7 @@ class Base:
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise IOError(
-                    "Missing end of record tag in line "
-                    f"{line_number}:\n {line}"
-                    )
+                raise IOError("Missing end of record tag in line " f"{line_number}:\n {line}")
             self.add_tag(tag, line)
             self.in_ref = True
             raise NextLine

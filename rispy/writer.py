@@ -12,9 +12,7 @@ __all__ = ["dump", "dumps"]
 def invert_dictionary(mapping):
     remap = {v: k for k, v in mapping.items()}
     if len(remap) != len(mapping):
-        raise ValueError(
-            "Dictionary cannot be inverted; some values were not unique"
-            )
+        raise ValueError("Dictionary cannot be inverted; some values were not unique")
     return remap
 
 
@@ -51,9 +49,7 @@ class BaseWriter:
         lines = []
 
         lines.append("{i}.".format(i=count))
-        lines.append(
-            self._format_line(self.START_TAG, self._get_reference_type(ref))
-            )
+        lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
         for label, value in ref.items():
 
@@ -94,10 +90,12 @@ class RISWriter(BaseWriter):
     PATTERN = "{tag}  - {value}"
 
 
-def dump(references: List[Dict],
-         file: TextIO,
-         mapping: Optional[Dict] = None,
-         list_tags: Optional[List] = None):
+def dump(
+    references: List[Dict],
+    file: TextIO,
+    mapping: Optional[Dict] = None,
+    list_tags: Optional[List] = None,
+):
     """Write an RIS file to file or file-like object.
 
     Entries are codified as dictionaries whose keys are the
@@ -116,10 +114,9 @@ def dump(references: List[Dict],
     file.writelines(text)
 
 
-def dumps(references: List[Dict],
-          mapping: Optional[Dict] = None,
-          list_tags: Optional[List] = None,
-          ) -> str:
+def dumps(
+    references: List[Dict], mapping: Optional[Dict] = None, list_tags: Optional[List] = None,
+) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
@@ -139,6 +136,5 @@ def dumps(references: List[Dict],
     if not list_tags:
         list_tags = LIST_TYPE_TAGS
 
-    lines = RISWriter(references, mapping, list_tags,
-                      type_of_reference="JOUR").format()
+    lines = RISWriter(references, mapping, list_tags, type_of_reference="JOUR").format()
     return "\n".join(lines)
