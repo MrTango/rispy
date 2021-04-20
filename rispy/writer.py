@@ -1,4 +1,4 @@
-"""RIS Writer"""
+"""RIS Writer."""
 
 import warnings
 from typing import Dict, List, Optional, TextIO
@@ -12,7 +12,9 @@ __all__ = ["dump", "dumps"]
 def invert_dictionary(mapping):
     remap = {v: k for k, v in mapping.items()}
     if len(remap) != len(mapping):
-        raise ValueError("Dictionary cannot be inverted; some values were not unique")
+        raise ValueError(
+            "Dictionary cannot be inverted; some values were not unique"
+            )
     return remap
 
 
@@ -22,9 +24,10 @@ class BaseWriter:
     IGNORE: List[str] = []
     PATTERN: str = None
 
-    def __init__(self, references, mapping, type_of_reference):
+    def __init__(self, references, mapping, list_tags, type_of_reference):
         self.references = references
         self.mapping = mapping
+        self.list_tags = list_tags
         self._rev_mapping = invert_dictionary(mapping)
         self.type_of_reference = type_of_reference
 
@@ -48,7 +51,9 @@ class BaseWriter:
         lines = []
 
         lines.append("{i}.".format(i=count))
-        lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
+        lines.append(
+            self._format_line(self.START_TAG, self._get_reference_type(ref))
+            )
 
         for label, value in ref.items():
 
@@ -64,7 +69,7 @@ class BaseWriter:
                 continue
 
             # list tag
-            if tag in LIST_TYPE_TAGS:
+            if tag in self.list_tags:
                 for val_i in value:
                     lines.append(self._format_line(tag, val_i))
             else:
@@ -89,7 +94,10 @@ class RISWriter(BaseWriter):
     PATTERN = "{tag}  - {value}"
 
 
-def dump(references: List[Dict], file: TextIO, mapping: Optional[Dict] = None):
+def dump(references: List[Dict],
+         file: TextIO,
+         mapping: Optional[Dict] = None,
+         list_tags: Optional[List] = None):
     """Write an RIS file to file or file-like object.
 
     Entries are codified as dictionaries whose keys are the
@@ -102,12 +110,16 @@ def dump(references: List[Dict], file: TextIO, mapping: Optional[Dict] = None):
         references (List[Dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
         mapping (Dict, optional): Custom RIS tags mapping.
+        list_tags (List, optional): Custom list tags.
     """
-    text = dumps(references, mapping)
+    text = dumps(references, mapping, list_tags)
     file.writelines(text)
 
 
-def dumps(references: List[Dict], mapping: Optional[Dict] = None) -> str:
+def dumps(references: List[Dict],
+          mapping: Optional[Dict] = None,
+          list_tags: Optional[List] = None,
+          ) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
@@ -120,9 +132,13 @@ def dumps(references: List[Dict], mapping: Optional[Dict] = None) -> str:
         references (List[Dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
         mapping (Dict, optional): Custom RIS tags mapping.
+        list_tags (List, optional): Custom list tags.
     """
     if not mapping:
         mapping = TAG_KEY_MAPPING
+    if not list_tags:
+        list_tags = LIST_TYPE_TAGS
 
-    lines = RISWriter(references, mapping, type_of_reference="JOUR").format()
+    lines = RISWriter(references, mapping, list_tags,
+                      type_of_reference="JOUR").format()
     return "\n".join(lines)

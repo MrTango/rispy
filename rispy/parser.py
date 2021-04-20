@@ -1,10 +1,13 @@
+"""RIS Parser."""
+
 from enum import Enum
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, TextIO, Union
 import re
 
-from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
+from .config import (LIST_TYPE_TAGS, TAG_KEY_MAPPING,
+                     WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS)
 
 
 __all__ = ["load", "loads"]
@@ -25,10 +28,11 @@ class Base:
     IGNORE: List[str] = []
     PATTERN: str = None
 
-    def __init__(self, lines, mapping, strict=True):
+    def __init__(self, lines, mapping, list_tags, strict=True):
         self.lines = lines
         self.pattern = re.compile(self.PATTERN)
         self._mapping = mapping
+        self._list_tags = list_tags
         self.strict = strict
 
     @property
@@ -37,6 +41,13 @@ class Base:
             return self._mapping
         else:
             return self.default_mapping
+
+    @property
+    def list_tags(self):
+        if self._list_tags is not None:
+            return self._list_tags
+        else:
+            return self.default_list_tags
 
     def parse(self):
         self.in_ref = False
@@ -72,7 +83,10 @@ class Base:
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise IOError(f"Missing end of record tag in line {line_number}:\n {line}")
+                raise IOError(
+                    "Missing end of record tag in line "
+                    f"{line_number}:\n {line}"
+                    )
             self.add_tag(tag, line)
             self.in_ref = True
             raise NextLine
@@ -127,7 +141,7 @@ class Base:
         else:
             new_value = self.get_content(line)
 
-        if tag not in LIST_TYPE_TAGS:
+        if tag not in self.list_tags:
             self.add_single_value(name, new_value, is_multi=all_line)
             return
 
@@ -157,8 +171,8 @@ class Wok(Base):
     START_TAG = "PT"
     IGNORE = ["FN", "VR", "EF"]
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
-    LIST_TYPE_TAGS = WOK_LIST_TYPE_TAGS
     default_mapping = WOK_TAG_KEY_MAPPING
+    default_list_tags = WOK_LIST_TYPE_TAGS
 
     def get_content(self, line):
         return line[2:].strip()
@@ -171,6 +185,7 @@ class Ris(Base):
     START_TAG = "TY"
     PATTERN = r"^[A-Z][A-Z0-9]  - |^ER  -\s*$"
     default_mapping = TAG_KEY_MAPPING
+    default_list_tags = LIST_TYPE_TAGS
 
     counter_re = re.compile("^[0-9]+.")
 
@@ -185,6 +200,7 @@ class Ris(Base):
 def load(
     file: Union[TextIO, Path],
     mapping: Optional[Dict] = None,
+    list_tags: Optional[List] = None,
     implementation: RisImplementation = RisImplementation.BASE,
     strict: bool = True,
 ) -> List[Dict]:
@@ -199,19 +215,23 @@ def load(
     Args:
         file (Union[TextIO, Path]): File handle to read ris formatted data.
         mapping (Dict, optional): a tag mapping dictionary.
-        implementation (RisImplementation): RIS implementation; base by default.
-        strict (bool): Boolean to allow non-tag data between records to be ignored.
+        list_tags (List, optional): Custom list tags.
+        implementation (RisImplementation): RIS implementation; base by
+                                            default.
+        strict (bool): Boolean to allow non-tag data between records to
+                       be ignored.
 
     Returns:
         list: Returns list of RIS entries.
     """
     text = file.read_text() if isinstance(file, Path) else file.read()
-    return list(loads(text, mapping, implementation, strict))
+    return list(loads(text, mapping, list_tags, implementation, strict))
 
 
 def loads(
     obj: str,
     mapping: Optional[Dict] = None,
+    list_tags: Optional[List] = None,
     implementation: RisImplementation = RisImplementation.BASE,
     strict: bool = True,
 ) -> List[Dict]:
@@ -226,13 +246,15 @@ def loads(
     Args:
         obj (str): A string version of an RIS file.
         mapping (Dict, optional): a tag mapping dictionary.
-        implementation (RisImplementation): RIS implementation; base by default.
-        strict (bool): Boolean to allow non-tag data between records to be ignored.
+        list_tags (List, optional): Custom list tags.
+        implementation (RisImplementation): RIS implementation; base by
+                                            default.
+        strict (bool): Boolean to allow non-tag data between records to
+                       be ignored.
 
     Returns:
         list: Returns list of RIS entries.
     """
-
     # remove BOM if present
     obj = obj.lstrip("\ufeff")
 
@@ -241,8 +263,8 @@ def loads(
     implementation = RisImplementation(implementation)
 
     if implementation == RisImplementation.WOK:
-        return Wok(filelines, mapping).parse()
+        return Wok(filelines, mapping, list_tags).parse()
     elif implementation == RisImplementation.BASE:
-        return list(Ris(filelines, mapping, strict).parse())
+        return list(Ris(filelines, mapping, list_tags, strict).parse())
     else:
         raise ValueError(f"Unknown implementation: {implementation}")
