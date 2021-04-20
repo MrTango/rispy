@@ -3,17 +3,10 @@
 import warnings
 from typing import Dict, List, Optional, TextIO
 
-from .config import LIST_TYPE_TAGS
-from .config import TAG_KEY_MAPPING
+from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
+from .utils import invert_dictionary
 
 __all__ = ["dump", "dumps"]
-
-
-def invert_dictionary(mapping):
-    remap = {v: k for k, v in mapping.items()}
-    if len(remap) != len(mapping):
-        raise ValueError("Dictionary cannot be inverted; some values were not unique")
-    return remap
 
 
 class BaseWriter:
