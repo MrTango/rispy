@@ -1,7 +1,8 @@
 """RIS Writer."""
 
+from enum import Enum
 import warnings
-from typing import Dict, List, Optional, TextIO
+from typing import Dict, List, TextIO, Union, Optional
 
 from .config import LIST_TYPE_TAGS
 from .config import TAG_KEY_MAPPING
@@ -16,18 +17,54 @@ def invert_dictionary(mapping):
     return remap
 
 
+class WriterImplementation(str, Enum):
+    BASE = "base"
+
+
 class BaseWriter:
-    START_TAG: str = None
+    START_TAG: str = ""
     END_TAG: str = "ER"
     IGNORE: List[str] = []
-    PATTERN: str = None
+    PATTERN: str = ""
+    SKIP_UNKNOWN_TAGS: bool = False
+    ENFORCE_LIST_TAGS: bool = True
+    DEFAULT_MAPPING: Optional[Dict] = None
+    DEFAULT_LIST_TAGS: Optional[List[str]] = None
+    DEFAULT_REFERENCE_TYPE = "JOUR"
 
-    def __init__(self, references, mapping, list_tags, type_of_reference):
-        self.references = references
-        self.mapping = mapping
-        self.list_tags = list_tags
-        self._rev_mapping = invert_dictionary(mapping)
-        self.type_of_reference = type_of_reference
+    def __init__(self, mapping=None, list_tags=None, type_of_reference=None):
+        self._mapping = mapping
+        self._rev_mapping = invert_dictionary(self.mapping)
+        self._list_tags = list_tags
+        self._type_of_reference = type_of_reference
+        self._skip_unknown = ["UK"] if self.SKIP_UNKNOWN_TAGS else []
+
+    @property
+    def mapping(self):
+        if self._mapping is not None:
+            return self._mapping
+        elif self.DEFAULT_MAPPING is not None:
+            return self.DEFAULT_MAPPING
+        else:
+            raise IOError("Default mapping not set.")
+
+    @property
+    def list_tags(self):
+        if self._list_tags is not None:
+            return self._list_tags
+        elif self.DEFAULT_LIST_TAGS is not None:
+            return self.DEFAULT_LIST_TAGS
+        else:
+            raise IOError("Default list tags not set.")
+
+    @property
+    def type_of_reference(self):
+        if self._type_of_reference is not None:
+            return self._type_of_reference
+        elif self.DEFAULT_REFERENCE_TYPE is not None:
+            return self.DEFAULT_REFERENCE_TYPE
+        else:
+            raise IOError("Default reference type not set.")
 
     def _get_reference_type(self, ref):
 
@@ -61,11 +98,11 @@ class BaseWriter:
                 continue
 
             # ignore
-            if tag in [self.START_TAG] + self.IGNORE:
+            if tag in [self.START_TAG] + self.IGNORE + self._skip_unknown:
                 continue
 
             # list tag
-            if tag in self.list_tags:
+            if tag in self.list_tags or (not self.ENFORCE_LIST_TAGS and isinstance(value, list)):
                 for val_i in value:
                     lines.append(self._format_line(tag, val_i))
             else:
@@ -76,9 +113,9 @@ class BaseWriter:
 
         return lines
 
-    def format(self):
+    def formats(self, references):
 
-        for i, ref in enumerate(self.references):
+        for i, ref in enumerate(references):
             lines_ref = self._format_reference(ref, count=i + 1)
             for line in lines_ref:
                 yield line
@@ -88,13 +125,14 @@ class RISWriter(BaseWriter):
 
     START_TAG = "TY"
     PATTERN = "{tag}  - {value}"
+    DEFAULT_MAPPING = TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
 
 
 def dump(
     references: List[Dict],
     file: TextIO,
-    mapping: Optional[Dict] = None,
-    list_tags: Optional[List] = None,
+    implementation: Union[WriterImplementation, BaseWriter] = WriterImplementation.BASE,
 ):
     """Write an RIS file to file or file-like object.
 
@@ -107,15 +145,16 @@ def dump(
     Args:
         references (List[Dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
-        mapping (Dict, optional): Custom RIS tags mapping.
-        list_tags (List, optional): Custom list tags.
+        implementation (RisImplementation): RIS implementation; base by
+                                            default.
     """
-    text = dumps(references, mapping, list_tags)
+    text = dumps(references, implementation)
     file.writelines(text)
 
 
 def dumps(
-    references: List[Dict], mapping: Optional[Dict] = None, list_tags: Optional[List] = None,
+    references: List[Dict],
+    implementation: Union[WriterImplementation, BaseWriter] = WriterImplementation.BASE,
 ) -> str:
     """Return an RIS formatted string.
 
@@ -128,13 +167,16 @@ def dumps(
     Args:
         references (List[Dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
-        mapping (Dict, optional): Custom RIS tags mapping.
-        list_tags (List, optional): Custom list tags.
+        implementation (RisImplementation): RIS implementation; base by
+                                            default.
     """
-    if not mapping:
-        mapping = TAG_KEY_MAPPING
-    if not list_tags:
-        list_tags = LIST_TYPE_TAGS
+    if implementation == WriterImplementation.BASE:
+        writer = RISWriter()
+    elif isinstance(implementation, str):
+        raise ValueError(f"Unknown implementation: {implementation}")
+    else:
+        writer = implementation
 
-    lines = RISWriter(references, mapping, list_tags, type_of_reference="JOUR").format()
+    lines = writer.formats(references)
+
     return "\n".join(lines)

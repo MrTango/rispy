@@ -149,8 +149,11 @@ def test_load_example_extraneous_data_ris():
         },
     ]
 
+    class Parser(rispy.Ris):
+        SKIP_MISSING_TAGS = True
+
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read(), strict=False)
+        entries = rispy.loads(f.read(), implementation=Parser())
     assert expected == entries
 
 
@@ -295,3 +298,43 @@ def test_implementation_constructor():
         entries2 = rispy.load(f, implementation=rispy.RisImplementation.WOK)
 
     assert entries1 == entries2
+
+
+def test_unkown_skip():
+    filepath = DATA_DIR / "example_multi_unknown_tags.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "end_page": "423",
+        "volume": "27",
+    }
+
+    class Parser(rispy.Ris):
+        SKIP_UNKNOWN_TAGS = True
+
+    with open(filepath, "r") as f:
+        entries = rispy.load(f, implementation=Parser())
+    assert expected == entries[0]
+
+
+def test_list_tag_enforcement():
+    filepath = DATA_DIR / "example_custom_list_tags.ris"
+
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Marx, Karl", "Marxus, Karlus"],
+        "issn": ["12345", "ABCDEFG", "666666"],
+    }
+
+    actual = filepath.read_text()
+
+    class Parser(rispy.Ris):
+        ENFORCE_LIST_TAGS = False
+
+    parser = Parser(list_tags=[])
+
+    entries = rispy.loads(actual, implementation=parser)
+    assert expected == entries[0]

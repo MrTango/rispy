@@ -63,8 +63,57 @@ def test_custom_list_tags():
 
     actual = filepath.read_text()
 
-    entries = rispy.loads(actual, list_tags=list_tags)
+    parser = rispy.Ris(list_tags=list_tags)
+    writer = rispy.RISWriter(list_tags=list_tags)
+
+    entries = rispy.loads(actual, implementation=parser)
     assert expected == entries[0]
 
-    export = rispy.dumps(entries, list_tags=list_tags)
+    export = rispy.dumps(entries, implementation=writer)
     assert export == actual
+
+
+def test_skip_unknown_tags():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Marx, Karl", "Marxus, Karlus"],
+            "issn": "12222",
+            "unknown_tag": {"JP": ["CRISPR"], "DC": ["Direct Current"]},
+        }
+    ]
+    expected = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Marx, Karl", "Marxus, Karlus"],
+            "issn": "12222",
+        }
+    ]
+
+    class Writer(rispy.RISWriter):
+        SKIP_UNKNOWN_TAGS = True
+
+    export = rispy.dumps(entries, implementation=Writer())
+    reload = rispy.loads(export)
+
+    assert reload == expected
+
+
+def test_writing_all_list_tags():
+    expected = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Marx, Karl", "Marxus, Karlus"],
+            "issn": ["12345", "ABCDEFG", "666666"],
+        }
+    ]
+
+    class Writer(rispy.RISWriter):
+        ENFORCE_LIST_TAGS = False
+
+    writer = Writer(list_tags=[])
+    parser = rispy.Ris(list_tags=["AU", "SN"])
+
+    export = rispy.dumps(expected, implementation=writer)
+    entries = rispy.loads(export, implementation=parser)
+    assert expected == entries
