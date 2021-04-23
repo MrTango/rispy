@@ -28,6 +28,7 @@ class BaseWriter:
     PATTERN: str = ""
     SKIP_UNKNOWN_TAGS: bool = False
     ENFORCE_LIST_TAGS: bool = True
+    WRITE_COUNT = True
     DEFAULT_MAPPING: Optional[Dict] = None
     DEFAULT_LIST_TAGS: Optional[List[str]] = None
     DEFAULT_REFERENCE_TYPE = "JOUR"
@@ -85,7 +86,8 @@ class BaseWriter:
 
         lines = []
 
-        lines.append("{i}.".format(i=count))
+        if self.WRITE_COUNT:
+            lines.append("{i}.".format(i=count))
         lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
         for label, value in ref.items():

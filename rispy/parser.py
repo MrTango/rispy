@@ -117,7 +117,7 @@ class Base:
             self._add_tag(self.last_tag, line, all_line=True)
             raise NextLine
 
-        if self.is_counter(line):
+        if self.is_header(line):
             raise NextLine
         raise IOError(f"Expected start tag in line {line_number}:\n {line}")
 
@@ -177,7 +177,7 @@ class Base:
     def get_content(self, line):
         raise NotImplementedError
 
-    def is_counter(self, line):
+    def is_header(self, line):
         return False
 
 
@@ -191,7 +191,7 @@ class Wok(Base):
     def get_content(self, line):
         return line[2:].strip()
 
-    def is_counter(self, line):
+    def is_header(self, line):
         return True
 
 
@@ -206,7 +206,7 @@ class Ris(Base):
     def get_content(self, line):
         return line[6:].strip()
 
-    def is_counter(self, line):
+    def is_header(self, line):
         none_or_match = self.counter_re.match(line)
         return bool(none_or_match)
 
