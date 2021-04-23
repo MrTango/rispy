@@ -7,7 +7,7 @@ from typing import Dict, List, TextIO, Union, Optional
 from .config import LIST_TYPE_TAGS
 from .config import TAG_KEY_MAPPING
 
-__all__ = ["dump", "dumps"]
+__all__ = ["dump", "dumps", "WriterImplementation", "BaseWriter", "RISWriter"]
 
 
 def invert_dictionary(mapping):
@@ -18,30 +18,35 @@ def invert_dictionary(mapping):
 
 
 class WriterImplementation(str, Enum):
+    """List default RIS writer implementations."""
+
     BASE = "base"
 
 
 class BaseWriter:
+    """Base writer class. Create a subclass to use."""
+
     START_TAG: str = ""
     END_TAG: str = "ER"
     IGNORE: List[str] = []
     PATTERN: str = ""
     SKIP_UNKNOWN_TAGS: bool = False
     ENFORCE_LIST_TAGS: bool = True
-    WRITE_COUNT = True
     DEFAULT_MAPPING: Optional[Dict] = None
     DEFAULT_LIST_TAGS: Optional[List[str]] = None
-    DEFAULT_REFERENCE_TYPE = "JOUR"
+    DEFAULT_REFERENCE_TYPE: str = "JOUR"
+    SEPARATOR: Optional[str] = "\n"
 
-    def __init__(self, mapping=None, list_tags=None, type_of_reference=None):
+    def __init__(self, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
+        """Override default tag map and list tags in instance."""
         self._mapping = mapping
         self._rev_mapping = invert_dictionary(self.mapping)
         self._list_tags = list_tags
-        self._type_of_reference = type_of_reference
         self._skip_unknown = ["UK"] if self.SKIP_UNKNOWN_TAGS else []
 
     @property
     def mapping(self):
+        """Check if a tag map can be found."""
         if self._mapping is not None:
             return self._mapping
         elif self.DEFAULT_MAPPING is not None:
@@ -51,6 +56,7 @@ class BaseWriter:
 
     @property
     def list_tags(self):
+        """Check if a set of list tags can be found."""
         if self._list_tags is not None:
             return self._list_tags
         elif self.DEFAULT_LIST_TAGS is not None:
@@ -58,23 +64,14 @@ class BaseWriter:
         else:
             raise IOError("Default list tags not set.")
 
-    @property
-    def type_of_reference(self):
-        if self._type_of_reference is not None:
-            return self._type_of_reference
-        elif self.DEFAULT_REFERENCE_TYPE is not None:
-            return self.DEFAULT_REFERENCE_TYPE
-        else:
-            raise IOError("Default reference type not set.")
-
     def _get_reference_type(self, ref):
 
         if "type_of_reference" in ref.keys():
             # TODO add check
             return ref["type_of_reference"]
 
-        if self.type_of_reference is not None:
-            return self.type_of_reference
+        if self.DEFAULT_REFERENCE_TYPE is not None:
+            return self.DEFAULT_REFERENCE_TYPE
         else:
             raise ValueError("Unknown type of reference")
 
@@ -86,8 +83,9 @@ class BaseWriter:
 
         lines = []
 
-        if self.WRITE_COUNT:
-            lines.append("{i}.".format(i=count))
+        header = self.set_header(count)
+        if header is not None:
+            lines.append(header)
         lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
         for label, value in ref.items():
@@ -111,24 +109,39 @@ class BaseWriter:
                 lines.append(self._format_line(tag, value))
 
         lines.append(self._format_line("ER"))
-        lines.append("")
+
+        if self.SEPARATOR is not None:
+            lines.append(self.SEPARATOR.replace("\n", "", 1))
 
         return lines
 
-    def formats(self, references):
+    def _format_all_references(self, references):
 
         for i, ref in enumerate(references):
             lines_ref = self._format_reference(ref, count=i + 1)
             for line in lines_ref:
                 yield line
 
+    def formats(self, references: List[Dict]) -> str:
+        """Format a list of references into an RIS string."""
+        lines = self._format_all_references(references)
+        return "\n".join(lines)
+
+    def set_header(self, count: int) -> Optional[str]:
+        """Create the header for each reference."""
+        return None
+
 
 class RISWriter(BaseWriter):
+    """Subclass of BaseWriter for writing RIS files."""
 
     START_TAG = "TY"
     PATTERN = "{tag}  - {value}"
     DEFAULT_MAPPING = TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
+
+    def set_header(self, count):
+        return "{i}.".format(i=count)
 
 
 def dump(
@@ -168,7 +181,6 @@ def dumps(
 
     Args:
         references (List[Dict]): List of references.
-        file (TextIO): File handle to store ris formatted data.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
     """
@@ -179,6 +191,4 @@ def dumps(
     else:
         writer = implementation
 
-    lines = writer.formats(references)
-
-    return "\n".join(lines)
+    return writer.formats(references)

@@ -9,10 +9,12 @@ import re
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
-__all__ = ["load", "loads"]
+__all__ = ["load", "loads", "RisImplementation", "Base", "Wok", "Ris"]
 
 
 class RisImplementation(str, Enum):
+    """List default RIS parser implementations."""
+
     BASE = "base"
     WOK = "wok"
 
@@ -22,6 +24,8 @@ class NextLine(Exception):
 
 
 class Base:
+    """Base parser class. Create a subclass to use."""
+
     START_TAG: Optional[str] = None
     END_TAG: str = "ER"
     IGNORE: List[str] = []
@@ -32,13 +36,15 @@ class Base:
     DEFAULT_MAPPING: Optional[Dict] = None
     DEFAULT_LIST_TAGS: Optional[List[str]] = None
 
-    def __init__(self, mapping=None, list_tags=None):
+    def __init__(self, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
+        """Override default tag map and list tags in instance."""
         self.pattern = re.compile(self.PATTERN)
         self._mapping = mapping
         self._list_tags = list_tags
 
     @property
     def mapping(self):
+        """Check if a tag map can be found."""
         if self._mapping is not None:
             return self._mapping
         elif self.DEFAULT_MAPPING is not None:
@@ -48,6 +54,7 @@ class Base:
 
     @property
     def list_tags(self):
+        """Check if a set of list tags can be found."""
         if self._list_tags is not None:
             return self._list_tags
         elif self.DEFAULT_LIST_TAGS is not None:
@@ -55,7 +62,13 @@ class Base:
         else:
             raise IOError("Default list tags not set.")
 
-    def parse(self, lines):
+    def parse(self, obj: str) -> List[Dict]:
+        """Parse RIS string."""
+        clean_obj = self.clean(obj)
+        lines = clean_obj.split("\n")
+        return list(self._parse_lines(lines))
+
+    def _parse_lines(self, lines):
         self.in_ref = False
         self.current = {}
         self.last_tag = None
@@ -168,20 +181,32 @@ class Base:
 
         self.current[name][tag].append(value)
 
-    def get_tag(self, line):
+    def clean(self, obj: str) -> str:
+        """Clean string before parsing."""
+        # remove BOM if present
+        obj = obj.lstrip("\ufeff")
+        return obj
+
+    def get_tag(self, line: str) -> str:
+        """Get the tag from a line in the RIS file."""
         return line[0:2]
 
-    def is_tag(self, line):
+    def is_tag(self, line: str) -> bool:
+        """Determine if the line has a tag using regex."""
         return bool(self.pattern.match(line))
 
-    def get_content(self, line):
+    def get_content(self, line: str) -> str:
+        """Get the content (non-tag part) of a line."""
         raise NotImplementedError
 
-    def is_header(self, line):
+    def is_header(self, line: str) -> bool:
+        """Determine if a line outside of the reference can be skipped."""
         return False
 
 
 class Wok(Base):
+    """Subclass of Base for reading Wok RIS files."""
+
     START_TAG = "PT"
     IGNORE = ["FN", "VR", "EF"]
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
@@ -196,6 +221,8 @@ class Wok(Base):
 
 
 class Ris(Base):
+    """Subclass of Base for reading base RIS files."""
+
     START_TAG = "TY"
     PATTERN = r"^[A-Z][A-Z0-9]  - |^ER  -\s*$"
     DEFAULT_MAPPING = TAG_KEY_MAPPING
@@ -254,11 +281,6 @@ def loads(
     Returns:
         list: Returns list of RIS entries.
     """
-    # remove BOM if present
-    obj = obj.lstrip("\ufeff")
-
-    filelines = obj.split("\n")
-
     if implementation == RisImplementation.WOK:
         parser = Wok()
     elif implementation == RisImplementation.BASE:
@@ -268,4 +290,4 @@ def loads(
     else:
         parser = implementation
 
-    return list(parser.parse(filelines))
+    return parser.parse(obj)
