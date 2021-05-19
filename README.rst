@@ -192,7 +192,7 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
    >>> filepath = 'tests/data/example_full.ris'
    >>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
    >>> mapping["SP"] = "pages_this_is_my_fun"
-   >>> MyCustomTags = Ris(mapping=mapping)
+   >>> MyCustomTags = rispy.RisParser(mapping=mapping)
    >>> with open(filepath, 'r') as bibliography_file:
    ...     entries = rispy.load(bibliography_file, implementation=MyCustomTags)
    ...     pprint(sorted(entries[0].keys()))
