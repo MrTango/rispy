@@ -149,7 +149,7 @@ def test_load_example_extraneous_data_ris():
         },
     ]
 
-    class Parser(rispy.Ris):
+    class Parser(rispy.RisParser):
         SKIP_MISSING_TAGS = True
 
     with open(filepath, "r") as f:
@@ -275,8 +275,9 @@ def test_strip_bom():
 
 def test_wos_ris():
     fn = DATA_DIR / "example_wos.ris"
+    parser = rispy.WokParser()
     with open(fn, "r") as f:
-        entries = rispy.load(f, implementation="wok")
+        entries = rispy.load(f, implementation=parser)
 
     assert len(entries) == 2
 
@@ -285,19 +286,6 @@ def test_wos_ris():
 
     title = "Proximal and distal influences on ligand binding kinetics in microperoxidase and heme model compounds"  # noqa: E501
     assert entries[1]["document_title"] == title
-
-
-def test_implementation_constructor():
-    # check that both calls are valid
-    fn = DATA_DIR / "example_wos.ris"
-
-    with open(fn, "r") as f:
-        entries1 = rispy.load(f, implementation="wok")
-
-    with open(fn, "r") as f:
-        entries2 = rispy.load(f, implementation=rispy.RisImplementation.WOK)
-
-    assert entries1 == entries2
 
 
 def test_unkown_skip():
@@ -312,7 +300,7 @@ def test_unkown_skip():
         "volume": "27",
     }
 
-    class Parser(rispy.Ris):
+    class Parser(rispy.RisParser):
         SKIP_UNKNOWN_TAGS = True
 
     with open(filepath, "r") as f:
@@ -331,7 +319,7 @@ def test_list_tag_enforcement():
 
     actual = filepath.read_text()
 
-    class Parser(rispy.Ris):
+    class Parser(rispy.RisParser):
         ENFORCE_LIST_TAGS = False
 
     parser = Parser(list_tags=[])

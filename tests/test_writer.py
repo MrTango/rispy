@@ -63,8 +63,8 @@ def test_custom_list_tags():
 
     actual = filepath.read_text()
 
-    parser = rispy.Ris(list_tags=list_tags)
-    writer = rispy.RISWriter(list_tags=list_tags)
+    parser = rispy.RisParser(list_tags=list_tags)
+    writer = rispy.RisWriter(list_tags=list_tags)
 
     entries = rispy.loads(actual, implementation=parser)
     assert expected == entries[0]
@@ -90,7 +90,7 @@ def test_skip_unknown_tags():
         }
     ]
 
-    class Writer(rispy.RISWriter):
+    class Writer(rispy.RisWriter):
         SKIP_UNKNOWN_TAGS = True
 
     export = rispy.dumps(entries, implementation=Writer())
@@ -108,11 +108,11 @@ def test_writing_all_list_tags():
         }
     ]
 
-    class Writer(rispy.RISWriter):
+    class Writer(rispy.RisWriter):
         ENFORCE_LIST_TAGS = False
 
     writer = Writer(list_tags=[])
-    parser = rispy.Ris(list_tags=["AU", "SN"])
+    parser = rispy.RisParser(list_tags=["AU", "SN"])
 
     export = rispy.dumps(expected, implementation=writer)
     entries = rispy.loads(export, implementation=parser)
