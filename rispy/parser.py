@@ -1,6 +1,7 @@
 """RIS Parser."""
 
 from collections import defaultdict
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, TextIO, Union, Optional
 import re
@@ -15,7 +16,7 @@ class NextLine(Exception):
     pass
 
 
-class BaseParser:
+class BaseParser(ABC):
     """Base parser class. Create a subclass to use."""
 
     START_TAG: str
@@ -167,6 +168,7 @@ class BaseParser:
         """Determine if the line has a tag using regex."""
         return bool(self.pattern.match(line))
 
+    @abstractmethod
     def get_content(self, line: str) -> str:
         """Get the content (non-tag part) of a line."""
         raise NotImplementedError
