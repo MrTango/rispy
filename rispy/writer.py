@@ -37,9 +37,6 @@ class BaseWriter:
         self._rev_mapping = invert_dictionary(self.mapping)
         self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
 
-        if self.SKIP_UNKNOWN_TAGS:
-            self.IGNORE.append("UK")
-
     def _get_reference_type(self, ref):
 
         if "type_of_reference" in ref.keys():
@@ -64,6 +61,10 @@ class BaseWriter:
             lines.append(header)
         lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
+        tags_to_skip = [self.START_TAG] + self.IGNORE
+        if self.SKIP_UNKNOWN_TAGS:
+            tags_to_skip.append("UK")
+
         for label, value in ref.items():
 
             # not available
@@ -74,7 +75,7 @@ class BaseWriter:
                 continue
 
             # ignore
-            if tag in [self.START_TAG] + self.IGNORE:
+            if tag in tags_to_skip:
                 continue
 
             # list tag
