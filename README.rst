@@ -44,29 +44,6 @@ Writing:
    >>> filepath = 'export.ris'
    >>> with open(filepath, 'w') as bibliography_file:
    ...     rispy.dump(entries, bibliography_file)
-
-
-Some RIS files contain additional metadata that by default will raise an exception in the parsing. To ignore metadata which is not officially part of the RIS spec, you can use the optional `strict` flag:
-
-.. code:: python
-
-   >>> from pathlib import Path
-   >>> import rispy
-   >>> p = Path('tests/data/example_extraneous_data.ris')   
-   >>> print("\n".join(p.read_text().splitlines()[:10]))
-   Record #1 of 2
-   Provider: Provider
-   Content: text/plain; charset="UTF-8"
-   1.
-   TY  - JOUR
-   ID  - 12345
-   T1  - Title of reference
-   A1  - Marx, Karl
-   A1  - Lindgren, Astrid
-   A2  - Glattauer, Daniel
-   >>> entries = rispy.load(p, strict=False)
-   >>> print(entries[0]['id'])
-   12345
    
 
 Example RIS entry
@@ -122,7 +99,7 @@ Complete list of ListType tags
 
 .. code:: python
 
-    >>> from rispy.config import LIST_TYPE_TAGS
+    >>> from rispy import LIST_TYPE_TAGS
     >>> pprint(LIST_TYPE_TAGS)
     ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1']
 
@@ -132,7 +109,7 @@ Complete default mapping
 
 .. code:: python
 
-    >>> from rispy.config import TAG_KEY_MAPPING
+    >>> from rispy import TAG_KEY_MAPPING
     >>> pprint(TAG_KEY_MAPPING)
     {'A1': 'first_authors',
      'A2': 'secondary_authors',
@@ -203,7 +180,7 @@ Complete default mapping
 Override key mapping
 ********************
 
-The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.load()`` with a custom mapping.
+The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.load()`` with a custom implementation.
 
 .. code:: python
 
@@ -215,8 +192,9 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
    >>> filepath = 'tests/data/example_full.ris'
    >>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
    >>> mapping["SP"] = "pages_this_is_my_fun"
+   >>> MyCustomTags = Ris(mapping=mapping)
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = rispy.load(bibliography_file, mapping=mapping)
+   ...     entries = rispy.load(bibliography_file, implementation=MyCustomTags)
    ...     pprint(sorted(entries[0].keys()))
    ['alternate_title2',
     'alternate_title3',
@@ -237,6 +215,101 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'type_of_reference',
     'url',
     'volume']
+
+List tags can be customized in the same way, by passing a list to the ``list_tags`` parameter.
+
+Using custom implementations
+----------------------------
+Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and should be passed to ``rispy.load()`` or ``rispy.dump()``.
+
+As seen in the previous section, implementations can be initialized with two parameters: ``mapping`` and ``list_tags``.
+
+Customizing implementations
+***************************
+Creating a custom implentation involves creating a class that inherits a base class, and overriding the necessary variables and methods. One of the existing parsers can also be inherited. Inheriting an existing class is advantageous if only minor changes need to be made. The sections below document what is available to be overriden, along with a few examples.
+
+Parsing
+^^^^^^^
+Custom parsers can inherit ``RisParser`` (the default parser), ``WokParser``, or ``BaseParser``. The following variables and methods can be overridden when creating a new parser.
+
+Class variables:
+
+- ``START_TAG``: Start tag, e.g. ``'TY'``. Required.
+- ``END_TAG``: End tag. Defaults to ``'ER'``.
+- ``IGNORE``: List of tags to ignore. Defaults to ``[]``.
+- ``PATTERN``: String containing a regex pattern. This pattern determines if a line has a valid tag. Required.
+- ``SKIP_MISSING_TAGS``: Bool to skip lines that don't have valid tags, regardless of whether of where they are in a reference. This is the inverse of the former ``strict`` parameter. If the goal is to skip reference headers, see the ``is_header`` method. Defaults to ``False``.
+- ``SKIP_UNKNOWN_TAGS``: Bool to skip tags that are not in ``TAG_KEY_MAPPING``. If unknown tags are not skipped, they will be added to the ``unknown_tag`` key. Defaults to ``False``.
+- ``ENFORCE_LIST_TAGS``: Bool for choosing whether to strictly enforce list type tags. If this is ``False``, tags that occur mutliple times in a reference will be converted to a list instead of being overriden. Values set to be list tags will still be read as list tags. Defaults to ``True``.
+- ``DEFAULT_MAPPING``: A default mapping for the custom parser. Required.
+- ``DEFAULT_LIST_TAGS``: A list of tags that should be read as lists. Required.
+
+Class methods:
+
+- ``get_content``: Returns the non-tag part of a line. Required.
+- ``is_header``: Returns a bool for whether a line is a header and should be skipped. This method only operates on lines outside of a reference. Defaults to ``False`` for all lines.
+- ``get_tag``: Returns the tag part of a line. Default is to return the first two characters.
+- ``is_tag``: Determines whether a line has a tag, returning a bool. Uses regex in `PATTERN` by default.
+- ``clean_text``: Clean the text body before parsing begins. By default, it removes UTF BOM characters.
+
+Examples:
+
+.. code:: python
+
+   class CustomParser(RisParser):
+      SKIP_MISSING_TAGS = True
+   
+   class WokParser(BaseParser):
+       """Subclass of Base for reading Wok RIS files."""
+
+       START_TAG = "PT"
+       IGNORE = ["FN", "VR", "EF"]
+       PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
+       DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
+       DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
+
+       def get_content(self, line):
+           return line[2:].strip()
+
+       def is_header(self, line):
+           return True
+
+Writing
+^^^^^^^
+
+Writing is very similar to parsing. A custom writer class can inherit ``BaseWriter`` or ``RisWriter``.
+
+Class variables:
+
+- ``START_TAG``: Start tag, e.g. ``'TY'``. Required.
+- ``END_TAG``: End tag. Defaults to ``'ER'``.
+- ``IGNORE``: List of tags to ignore. Defaults to ``[]``.
+- ``PATTERN``: String containing a format for a line (e.g. ``"{tag}  - {value}"``). Should contain ``tag`` and ``value`` in curly brackets. Required.
+- ``SKIP_UNKNOWN_TAGS``: Bool for whether to write unknown tags to the file. Defaults to ``False``. 
+- ``ENFORCE_LIST_TAGS``: Bool. If ``True`` tags that are not set as list tags will be written into one line. Defaults to ``True``.
+- ``DEFAULT_MAPPING``: Default mapping for this class. Required.
+- ``DEFAULT_LIST_TAGS``: Default list tags for this class. Required.
+- ``DEFAULT_REFERENCE_TYPE``: Default reference type, used if a reference does not have a type.
+- ``SEPARATOR``: String to separate the references in the file. Defaults to ``'\n'``.
+
+Class methods:
+
+- ``set_header``: Create a header for each reference. Has the reference number as a parameter.
+
+Examples:
+
+.. code:: python
+
+   class RisWriter(BaseWriter):
+       """Subclass of BaseWriter for writing RIS files."""
+
+       START_TAG = "TY"
+       PATTERN = "{tag}  - {value}"
+       DEFAULT_MAPPING = TAG_KEY_MAPPING
+       DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
+
+       def set_header(self, count):
+           return "{i}.".format(i=count)
 
 Software for other RIS-like formats
 -----------------------------------
