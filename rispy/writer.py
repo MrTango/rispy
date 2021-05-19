@@ -1,13 +1,13 @@
 """RIS Writer."""
 
-from enum import Enum
 import warnings
-from typing import Dict, List, TextIO, Union, Optional
+from typing import Dict, List, TextIO, Optional
 
 from .config import LIST_TYPE_TAGS
 from .config import TAG_KEY_MAPPING
 
-__all__ = ["dump", "dumps", "WriterImplementation", "BaseWriter", "RISWriter"]
+
+__all__ = ["dump", "dumps", "BaseWriter", "RisWriter"]
 
 
 def invert_dictionary(mapping):
@@ -17,52 +17,28 @@ def invert_dictionary(mapping):
     return remap
 
 
-class WriterImplementation(str, Enum):
-    """List default RIS writer implementations."""
-
-    BASE = "base"
-
-
 class BaseWriter:
     """Base writer class. Create a subclass to use."""
 
-    START_TAG: str = ""
+    START_TAG: str
     END_TAG: str = "ER"
     IGNORE: List[str] = []
-    PATTERN: str = ""
+    PATTERN: str
     SKIP_UNKNOWN_TAGS: bool = False
     ENFORCE_LIST_TAGS: bool = True
-    DEFAULT_MAPPING: Optional[Dict] = None
-    DEFAULT_LIST_TAGS: Optional[List[str]] = None
+    DEFAULT_MAPPING: Dict
+    DEFAULT_LIST_TAGS: List[str]
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     SEPARATOR: Optional[str] = "\n"
 
     def __init__(self, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
         """Override default tag map and list tags in instance."""
-        self._mapping = mapping
+        self.mapping = mapping or self.DEFAULT_MAPPING
         self._rev_mapping = invert_dictionary(self.mapping)
-        self._list_tags = list_tags
-        self._skip_unknown = ["UK"] if self.SKIP_UNKNOWN_TAGS else []
+        self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
 
-    @property
-    def mapping(self):
-        """Check if a tag map can be found."""
-        if self._mapping is not None:
-            return self._mapping
-        elif self.DEFAULT_MAPPING is not None:
-            return self.DEFAULT_MAPPING
-        else:
-            raise IOError("Default mapping not set.")
-
-    @property
-    def list_tags(self):
-        """Check if a set of list tags can be found."""
-        if self._list_tags is not None:
-            return self._list_tags
-        elif self.DEFAULT_LIST_TAGS is not None:
-            return self.DEFAULT_LIST_TAGS
-        else:
-            raise IOError("Default list tags not set.")
+        if self.SKIP_UNKNOWN_TAGS:
+            self.IGNORE.append("UK")
 
     def _get_reference_type(self, ref):
 
@@ -98,7 +74,7 @@ class BaseWriter:
                 continue
 
             # ignore
-            if tag in [self.START_TAG] + self.IGNORE + self._skip_unknown:
+            if tag in [self.START_TAG] + self.IGNORE:
                 continue
 
             # list tag
@@ -132,7 +108,7 @@ class BaseWriter:
         return None
 
 
-class RISWriter(BaseWriter):
+class RisWriter(BaseWriter):
     """Subclass of BaseWriter for writing RIS files."""
 
     START_TAG = "TY"
@@ -145,9 +121,7 @@ class RISWriter(BaseWriter):
 
 
 def dump(
-    references: List[Dict],
-    file: TextIO,
-    implementation: Union[WriterImplementation, BaseWriter] = WriterImplementation.BASE,
+    references: List[Dict], file: TextIO, implementation: Optional[BaseWriter] = None,
 ):
     """Write an RIS file to file or file-like object.
 
@@ -167,10 +141,7 @@ def dump(
     file.writelines(text)
 
 
-def dumps(
-    references: List[Dict],
-    implementation: Union[WriterImplementation, BaseWriter] = WriterImplementation.BASE,
-) -> str:
+def dumps(references: List[Dict], implementation: Optional[BaseWriter] = None,) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
@@ -184,10 +155,8 @@ def dumps(
         implementation (RisImplementation): RIS implementation; base by
                                             default.
     """
-    if implementation == WriterImplementation.BASE:
-        writer = RISWriter()
-    elif isinstance(implementation, str):
-        raise ValueError(f"Unknown implementation: {implementation}")
+    if implementation is None:
+        writer = RisWriter()
     else:
         writer = implementation
 

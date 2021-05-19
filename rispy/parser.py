@@ -1,6 +1,5 @@
 """RIS Parser."""
 
-from enum import Enum
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, TextIO, Union, Optional
@@ -9,63 +8,36 @@ import re
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
 
 
-__all__ = ["load", "loads", "RisImplementation", "Base", "Wok", "Ris"]
-
-
-class RisImplementation(str, Enum):
-    """List default RIS parser implementations."""
-
-    BASE = "base"
-    WOK = "wok"
+__all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
 
 
 class NextLine(Exception):
     pass
 
 
-class Base:
+class BaseParser:
     """Base parser class. Create a subclass to use."""
 
-    START_TAG: Optional[str] = None
+    START_TAG: str
     END_TAG: str = "ER"
     IGNORE: List[str] = []
-    PATTERN: str = ""
+    PATTERN: str
     SKIP_MISSING_TAGS: bool = False
     SKIP_UNKNOWN_TAGS: bool = False
     ENFORCE_LIST_TAGS: bool = True
-    DEFAULT_MAPPING: Optional[Dict] = None
-    DEFAULT_LIST_TAGS: Optional[List[str]] = None
+    DEFAULT_MAPPING: Dict
+    DEFAULT_LIST_TAGS: List[str]
 
     def __init__(self, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
         """Override default tag map and list tags in instance."""
         self.pattern = re.compile(self.PATTERN)
-        self._mapping = mapping
-        self._list_tags = list_tags
+        self.mapping = mapping or self.DEFAULT_MAPPING
+        self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
 
-    @property
-    def mapping(self):
-        """Check if a tag map can be found."""
-        if self._mapping is not None:
-            return self._mapping
-        elif self.DEFAULT_MAPPING is not None:
-            return self.DEFAULT_MAPPING
-        else:
-            raise IOError("Default mapping not set.")
-
-    @property
-    def list_tags(self):
-        """Check if a set of list tags can be found."""
-        if self._list_tags is not None:
-            return self._list_tags
-        elif self.DEFAULT_LIST_TAGS is not None:
-            return self.DEFAULT_LIST_TAGS
-        else:
-            raise IOError("Default list tags not set.")
-
-    def parse(self, obj: str) -> List[Dict]:
+    def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
-        clean_obj = self.clean(obj)
-        lines = clean_obj.split("\n")
+        clean_body = self.clean_text(text)
+        lines = clean_body.split("\n")
         return list(self._parse_lines(lines))
 
     def _parse_lines(self, lines):
@@ -181,11 +153,11 @@ class Base:
 
         self.current[name][tag].append(value)
 
-    def clean(self, obj: str) -> str:
+    def clean_text(self, text: str) -> str:
         """Clean string before parsing."""
         # remove BOM if present
-        obj = obj.lstrip("\ufeff")
-        return obj
+        text = text.lstrip("\ufeff")
+        return text
 
     def get_tag(self, line: str) -> str:
         """Get the tag from a line in the RIS file."""
@@ -200,11 +172,14 @@ class Base:
         raise NotImplementedError
 
     def is_header(self, line: str) -> bool:
-        """Determine if a line outside of the reference can be skipped."""
+        """Determine whether a line is a header and should be skipped.
+
+        Only operates on lines outside of the reference.
+        """
         return False
 
 
-class Wok(Base):
+class WokParser(BaseParser):
     """Subclass of Base for reading Wok RIS files."""
 
     START_TAG = "PT"
@@ -220,7 +195,7 @@ class Wok(Base):
         return True
 
 
-class Ris(Base):
+class RisParser(BaseParser):
     """Subclass of Base for reading base RIS files."""
 
     START_TAG = "TY"
@@ -238,10 +213,7 @@ class Ris(Base):
         return bool(none_or_match)
 
 
-def load(
-    file: Union[TextIO, Path],
-    implementation: Union[RisImplementation, Base] = RisImplementation.BASE,
-) -> List[Dict]:
+def load(file: Union[TextIO, Path], implementation: Optional[BaseParser] = None,) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -262,9 +234,7 @@ def load(
     return loads(text, implementation)
 
 
-def loads(
-    obj: str, implementation: Union[RisImplementation, Base] = RisImplementation.BASE,
-) -> List[Dict]:
+def loads(obj: str, implementation: Optional[BaseParser] = None,) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -281,12 +251,8 @@ def loads(
     Returns:
         list: Returns list of RIS entries.
     """
-    if implementation == RisImplementation.WOK:
-        parser = Wok()
-    elif implementation == RisImplementation.BASE:
-        parser = Ris()
-    elif isinstance(implementation, str):
-        raise ValueError(f"Unknown implementation: {implementation}")
+    if implementation is None:
+        parser = RisParser()
     else:
         parser = implementation
 
