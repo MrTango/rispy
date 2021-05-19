@@ -292,3 +292,43 @@ def test_implementation_constructor():
         entries2 = rispy.load(f, implementation=rispy.RisImplementation.WOK)
 
     assert entries1 == entries2
+
+
+def test_type_conversion():
+    refs = [
+        {"type_of_reference": "JOUR", "id": "12345", "primary_title": "Title of reference"},
+        {
+            "type_of_reference": "BOOK",
+            "id": "12345",
+            "primary_title": "The title of the reference",
+        },
+        {"type_of_reference": "Journal", "id": "12345", "primary_title": "Title of reference"},
+        {"type_of_reference": "TEST", "id": "12345", "primary_title": "Title of reference"},
+    ]
+
+    # test conversion
+    test1 = rispy.utils.pretty_reference_types(refs)
+    test1_types = [i["type_of_reference"] for i in test1]
+    assert test1_types == ["Journal", "Whole book", "Journal", "TEST", ]
+
+    # test reverse
+    test2 = rispy.utils.pretty_reference_types(test1, reverse=True)
+    print(test2)
+    assert test2[0:2] == refs[0:2]
+    assert test2[3] == refs[3]
+    assert test2[2]['type_of_reference'] == 'JOUR'
+
+    # test strict
+    try:
+        rispy.utils.pretty_reference_types(refs, strict=True)
+    except KeyError:
+        pass
+    else:
+        raise KeyError("failed test 3")
+    refs_clean = refs[0:3]
+    test3 = rispy.utils.pretty_reference_types(refs_clean, strict=True)
+
+    # test strict in reverse
+    test4 = rispy.utils.pretty_reference_types(test3, strict=True, reverse=True)
+    assert test4[0:2] == refs_clean[0:2]
+    assert test4[2]['type_of_reference'] == 'JOUR'
