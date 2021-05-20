@@ -228,27 +228,7 @@ Creating a custom implentation involves creating a class that inherits a base cl
 
 Parsing
 ^^^^^^^
-Custom parsers can inherit ``RisParser`` (the default parser) or ``BaseParser``. The following variables and methods can be overridden when creating a new parser.
-
-Class variables:
-
-- ``START_TAG``: Start tag, e.g. ``'TY'``. Required.
-- ``END_TAG``: End tag. Defaults to ``'ER'``.
-- ``IGNORE``: List of tags to ignore. Defaults to ``[]``.
-- ``PATTERN``: String containing a regex pattern. This pattern determines if a line has a valid tag. Required.
-- ``SKIP_MISSING_TAGS``: Bool to skip lines that don't have valid tags, regardless of whether of where they are in a reference. This is the inverse of the former ``strict`` parameter. If the goal is to skip reference headers, see the ``is_header`` method. Defaults to ``False``.
-- ``SKIP_UNKNOWN_TAGS``: Bool to skip tags that are not in ``TAG_KEY_MAPPING``. If unknown tags are not skipped, they will be added to the ``unknown_tag`` key. Defaults to ``False``.
-- ``ENFORCE_LIST_TAGS``: Bool for choosing whether to strictly enforce list type tags. If this is ``False``, tags that occur mutliple times in a reference will be converted to a list instead of being overriden. Values set to be list tags will still be read as list tags. Defaults to ``True``.
-- ``DEFAULT_MAPPING``: A default mapping for the custom parser. Required.
-- ``DEFAULT_LIST_TAGS``: A list of tags that should be read as lists. Required.
-
-Class methods:
-
-- ``get_content``: Returns the non-tag part of a line. Required.
-- ``is_header``: Returns a bool for whether a line is a header and should be skipped. This method only operates on lines outside of a reference. Defaults to ``False`` for all lines.
-- ``get_tag``: Returns the tag part of a line. Default is to return the first two characters.
-- ``is_tag``: Determines whether a line has a tag, returning a bool. Uses regex in `PATTERN` by default.
-- ``clean_text``: Clean the text body before parsing begins. By default, it removes UTF BOM characters.
+Custom parsers can inherit ``RisParser`` (the default parser) or ``BaseParser``. Various parameters and methods can be overridden when creating a new parser. These are documented in the ``BaseParser`` docstring.
 
 Examples:
 
@@ -276,23 +256,6 @@ Writing
 ^^^^^^^
 
 Writing is very similar to parsing. A custom writer class can inherit ``BaseWriter`` or ``RisWriter``.
-
-Class variables:
-
-- ``START_TAG``: Start tag, e.g. ``'TY'``. Required.
-- ``END_TAG``: End tag. Defaults to ``'ER'``.
-- ``IGNORE``: List of tags to ignore. Defaults to ``[]``.
-- ``PATTERN``: String containing a format for a line (e.g. ``"{tag}  - {value}"``). Should contain ``tag`` and ``value`` in curly brackets. Required.
-- ``SKIP_UNKNOWN_TAGS``: Bool for whether to write unknown tags to the file. Defaults to ``False``. 
-- ``ENFORCE_LIST_TAGS``: Bool. If ``True`` tags that are not set as list tags will be written into one line. Defaults to ``True``.
-- ``DEFAULT_MAPPING``: Default mapping for this class. Required.
-- ``DEFAULT_LIST_TAGS``: Default list tags for this class. Required.
-- ``DEFAULT_REFERENCE_TYPE``: Default reference type, used if a reference does not have a type.
-- ``SEPARATOR``: String to separate the references in the file. Defaults to ``'\n'``.
-
-Class methods:
-
-- ``set_header``: Create a header for each reference. Has the reference number as a parameter.
 
 Examples:
 

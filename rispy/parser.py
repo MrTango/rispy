@@ -17,7 +17,57 @@ class NextLine(Exception):
 
 
 class BaseParser(ABC):
-    """Base parser class. Create a subclass to use."""
+    """Base parser class. Create a subclass to use.
+
+    When creating a new implementation class, some variables and classes need
+    to be overridden. This docstring documents how to override these
+    parameters when creating a subclass.
+
+    Class variables:
+        START_TAG (str): Start tag, required.
+        END_TAG (str): End tag. Defaults to 'ER'.
+        IGNORE (list, optional): List of tags to ignore. Defaults to [].
+        PATTERN (str): String containing a regex pattern. This pattern
+                       determines if a line has a valid tag. Required.
+        SKIP_MISSING_TAGS (bool, optional): Bool to skip lines that don't have
+                                            valid tags, regardless of whether
+                                            of where they are in a reference.
+                                            This is the inverse of the former
+                                            `strict` parameter. If the goal is
+                                            to skip reference headers, see the
+                                            `is_header` method. Defaults to
+                                            `False`.
+        SKIP_UNKNOWN_TAGS (bool, optional): Bool to skip tags that are not in
+                                            `TAG_KEY_MAPPING`. If unknown tags
+                                            are not skipped, they will be added
+                                            to the `unknown_tag` key.
+                                            Defaults to `False`.
+        ENFORCE_LIST_TAGS (bool, optional): Bool for choosing whether to
+                                            strictly enforce list type tags.
+                                            If this is `False`, tags that
+                                            occur mutliple times in a reference
+                                            will be converted to a list instead
+                                            of being overriden. Values set to
+                                            be list tags will still be read as
+                                            list tags. Defaults to `True`.
+        DEFAULT_MAPPING (dict): A default mapping for the custom parser.
+                                Required.
+        DEFAULT_LIST_TAGS (list): A list of tags that should be read as lists.
+                                  Required.
+
+    Class methods:
+        get_content: Returns the non-tag part of a line. Required.
+        is_header: Returns a bool for whether a line is a header and should be
+                   skipped. This method only operates on lines outside of a
+                   reference. Defaults to `False` for all lines.
+        get_tag: Returns the tag part of a line. Default is to return the
+                 first two characters.
+        is_tag: Determines whether a line has a tag, returning a bool. Uses
+                regex in `PATTERN` by default.
+        clean_text: Clean the text body before parsing begins. By default,
+                    it removes UTF-BOM characters.
+
+    """
 
     START_TAG: str
     END_TAG: str = "ER"
@@ -30,7 +80,13 @@ class BaseParser(ABC):
     DEFAULT_LIST_TAGS: List[str]
 
     def __init__(self, *, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
-        """Override default tag map and list tags in instance."""
+        """Initialize the parser function.
+
+        Args:
+            mapping (dict, optional): Map tags to tag names.
+            list_tags (list, optional): List of list-type tags.
+
+        """
         self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping or self.DEFAULT_MAPPING
         self.list_tags = list_tags or self.DEFAULT_LIST_TAGS

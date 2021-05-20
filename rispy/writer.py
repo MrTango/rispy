@@ -18,7 +18,37 @@ def invert_dictionary(mapping):
 
 
 class BaseWriter:
-    """Base writer class. Create a subclass to use."""
+    """Base writer class. Create a subclass to use.
+
+    When creating a new implementation class, some variables and classes need
+    to be overridden. This docstring documents how to override these
+    parameters when creating a subclass.
+
+    Class variables:
+        START_TAG (str): Start tag, required.
+        END_TAG (str): End tag. Defaults to 'ER'.
+        IGNORE (list, optional): List of tags to ignore. Defaults to [].
+        PATTERN (str): String containing a format for a line
+                       (e.g. ``"{tag}  - {value}"``). Should contain `tag` and
+                       `value` in curly brackets. Required.
+        SKIP_UNKNOWN_TAGS (bool, optional): Bool for whether to write unknown
+                                            tags to the file. Defaults to
+                                            `False`.
+        ENFORCE_LIST_TAGS (bool, optional): If `True` tags that are not set as
+                                            list tags will be written into one
+                                            line. Defaults to `True`.
+        DEFAULT_MAPPING (list): Default mapping for this class. Required.
+        DEFAULT_LIST_TAGS (list): Default list tags for this class. Required.
+        DEFAULT_REFERENCE_TYPE (str): Default reference type, used if a
+                                      reference does not have a type.
+        SEPARATOR (str, optional): String to separate the references in the
+                                  file. Defaults to '\n'.
+
+    Class methods:
+        set_header: Create a header for each reference. Has the reference
+                    number as a parameter.
+
+    """
 
     START_TAG: str
     END_TAG: str = "ER"
@@ -32,7 +62,13 @@ class BaseWriter:
     SEPARATOR: Optional[str] = "\n"
 
     def __init__(self, *, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
-        """Override default tag map and list tags in instance."""
+        """Override default tag map and list tags in instance.
+
+        Args:
+            mapping (dict, optional): Map tags to tag names.
+            list_tags (list, optional): List of list-type tags.
+
+        """
         self.mapping = mapping or self.DEFAULT_MAPPING
         self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
         self._rev_mapping = invert_dictionary(self.mapping)
