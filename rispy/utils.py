@@ -14,13 +14,28 @@ def invert_dictionary(mapping: Dict) -> Dict:
     return remap
 
 
-def pretty_reference_types(
-    reference_list: List,
+def convert_reference_types(
+    reference_list: List[Dict],
     reverse: bool = False,
     strict: bool = False,
     type_map: Dict = TYPE_OF_REFERENCE_MAPPING,
 ) -> List:
-    """Convert RIS reference types to pretty names."""
+    """Convert RIS reference types to pretty names.
+
+    This method takes a list of references and returns a copy with converted
+    reference types.
+
+    Args:
+        reference_list (List[Dict]): A list of references.
+        reverse (bool, optional): Convert in reverse.
+        strict (bool, optional): Raise error if type not found.
+        type_map (Dict, optional): Dict used to map types. Default is
+                                   TYPE_OF_REFERENCE_MAPPING.
+
+    Returns:
+        list: Returns list of RIS entries.
+
+    """
 
     def convert(ref, d=type_map):
         old_type = ref["type_of_reference"]

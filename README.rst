@@ -245,21 +245,14 @@ Other various utilities included in ``rispy`` are documented below.
 Reference type conversion
 *************************
 
-A method is available to convert common RIS reference types into more readable terms. The key for this conversion is located in ``config.py``. An example is located below.
+A method is available to convert common RIS reference types into more readable terms. It takes a list of references and returns a copy of that list with modified reference types. The map for this conversion is located in ``config.py``.
 
 .. code:: python
 
-   >>> from rispy.utils import pretty_reference_types
+   >>> from rispy.utils import convert_reference_types
    >>> refs = [{"type_of_reference": "JOUR"}]
-   >>> print(pretty_reference_types(refs))
+   >>> print(convert_reference_types(refs))
    [{'type_of_reference': 'Journal'}]
-
-This method has the following parameters:
-
-- ``reference_list``: A list of references. Required.
-- ``reverse``: Bool to convert in reverse (readable -> RIS). Defaults to ``False``.
-- ``strict``: Bool to determine whether to raise error if a type is not valid. Defaults to ``False``.
-- ``type_map``: Dict used to map types. Default is ``TYPE_OF_REFERENCE_MAPPING`` in ``config.py``.
 
 Software for other RIS-like formats
 -----------------------------------

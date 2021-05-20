@@ -307,7 +307,7 @@ def test_type_conversion():
     ]
 
     # test conversion
-    test1 = rispy.utils.pretty_reference_types(refs)
+    test1 = rispy.utils.convert_reference_types(refs)
     test1_types = [i["type_of_reference"] for i in test1]
     assert test1_types == [
         "Journal",
@@ -317,7 +317,7 @@ def test_type_conversion():
     ]
 
     # test reverse
-    test2 = rispy.utils.pretty_reference_types(test1, reverse=True)
+    test2 = rispy.utils.convert_reference_types(test1, reverse=True)
     print(test2)
     assert test2[0:2] == refs[0:2]
     assert test2[3] == refs[3]
@@ -325,15 +325,15 @@ def test_type_conversion():
 
     # test strict
     try:
-        rispy.utils.pretty_reference_types(refs, strict=True)
+        rispy.utils.convert_reference_types(refs, strict=True)
     except KeyError:
         pass
     else:
         raise KeyError("failed test 3")
     refs_clean = refs[0:3]
-    test3 = rispy.utils.pretty_reference_types(refs_clean, strict=True)
+    test3 = rispy.utils.convert_reference_types(refs_clean, strict=True)
 
     # test strict in reverse
-    test4 = rispy.utils.pretty_reference_types(test3, strict=True, reverse=True)
+    test4 = rispy.utils.convert_reference_types(test3, strict=True, reverse=True)
     assert test4[0:2] == refs_clean[0:2]
     assert test4[2]["type_of_reference"] == "JOUR"
