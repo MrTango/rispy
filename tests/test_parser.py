@@ -292,3 +292,25 @@ def test_implementation_constructor():
         entries2 = rispy.load(f, implementation=rispy.RisImplementation.WOK)
 
     assert entries1 == entries2
+
+
+def test_encodings():
+    fn = DATA_DIR / "example_utf_chars.ris"
+    p = Path(fn)
+
+    encoding1 = "ascii"
+    encoding2 = "utf-8"
+
+    with open(fn, "r", encoding=encoding2) as file:
+        expected = rispy.load(file)
+
+    try:
+        rispy.load(p, path_encoding=encoding1)
+    except UnicodeDecodeError:
+        pass
+    else:
+        raise UnicodeDecodeError
+
+    entries = rispy.load(p, path_encoding=encoding2)
+
+    assert entries == expected

@@ -187,6 +187,7 @@ def load(
     mapping: Optional[Dict] = None,
     implementation: RisImplementation = RisImplementation.BASE,
     strict: bool = True,
+    **kw,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
@@ -205,7 +206,8 @@ def load(
     Returns:
         list: Returns list of RIS entries.
     """
-    text = file.read_text() if isinstance(file, Path) else file.read()
+    path_encoding = kw["path_encoding"] if "path_encoding" in kw else None
+    text = file.read_text(encoding=path_encoding) if isinstance(file, Path) else file.read()
     return list(loads(text, mapping, implementation, strict))
 
 
