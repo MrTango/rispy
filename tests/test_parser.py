@@ -153,7 +153,7 @@ def test_load_example_extraneous_data_ris():
         SKIP_MISSING_TAGS = True
 
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read(), implementation=Parser())
+        entries = rispy.loads(f.read(), implementation=Parser)
     assert expected == entries
 
 
@@ -275,9 +275,8 @@ def test_strip_bom():
 
 def test_wos_ris():
     fn = DATA_DIR / "example_wos.ris"
-    parser = rispy.WokParser()
     with open(fn, "r") as f:
-        entries = rispy.load(f, implementation=parser)
+        entries = rispy.load(f, implementation=rispy.WokParser)
 
     assert len(entries) == 2
 
@@ -304,7 +303,7 @@ def test_unkown_skip():
         SKIP_UNKNOWN_TAGS = True
 
     with open(filepath, "r") as f:
-        entries = rispy.load(f, implementation=Parser())
+        entries = rispy.load(f, implementation=Parser)
     assert expected == entries[0]
 
 
@@ -322,7 +321,5 @@ def test_list_tag_enforcement():
     class Parser(rispy.RisParser):
         ENFORCE_LIST_TAGS = False
 
-    parser = Parser(list_tags=[])
-
-    entries = rispy.loads(actual, implementation=parser)
+    entries = rispy.loads(actual, implementation=Parser, list_tags=[])
     assert expected == entries[0]

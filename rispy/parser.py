@@ -29,7 +29,7 @@ class BaseParser(ABC):
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
 
-    def __init__(self, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
+    def __init__(self, *, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
         """Override default tag map and list tags in instance."""
         self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping or self.DEFAULT_MAPPING
@@ -215,7 +215,9 @@ class RisParser(BaseParser):
         return bool(none_or_match)
 
 
-def load(file: Union[TextIO, Path], implementation: Optional[BaseParser] = None,) -> List[Dict]:
+def load(
+    file: Union[TextIO, Path], *, implementation: Optional[BaseParser] = None, **kw
+) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -233,10 +235,10 @@ def load(file: Union[TextIO, Path], implementation: Optional[BaseParser] = None,
         list: Returns list of RIS entries.
     """
     text = file.read_text() if isinstance(file, Path) else file.read()
-    return loads(text, implementation)
+    return loads(text, implementation=implementation, **kw)
 
 
-def loads(obj: str, implementation: Optional[BaseParser] = None,) -> List[Dict]:
+def loads(text: str, *, implementation: Optional[BaseParser] = None, **kw) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -246,7 +248,7 @@ def loads(obj: str, implementation: Optional[BaseParser] = None,) -> List[Dict]:
     of strings.
 
     Args:
-        obj (str): A string version of an RIS file.
+        text (str): A string version of an RIS file.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
 
@@ -254,8 +256,8 @@ def loads(obj: str, implementation: Optional[BaseParser] = None,) -> List[Dict]:
         list: Returns list of RIS entries.
     """
     if implementation is None:
-        parser = RisParser()
+        parser = RisParser
     else:
         parser = implementation
 
-    return parser.parse(obj)
+    return parser(**kw).parse(text)

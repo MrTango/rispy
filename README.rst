@@ -180,7 +180,7 @@ Complete default mapping
 Override key mapping
 ********************
 
-The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.load()`` with a custom implementation.
+The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.load()`` with the ``mapping`` parameter.
 
 .. code:: python
 
@@ -192,9 +192,8 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
    >>> filepath = 'tests/data/example_full.ris'
    >>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
    >>> mapping["SP"] = "pages_this_is_my_fun"
-   >>> MyCustomTags = rispy.RisParser(mapping=mapping)
    >>> with open(filepath, 'r') as bibliography_file:
-   ...     entries = rispy.load(bibliography_file, implementation=MyCustomTags)
+   ...     entries = rispy.load(bibliography_file, mapping=mapping)
    ...     pprint(sorted(entries[0].keys()))
    ['alternate_title2',
     'alternate_title3',
@@ -222,7 +221,6 @@ Using custom implementations
 ----------------------------
 Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and should be passed to ``rispy.load()`` or ``rispy.dump()``.
 
-As seen in the previous section, implementations can be initialized with two parameters: ``mapping`` and ``list_tags``.
 
 Customizing implementations
 ***************************
@@ -230,7 +228,7 @@ Creating a custom implentation involves creating a class that inherits a base cl
 
 Parsing
 ^^^^^^^
-Custom parsers can inherit ``RisParser`` (the default parser), ``WokParser``, or ``BaseParser``. The following variables and methods can be overridden when creating a new parser.
+Custom parsers can inherit ``RisParser`` (the default parser) or ``BaseParser``. The following variables and methods can be overridden when creating a new parser.
 
 Class variables:
 

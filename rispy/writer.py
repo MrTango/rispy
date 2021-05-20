@@ -31,11 +31,11 @@ class BaseWriter:
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     SEPARATOR: Optional[str] = "\n"
 
-    def __init__(self, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
+    def __init__(self, *, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
         """Override default tag map and list tags in instance."""
         self.mapping = mapping or self.DEFAULT_MAPPING
-        self._rev_mapping = invert_dictionary(self.mapping)
         self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
+        self._rev_mapping = invert_dictionary(self.mapping)
 
     def _get_reference_type(self, ref):
 
@@ -122,7 +122,7 @@ class RisWriter(BaseWriter):
 
 
 def dump(
-    references: List[Dict], file: TextIO, implementation: Optional[BaseWriter] = None,
+    references: List[Dict], file: TextIO, *, implementation: Optional[BaseWriter] = None, **kw,
 ):
     """Write an RIS file to file or file-like object.
 
@@ -138,11 +138,11 @@ def dump(
         implementation (RisImplementation): RIS implementation; base by
                                             default.
     """
-    text = dumps(references, implementation)
+    text = dumps(references, implementation=implementation)
     file.writelines(text)
 
 
-def dumps(references: List[Dict], implementation: Optional[BaseWriter] = None,) -> str:
+def dumps(references: List[Dict], *, implementation: Optional[BaseWriter] = None, **kw,) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
@@ -157,8 +157,8 @@ def dumps(references: List[Dict], implementation: Optional[BaseWriter] = None,) 
                                             default.
     """
     if implementation is None:
-        writer = RisWriter()
+        writer = RisWriter
     else:
         writer = implementation
 
-    return writer.formats(references)
+    return writer(**kw).formats(references)
