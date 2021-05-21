@@ -69,8 +69,8 @@ class BaseWriter:
             list_tags (list, optional): List of list-type tags.
 
         """
-        self.mapping = mapping or self.DEFAULT_MAPPING
-        self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
+        self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
+        self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
         self._rev_mapping = invert_dictionary(self.mapping)
 
     def _get_reference_type(self, ref):

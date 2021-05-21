@@ -88,8 +88,8 @@ class BaseParser(ABC):
 
         """
         self.pattern = re.compile(self.PATTERN)
-        self.mapping = mapping or self.DEFAULT_MAPPING
-        self.list_tags = list_tags or self.DEFAULT_LIST_TAGS
+        self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
+        self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
 
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
