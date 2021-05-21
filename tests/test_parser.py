@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import rispy
+import pytest
 
 
 DATA_DIR = Path(__file__).parent.resolve() / "data"
@@ -298,19 +299,15 @@ def test_encodings():
     fn = DATA_DIR / "example_utf_chars.ris"
     p = Path(fn)
 
-    encoding1 = "ascii"
+    encoding1 = "cp1252"
     encoding2 = "utf-8"
 
     with open(fn, "r", encoding=encoding2) as file:
         expected = rispy.load(file)
 
-    try:
-        rispy.load(p, path_encoding=encoding1)
-    except UnicodeDecodeError:
-        pass
-    else:
-        raise UnicodeDecodeError
+    with pytest.raises(UnicodeDecodeError):
+        rispy.load(p, encoding=encoding1)
 
-    entries = rispy.load(p, path_encoding=encoding2)
+    entries = rispy.load(p, encoding=encoding2)
 
     assert entries == expected

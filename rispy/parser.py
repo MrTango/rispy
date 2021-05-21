@@ -206,8 +206,8 @@ def load(
     Returns:
         list: Returns list of RIS entries.
     """
-    path_encoding = kw["path_encoding"] if "path_encoding" in kw else None
-    text = file.read_text(encoding=path_encoding) if isinstance(file, Path) else file.read()
+    encoding = kw.pop("encoding", None)
+    text = file.read_text(encoding=encoding) if isinstance(file, Path) else file.read()
     return list(loads(text, mapping, implementation, strict))
 
 

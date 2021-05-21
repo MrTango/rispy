@@ -34,7 +34,7 @@ A file path can also be used to read RIS files. If an encoding is not specified 
    >>> import rispy
    >>> filepath = 'tests/data/example_utf_chars.ris'
    >>> p = Path(filepath)
-   >>> entries = rispy.load(p, path_encoding='utf-8')
+   >>> entries = rispy.load(p, encoding='utf-8')
    >>> for entry in entries:
    ...     print(entry['authors'][0])
    Dobrokhotova, Yu E.
