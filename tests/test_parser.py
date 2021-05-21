@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import rispy
+import pytest
 
 
 DATA_DIR = Path(__file__).parent.resolve() / "data"
@@ -324,12 +325,8 @@ def test_type_conversion():
     assert test2[2]["type_of_reference"] == "JOUR"
 
     # test strict
-    try:
+    with pytest.raises(KeyError):
         rispy.utils.convert_reference_types(refs, strict=True)
-    except KeyError:
-        pass
-    else:
-        raise KeyError("failed test 3")
     refs_clean = refs[0:3]
     test3 = rispy.utils.convert_reference_types(refs_clean, strict=True)
 
