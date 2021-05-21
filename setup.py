@@ -25,11 +25,11 @@ setup(
     url="https://github.com/mrtango/rispy",
     author="Maik Derstappen (MrTango)",
     author_email="md@derico.de",
-    license="GNU General Public License v2 (GPLv2)",
+    license="MIT",
     classifiers=[
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
     ],
