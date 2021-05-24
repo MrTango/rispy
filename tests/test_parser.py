@@ -299,15 +299,12 @@ def test_encodings():
     fn = DATA_DIR / "example_utf_chars.ris"
     p = Path(fn)
 
-    encoding1 = "cp1252"
-    encoding2 = "utf-8"
-
-    with open(fn, "r", encoding=encoding2) as file:
+    with open(fn, "r", encoding="utf-8") as file:
         expected = rispy.load(file)
 
     with pytest.raises(UnicodeDecodeError):
-        rispy.load(p, encoding=encoding1)
+        rispy.load(p, encoding="cp1252")
 
-    entries = rispy.load(p, encoding=encoding2)
+    entries = rispy.load(p, encoding="utf-8")
 
     assert entries == expected
