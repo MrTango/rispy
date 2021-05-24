@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import rispy
+import pytest
 
 
 DATA_DIR = Path(__file__).parent.resolve() / "data"
@@ -299,6 +300,21 @@ def test_unkown_skip():
     with open(filepath, "r") as f:
         entries = rispy.load(f, skip_unknown_tags=True)
     assert expected == entries[0]
+
+
+def test_encodings():
+    fn = DATA_DIR / "example_utf_chars.ris"
+    p = Path(fn)
+
+    with open(fn, "r", encoding="utf-8") as file:
+        expected = rispy.load(file)
+
+    with pytest.raises(UnicodeDecodeError):
+        rispy.load(p, encoding="cp1252")
+
+    entries = rispy.load(p, encoding="utf-8")
+
+    assert entries == expected
 
 
 def test_list_tag_enforcement():

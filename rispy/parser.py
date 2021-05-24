@@ -283,7 +283,11 @@ class RisParser(BaseParser):
 
 
 def load(
-    file: Union[TextIO, Path], *, implementation: Optional[BaseParser] = None, **kw,
+    file: Union[TextIO, Path],
+    *,
+    encoding: Optional[str] = None,
+    implementation: Optional[BaseParser] = None,
+    **kw,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
@@ -295,13 +299,17 @@ def load(
 
     Args:
         file (Union[TextIO, Path]): File handle to read ris formatted data.
+        encoding(str, optional): File encoding, only used when a Path is supplied.
+                                 Consistent with the python standard library,
+                                 if `None` is supplied, the default system
+                                 encoding is used.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
 
     Returns:
         list: Returns list of RIS entries.
     """
-    text = file.read_text() if isinstance(file, Path) else file.read()
+    text = file.read_text(encoding=encoding) if isinstance(file, Path) else file.read()
     return loads(text, implementation=implementation, **kw)
 
 

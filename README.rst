@@ -22,6 +22,19 @@ Parsing:
    12345
    ['Marxus, Karlus', 'Lindgren, Astrid']
 
+A file path can also be used to read RIS files. If an encoding is not specified in ``load``, the default system encoding will be used.
+
+.. code:: python
+
+   >>> from pathlib import Path
+   >>> import rispy
+   >>> p = Path('tests', 'data', 'example_utf_chars.ris')
+   >>> entries = rispy.load(p, encoding='utf-8')
+   >>> for entry in entries:
+   ...     print(entry['authors'][0])
+   Dobrokhotova, Yu E.
+
+
 Writing:
 
 .. code:: python
