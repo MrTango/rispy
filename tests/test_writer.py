@@ -114,16 +114,18 @@ def test_file_implementation_write():
     class CustomWriter(rispy.RisWriter):
         DEFAULT_IGNORE = ["JF", "ID", "KW"]
 
+    list_tags = ["SN", "T1", "A1", "UR"]
+
     fn = DATA_DIR / "example_full.ris"
     with open(fn, "r") as f:
-        entries = rispy.load(f, implementation=CustomParser)
+        entries = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
 
     fn_write = DATA_DIR / "example_full_write.ris"
 
     with open(fn_write, "w") as f:
-        rispy.dump(entries, f, implementation=CustomWriter)
+        rispy.dump(entries, f, implementation=CustomWriter, list_tags=list_tags)
 
     with open(fn_write, "r") as f:
-        reload = rispy.load(f, implementation=CustomParser)
+        reload = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
 
     assert reload == entries
