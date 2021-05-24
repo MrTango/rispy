@@ -213,7 +213,6 @@ class BaseParser(ABC):
 
     def _add_unknown_tag(self, tag, line):
         name = self.mapping["UK"]
-        tag = self.get_tag(line)
         value = self.get_content(line)
         # check if unknown_tag dict exists
         if name not in self.current:
