@@ -46,8 +46,8 @@ class BaseWriter:
 
     START_TAG: str
     END_TAG: str = "ER"
-    IGNORE: List[str] = []
     PATTERN: str
+    DEFAULT_IGNORE: List[str] = []
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
@@ -57,7 +57,8 @@ class BaseWriter:
         self,
         *,
         mapping: Optional[Dict] = None,
-        list_tags: Optional[List] = None,
+        list_tags: Optional[List[str]] = None,
+        ignore: Optional[List[str]] = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
     ):
@@ -66,6 +67,7 @@ class BaseWriter:
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
+            ignore (list, optional): List of tags to ignore.
             skip_unknown_tags (bool, optional): Bool for whether to write unknown
                                                 tags to the file. Defaults to
                                                 `False`.
@@ -76,6 +78,7 @@ class BaseWriter:
         """
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
+        self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
         self._rev_mapping = invert_dictionary(self.mapping)
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
@@ -104,7 +107,7 @@ class BaseWriter:
             lines.append(header)
         lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
-        tags_to_skip = [self.START_TAG] + self.IGNORE
+        tags_to_skip = [self.START_TAG] + self.ignore
         if self.skip_unknown_tags:
             tags_to_skip.append("UK")
 

@@ -26,9 +26,9 @@ class BaseParser(ABC):
     Class variables:
         START_TAG (str): Start tag, required.
         END_TAG (str): End tag. Defaults to 'ER'.
-        IGNORE (list, optional): List of tags to ignore. Defaults to [].
         PATTERN (str): String containing a regex pattern. This pattern
                        determines if a line has a valid tag. Required.
+        DEFAULT_IGNORE (list, optional): Default list of tags to ignore.
         DEFAULT_MAPPING (dict): A default mapping for the custom parser.
                                 Required.
         DEFAULT_LIST_TAGS (list): A list of tags that should be read as lists.
@@ -50,8 +50,8 @@ class BaseParser(ABC):
 
     START_TAG: str
     END_TAG: str = "ER"
-    IGNORE: List[str] = []
     PATTERN: str
+    DEFAULT_IGNORE: List[str] = []
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
 
@@ -59,7 +59,8 @@ class BaseParser(ABC):
         self,
         *,
         mapping: Optional[Dict] = None,
-        list_tags: Optional[List] = None,
+        list_tags: Optional[List[str]] = None,
+        ignore: Optional[List[str]] = None,
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
@@ -69,6 +70,7 @@ class BaseParser(ABC):
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
+            ignore (list, optional): List of tags to ignore.
             skip_missing_tags (bool, optional): Bool to skip lines that don't have
                                                 valid tags, regardless of whether
                                                 of where they are in a reference.
@@ -95,6 +97,7 @@ class BaseParser(ABC):
         self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
+        self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
         self.skip_missing_tags = skip_missing_tags
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
@@ -130,7 +133,7 @@ class BaseParser(ABC):
 
     def _parse_tag(self, line, line_number):
         tag = self.get_tag(line)
-        if tag in self.IGNORE:
+        if tag in self.ignore:
             raise NextLine
 
         if tag == self.END_TAG:
@@ -249,8 +252,8 @@ class WokParser(BaseParser):
     """Subclass of Base for reading Wok RIS files."""
 
     START_TAG = "PT"
-    IGNORE = ["FN", "VR", "EF"]
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
+    DEFAULT_IGNORE = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
 
