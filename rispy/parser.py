@@ -300,6 +300,9 @@ def load(
     Args:
         file (Union[TextIO, Path]): File handle to read ris formatted data.
         encoding(str, optional): File encoding, only used when a Path is supplied.
+                                 Consistent with the python standard library,
+                                 if `None` is supplied, the default system
+                                 encoding is used.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
 
