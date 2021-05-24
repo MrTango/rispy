@@ -108,12 +108,11 @@ def test_writing_all_list_tags():
 
 
 def test_file_implementation_write():
-
     class CustomParser(rispy.RisParser):
-        DEFAULT_IGNORE = ['JF', 'ID', 'KW']
+        DEFAULT_IGNORE = ["JF", "ID", "KW"]
 
     class CustomWriter(rispy.RisWriter):
-        DEFAULT_IGNORE = ['JF', 'ID', 'KW']
+        DEFAULT_IGNORE = ["JF", "ID", "KW"]
 
     fn = DATA_DIR / "example_full.ris"
     with open(fn, "r") as f:
