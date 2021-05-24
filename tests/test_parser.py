@@ -99,7 +99,7 @@ def test_load_example_full_ris():
     ]
 
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read())
+        entries = rispy.load(f)
     assert expected == entries
 
 
@@ -151,7 +151,7 @@ def test_load_example_extraneous_data_ris():
     ]
 
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read(), strict=False)
+        entries = rispy.load(f, skip_missing_tags=True)
     assert expected == entries
 
 
@@ -207,7 +207,7 @@ def test_load_example_full_ris_without_whitespace():
     ]
 
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read())
+        entries = rispy.load(f)
     assert expected == entries
 
 
@@ -256,7 +256,10 @@ def test_starting_newline():
 
 
 def test_strip_bom():
-    expected = {"type_of_reference": "JOUR", "doi": "10.1186/s40981-020-0316-0"}
+    expected = {
+        "type_of_reference": "JOUR",
+        "doi": "10.1186/s40981-020-0316-0",
+    }
 
     filepath = DATA_DIR / "example_bom.ris"
 
@@ -271,7 +274,7 @@ def test_strip_bom():
 def test_wos_ris():
     fn = DATA_DIR / "example_wos.ris"
     with open(fn, "r") as f:
-        entries = rispy.load(f, implementation="wok")
+        entries = rispy.load(f, implementation=rispy.WokParser)
 
     assert len(entries) == 2
 
@@ -282,17 +285,21 @@ def test_wos_ris():
     assert entries[1]["document_title"] == title
 
 
-def test_implementation_constructor():
-    # check that both calls are valid
-    fn = DATA_DIR / "example_wos.ris"
+def test_unkown_skip():
+    filepath = DATA_DIR / "example_multi_unknown_tags.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "end_page": "423",
+        "volume": "27",
+    }
 
-    with open(fn, "r") as f:
-        entries1 = rispy.load(f, implementation="wok")
-
-    with open(fn, "r") as f:
-        entries2 = rispy.load(f, implementation=rispy.RisImplementation.WOK)
-
-    assert entries1 == entries2
+    with open(filepath, "r") as f:
+        entries = rispy.load(f, skip_unknown_tags=True)
+    assert expected == entries[0]
 
 
 def test_encodings():
@@ -308,3 +315,15 @@ def test_encodings():
     entries = rispy.load(p, encoding="utf-8")
 
     assert entries == expected
+
+def test_list_tag_enforcement():
+    filepath = DATA_DIR / "example_custom_list_tags.ris"
+
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Marx, Karl", "Marxus, Karlus"],
+        "issn": ["12345", "ABCDEFG", "666666"],
+    }
+
+    entries = rispy.load(filepath, enforce_list_tags=False, list_tags=[])
+    assert expected == entries[0]
