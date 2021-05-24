@@ -184,10 +184,10 @@ class Ris(Base):
 
 def load(
     file: Union[TextIO, Path],
+    encoding: Optional[str] = None,
     mapping: Optional[Dict] = None,
     implementation: RisImplementation = RisImplementation.BASE,
     strict: bool = True,
-    **kw,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
@@ -199,6 +199,7 @@ def load(
 
     Args:
         file (Union[TextIO, Path]): File handle to read ris formatted data.
+        encoding(str, optional): File encoding, only used when a Path is supplied.
         mapping (Dict, optional): a tag mapping dictionary.
         implementation (RisImplementation): RIS implementation; base by default.
         strict (bool): Boolean to allow non-tag data between records to be ignored.
@@ -206,7 +207,6 @@ def load(
     Returns:
         list: Returns list of RIS entries.
     """
-    encoding = kw.pop("encoding", None)
     text = file.read_text(encoding=encoding) if isinstance(file, Path) else file.read()
     return list(loads(text, mapping, implementation, strict))
 
