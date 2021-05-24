@@ -285,6 +285,24 @@ Examples:
        def set_header(self, count):
            return "{i}.".format(i=count)
 
+
+Other functionality
+-------------------
+Other various utilities included in ``rispy`` are documented below.
+
+Reference type conversion
+*************************
+
+A method is available to convert common RIS reference types into more readable terms. It takes a list of references and returns a copy of that list with modified reference types. The map for this conversion is located in ``config.py``.
+
+.. code:: python
+
+   >>> from rispy.utils import convert_reference_types
+   >>> refs = [{"type_of_reference": "JOUR"}]
+   >>> print(convert_reference_types(refs))
+   [{'type_of_reference': 'Journal'}]
+
+
 Software for other RIS-like formats
 -----------------------------------
 Some RIS-like formats contain rich citation data, for example lists and nested attributes, that :code:`rispy` does not
