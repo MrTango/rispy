@@ -283,7 +283,11 @@ class RisParser(BaseParser):
 
 
 def load(
-    file: Union[TextIO, Path], *, encoding: Optional[str] = None, implementation: Optional[BaseParser] = None, **kw,
+    file: Union[TextIO, Path],
+    *,
+    encoding: Optional[str] = None,
+    implementation: Optional[BaseParser] = None,
+    **kw,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 

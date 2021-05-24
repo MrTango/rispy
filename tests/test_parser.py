@@ -316,6 +316,7 @@ def test_encodings():
 
     assert entries == expected
 
+
 def test_list_tag_enforcement():
     filepath = DATA_DIR / "example_custom_list_tags.ris"
 
