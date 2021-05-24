@@ -105,3 +105,26 @@ def test_writing_all_list_tags():
     export = rispy.dumps(expected, enforce_list_tags=False, list_tags=[])
     entries = rispy.loads(export, list_tags=["AU", "SN"])
     assert expected == entries
+
+
+def test_file_implementation_write():
+
+    class CustomParser(rispy.RisParser):
+        DEFAULT_IGNORE = ['JF', 'ID', 'KW']
+
+    class CustomWriter(rispy.RisWriter):
+        DEFAULT_IGNORE = ['JF', 'ID', 'KW']
+
+    fn = DATA_DIR / "example_full.ris"
+    with open(fn, "r") as f:
+        entries = rispy.load(f, implementation=CustomParser)
+
+    fn_write = DATA_DIR / "example_full_write.ris"
+
+    with open(fn_write, "w") as f:
+        rispy.dump(entries, f, implementation=CustomWriter)
+
+    with open(fn_write, "r") as f:
+        reload = rispy.load(f, implementation=CustomParser)
+
+    assert reload == entries

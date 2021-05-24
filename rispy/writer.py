@@ -185,11 +185,11 @@ def dump(
         implementation (RisImplementation): RIS implementation; base by
                                             default.
     """
-    text = dumps(references, implementation=implementation)
+    text = dumps(references, implementation=implementation, **kw)
     file.writelines(text)
 
 
-def dumps(references: List[Dict], *, implementation: Optional[BaseWriter] = None, **kw,) -> str:
+def dumps(references: List[Dict], *, implementation: Optional[BaseWriter] = None, **kw) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
