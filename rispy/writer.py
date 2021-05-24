@@ -31,18 +31,12 @@ class BaseWriter:
         PATTERN (str): String containing a format for a line
                        (e.g. ``"{tag}  - {value}"``). Should contain `tag` and
                        `value` in curly brackets. Required.
-        SKIP_UNKNOWN_TAGS (bool, optional): Bool for whether to write unknown
-                                            tags to the file. Defaults to
-                                            `False`.
-        ENFORCE_LIST_TAGS (bool, optional): If `True` tags that are not set as
-                                            list tags will be written into one
-                                            line. Defaults to `True`.
         DEFAULT_MAPPING (list): Default mapping for this class. Required.
         DEFAULT_LIST_TAGS (list): Default list tags for this class. Required.
         DEFAULT_REFERENCE_TYPE (str): Default reference type, used if a
                                       reference does not have a type.
         SEPARATOR (str, optional): String to separate the references in the
-                                  file. Defaults to '\n'.
+                                  file. Defaults to newline.
 
     Class methods:
         set_header: Create a header for each reference. Has the reference
@@ -54,24 +48,37 @@ class BaseWriter:
     END_TAG: str = "ER"
     IGNORE: List[str] = []
     PATTERN: str
-    SKIP_UNKNOWN_TAGS: bool = False
-    ENFORCE_LIST_TAGS: bool = True
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     SEPARATOR: Optional[str] = "\n"
 
-    def __init__(self, *, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
+    def __init__(
+        self,
+        *,
+        mapping: Optional[Dict] = None,
+        list_tags: Optional[List] = None,
+        skip_unknown_tags: bool = False,
+        enforce_list_tags: bool = True,
+    ):
         """Override default tag map and list tags in instance.
 
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
+            skip_unknown_tags (bool, optional): Bool for whether to write unknown
+                                                tags to the file. Defaults to
+                                                `False`.
+            enforce_list_tags (bool, optional): If `True` tags that are not set as
+                                                list tags will be written into one
+                                                line. Defaults to `True`.
 
         """
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
         self._rev_mapping = invert_dictionary(self.mapping)
+        self.skip_unknown_tags = skip_unknown_tags
+        self.enforce_list_tags = enforce_list_tags
 
     def _get_reference_type(self, ref):
 
@@ -98,7 +105,7 @@ class BaseWriter:
         lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
         tags_to_skip = [self.START_TAG] + self.IGNORE
-        if self.SKIP_UNKNOWN_TAGS:
+        if self.skip_unknown_tags:
             tags_to_skip.append("UK")
 
         for label, value in ref.items():
@@ -115,7 +122,7 @@ class BaseWriter:
                 continue
 
             # list tag
-            if tag in self.list_tags or (not self.ENFORCE_LIST_TAGS and isinstance(value, list)):
+            if tag in self.list_tags or (not self.enforce_list_tags and isinstance(value, list)):
                 for val_i in value:
                     lines.append(self._format_line(tag, val_i))
             else:

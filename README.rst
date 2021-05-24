@@ -10,8 +10,6 @@ Parsing:
 
 .. code:: python
 
-   >>> import os
-   >>> from pprint import pprint
    >>> import rispy
    >>> filepath = 'tests/data/example_full.ris'
    >>> with open(filepath, 'r') as bibliography_file:
@@ -28,7 +26,6 @@ Writing:
 
 .. code:: python
 
-   >>> import os
    >>> import rispy
    >>> entries = [
    ... {'type_of_reference': 'JOUR',
@@ -100,7 +97,7 @@ Complete list of ListType tags
 .. code:: python
 
     >>> from rispy import LIST_TYPE_TAGS
-    >>> pprint(LIST_TYPE_TAGS)
+    >>> print(LIST_TYPE_TAGS)
     ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1']
 
 
@@ -110,6 +107,7 @@ Complete default mapping
 .. code:: python
 
     >>> from rispy import TAG_KEY_MAPPING
+    >>> from pprint import pprint
     >>> pprint(TAG_KEY_MAPPING)
     {'A1': 'first_authors',
      'A2': 'secondary_authors',
@@ -184,7 +182,6 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
 
 .. code:: python
 
-   >>> import os
    >>> from copy import deepcopy
    >>> import rispy
    >>> from pprint import pprint
@@ -217,6 +214,12 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
 
 List tags can be customized in the same way, by passing a list to the ``list_tags`` parameter.
 
+Changing rispy behavior
+*********************
+
+There are a few flags that can be passed to ``rispy.load()`` and ``rispy.dump()`` that change how ``rispy`` deals with tags. For example, setting ``skip_unknown_tags`` to ``True`` will cause ``rispy`` do not read or write tags not in the tag map. More can be found in the docstrings for each class. If more customization is necessary, a custom implementation can be created (see next section).
+
+
 Using custom implementations
 ----------------------------
 Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and should be passed to ``rispy.load()`` or ``rispy.dump()``.
@@ -233,9 +236,6 @@ Custom parsers can inherit ``RisParser`` (the default parser) or ``BaseParser``.
 Examples:
 
 .. code:: python
-
-   class CustomParser(RisParser):
-      SKIP_MISSING_TAGS = True
    
    class WokParser(BaseParser):
        """Subclass of Base for reading Wok RIS files."""

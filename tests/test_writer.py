@@ -87,10 +87,7 @@ def test_skip_unknown_tags():
         }
     ]
 
-    class Writer(rispy.RisWriter):
-        SKIP_UNKNOWN_TAGS = True
-
-    export = rispy.dumps(entries, implementation=Writer)
+    export = rispy.dumps(entries, skip_unknown_tags=True)
     reload = rispy.loads(export)
 
     assert reload == expected
@@ -105,9 +102,6 @@ def test_writing_all_list_tags():
         }
     ]
 
-    class Writer(rispy.RisWriter):
-        ENFORCE_LIST_TAGS = False
-
-    export = rispy.dumps(expected, implementation=Writer, list_tags=[])
+    export = rispy.dumps(expected, enforce_list_tags=False, list_tags=[])
     entries = rispy.loads(export, list_tags=["AU", "SN"])
     assert expected == entries

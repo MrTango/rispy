@@ -29,27 +29,6 @@ class BaseParser(ABC):
         IGNORE (list, optional): List of tags to ignore. Defaults to [].
         PATTERN (str): String containing a regex pattern. This pattern
                        determines if a line has a valid tag. Required.
-        SKIP_MISSING_TAGS (bool, optional): Bool to skip lines that don't have
-                                            valid tags, regardless of whether
-                                            of where they are in a reference.
-                                            This is the inverse of the former
-                                            `strict` parameter. If the goal is
-                                            to skip reference headers, see the
-                                            `is_header` method. Defaults to
-                                            `False`.
-        SKIP_UNKNOWN_TAGS (bool, optional): Bool to skip tags that are not in
-                                            `TAG_KEY_MAPPING`. If unknown tags
-                                            are not skipped, they will be added
-                                            to the `unknown_tag` key.
-                                            Defaults to `False`.
-        ENFORCE_LIST_TAGS (bool, optional): Bool for choosing whether to
-                                            strictly enforce list type tags.
-                                            If this is `False`, tags that
-                                            occur mutliple times in a reference
-                                            will be converted to a list instead
-                                            of being overriden. Values set to
-                                            be list tags will still be read as
-                                            list tags. Defaults to `True`.
         DEFAULT_MAPPING (dict): A default mapping for the custom parser.
                                 Required.
         DEFAULT_LIST_TAGS (list): A list of tags that should be read as lists.
@@ -73,23 +52,52 @@ class BaseParser(ABC):
     END_TAG: str = "ER"
     IGNORE: List[str] = []
     PATTERN: str
-    SKIP_MISSING_TAGS: bool = False
-    SKIP_UNKNOWN_TAGS: bool = False
-    ENFORCE_LIST_TAGS: bool = True
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
 
-    def __init__(self, *, mapping: Optional[Dict] = None, list_tags: Optional[List] = None):
+    def __init__(
+        self,
+        *,
+        mapping: Optional[Dict] = None,
+        list_tags: Optional[List] = None,
+        skip_missing_tags: bool = False,
+        skip_unknown_tags: bool = False,
+        enforce_list_tags: bool = True,
+    ):
         """Initialize the parser function.
 
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
+            skip_missing_tags (bool, optional): Bool to skip lines that don't have
+                                                valid tags, regardless of whether
+                                                of where they are in a reference.
+                                                This is the inverse of the former
+                                                `strict` parameter. If the goal is
+                                                to skip reference headers, see the
+                                                `is_header` method. Defaults to
+                                                `False`.
+            skip_unknown_tags (bool, optional): Bool to skip tags that are not in
+                                                `TAG_KEY_MAPPING`. If unknown tags
+                                                are not skipped, they will be added
+                                                to the `unknown_tag` key.
+                                                Defaults to `False`.
+            enforce_list_tags (bool, optional): Bool for choosing whether to
+                                                strictly enforce list type tags.
+                                                If this is `False`, tags that
+                                                occur mutliple times in a reference
+                                                will be converted to a list instead
+                                                of being overriden. Values set to
+                                                be list tags will still be read as
+                                                list tags. Defaults to `True`.
 
         """
         self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
+        self.skip_missing_tags = skip_missing_tags
+        self.skip_unknown_tags = skip_unknown_tags
+        self.enforce_list_tags = enforce_list_tags
 
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
@@ -142,14 +150,14 @@ class BaseParser(ABC):
         if tag in self.mapping:
             self._add_tag(tag, line)
             raise NextLine
-        elif not self.SKIP_UNKNOWN_TAGS:
+        elif not self.skip_unknown_tags:
             self._add_unknown_tag(tag, line)
             raise NextLine
 
         raise NextLine
 
     def _parse_other(self, line, line_number):
-        if self.SKIP_MISSING_TAGS:
+        if self.skip_missing_tags:
             raise NextLine
         if self.in_ref:
             # Active reference
@@ -165,7 +173,7 @@ class BaseParser(ABC):
 
     def _add_single_value(self, name, value, is_multi=False):
         if not is_multi:
-            if self.ENFORCE_LIST_TAGS or name not in self.current:
+            if self.enforce_list_tags or name not in self.current:
                 ignore_this_if_has_one = value
                 self.current.setdefault(name, ignore_this_if_has_one)
             else:
@@ -272,7 +280,7 @@ class RisParser(BaseParser):
 
 
 def load(
-    file: Union[TextIO, Path], *, implementation: Optional[BaseParser] = None, **kw
+    file: Union[TextIO, Path], *, implementation: Optional[BaseParser] = None, **kw,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 

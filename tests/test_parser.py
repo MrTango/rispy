@@ -98,7 +98,7 @@ def test_load_example_full_ris():
     ]
 
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read())
+        entries = rispy.load(f)
     assert expected == entries
 
 
@@ -149,11 +149,8 @@ def test_load_example_extraneous_data_ris():
         },
     ]
 
-    class Parser(rispy.RisParser):
-        SKIP_MISSING_TAGS = True
-
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read(), implementation=Parser)
+        entries = rispy.load(f, skip_missing_tags=True)
     assert expected == entries
 
 
@@ -209,7 +206,7 @@ def test_load_example_full_ris_without_whitespace():
     ]
 
     with open(filepath, "r") as f:
-        entries = rispy.loads(f.read())
+        entries = rispy.load(f)
     assert expected == entries
 
 
@@ -299,11 +296,8 @@ def test_unkown_skip():
         "volume": "27",
     }
 
-    class Parser(rispy.RisParser):
-        SKIP_UNKNOWN_TAGS = True
-
     with open(filepath, "r") as f:
-        entries = rispy.load(f, implementation=Parser)
+        entries = rispy.load(f, skip_unknown_tags=True)
     assert expected == entries[0]
 
 
@@ -316,10 +310,5 @@ def test_list_tag_enforcement():
         "issn": ["12345", "ABCDEFG", "666666"],
     }
 
-    actual = filepath.read_text()
-
-    class Parser(rispy.RisParser):
-        ENFORCE_LIST_TAGS = False
-
-    entries = rispy.loads(actual, implementation=Parser, list_tags=[])
+    entries = rispy.load(filepath, enforce_list_tags=False, list_tags=[])
     assert expected == entries[0]
