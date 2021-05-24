@@ -255,7 +255,7 @@ Examples:
 Writing
 ^^^^^^^
 
-Writing is very similar to parsing. A custom writer class can inherit ``BaseWriter`` or ``RisWriter``.
+Writing is very similar to parsing. A custom writer class can inherit ``BaseWriter`` or one if its subclasses, such as ``RisWriter``.
 
 Examples:
 

@@ -2,6 +2,7 @@
 
 import warnings
 from typing import Dict, List, TextIO, Optional
+from abc import ABC
 
 from .config import LIST_TYPE_TAGS
 from .config import TAG_KEY_MAPPING
@@ -17,7 +18,7 @@ def invert_dictionary(mapping):
     return remap
 
 
-class BaseWriter:
+class BaseWriter(ABC):
     """Base writer class. Create a subclass to use.
 
     When creating a new implementation class, some variables and classes need
