@@ -1,10 +1,12 @@
 # python/editors
+/rispy/version.py
+
 *.codeintel
 *.egg
 *.egg-info/
 *.mo
 *.nja
-*.pyc
+*.py[co]
 .cache
 .coverage
 .idea
