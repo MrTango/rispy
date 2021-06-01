@@ -1,6 +1,4 @@
 # python/editors
-/rispy/version.py
-
 *.codeintel
 *.egg
 *.eggs
