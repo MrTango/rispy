@@ -8,14 +8,5 @@ write_to_template = "__version__ = \"{version}\"\n"
 
 [tool.black]
 line-length = 98
-target-version = ['py36', 'py37', 'py38']
+target-version = ['py36', 'py37', 'py38', 'py39']
 include = '\.pyi?$'
-exclude = '''
-/(
-  \.eggs
-  | \.git
-  | \.tox
-  | build
-  | venv
-)/
-'''
