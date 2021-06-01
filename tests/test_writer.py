@@ -1,4 +1,5 @@
 from pathlib import Path
+from copy import deepcopy
 
 import pytest
 import rispy
@@ -47,3 +48,84 @@ def test_dumps_multiple_unknown_tags_ris(tmp_path):
     assert lines[1] == "TY  - JOUR"
     assert lines[4] == "ER  - "
     assert len(lines) == 5
+
+
+def test_custom_list_tags():
+    filepath = DATA_DIR / "example_custom_list_tags.ris"
+    list_tags = deepcopy(rispy.LIST_TYPE_TAGS)
+    list_tags.append("SN")
+
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Marx, Karl", "Marxus, Karlus"],
+        "issn": ["12345", "ABCDEFG", "666666"],
+    }
+
+    actual = filepath.read_text()
+
+    entries = rispy.loads(actual, list_tags=list_tags)
+    assert expected == entries[0]
+
+    export = rispy.dumps(entries, list_tags=list_tags)
+    assert export == actual
+
+
+def test_skip_unknown_tags():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Marx, Karl", "Marxus, Karlus"],
+            "issn": "12222",
+            "unknown_tag": {"JP": ["CRISPR"], "DC": ["Direct Current"]},
+        }
+    ]
+    expected = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Marx, Karl", "Marxus, Karlus"],
+            "issn": "12222",
+        }
+    ]
+
+    export = rispy.dumps(entries, skip_unknown_tags=True)
+    reload = rispy.loads(export)
+
+    assert reload == expected
+
+
+def test_writing_all_list_tags():
+    expected = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Marx, Karl", "Marxus, Karlus"],
+            "issn": ["12345", "ABCDEFG", "666666"],
+        }
+    ]
+
+    export = rispy.dumps(expected, enforce_list_tags=False, list_tags=[])
+    entries = rispy.loads(export, list_tags=["AU", "SN"])
+    assert expected == entries
+
+
+def test_file_implementation_write():
+    class CustomParser(rispy.RisParser):
+        DEFAULT_IGNORE = ["JF", "ID", "KW"]
+
+    class CustomWriter(rispy.RisWriter):
+        DEFAULT_IGNORE = ["JF", "ID", "KW"]
+
+    list_tags = ["SN", "T1", "A1", "UR"]
+
+    fn = DATA_DIR / "example_full.ris"
+    with open(fn, "r") as f:
+        entries = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
+
+    fn_write = DATA_DIR / "example_full_write.ris"
+
+    with open(fn_write, "w") as f:
+        rispy.dump(entries, f, implementation=CustomWriter, list_tags=list_tags)
+
+    with open(fn_write, "r") as f:
+        reload = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
+
+    assert reload == entries

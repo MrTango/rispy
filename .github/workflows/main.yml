@@ -20,7 +20,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: install
       run: |
-        pip install -e .[dev,test]
+        python3 -m pip install --upgrade setuptools setuptools_scm wheel pip
+        python3 ./setup.py bdist_wheel
+        export WHLNAME="./dist/rispy-0.CI-py3-none-any.whl"
+        mv ./dist/*.whl $WHLNAME
+        pip install --upgrade "$WHLNAME[dev,test]"
     - name: lint
       run: |
         make lint
