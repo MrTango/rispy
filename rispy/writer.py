@@ -162,7 +162,11 @@ class RisWriter(BaseWriter):
 
 
 def dump(
-    references: List[Dict], file: TextIO, *, implementation: Optional[BaseWriter] = None, **kw,
+    references: List[Dict],
+    file: TextIO,
+    *,
+    implementation: Optional[BaseWriter] = None,
+    **kw,
 ):
     """Write an RIS file to file or file-like object.
 

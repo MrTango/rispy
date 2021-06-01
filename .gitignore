@@ -3,6 +3,7 @@
 
 *.codeintel
 *.egg
+*.eggs
 *.egg-info/
 *.mo
 *.nja

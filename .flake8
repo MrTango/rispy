@@ -4,6 +4,7 @@ ignore =
   E203
   E266
 exclude =
+  .eggs,
   .git,
   .tox,
   venv
