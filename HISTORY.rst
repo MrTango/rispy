@@ -10,8 +10,8 @@ New features:
 * Add encoding param to rispy.load if custom file encoding is needed (@scott-8 #36)
 * Add convenience method to pretty-print reference type (@scott-8 #37)
 * Updated setup.py and build tooling to use setup.cfg; use wheel for testing in github actions (@KOLANICH #34)
-* Relicense to MIT
-* Support python versions 3.6 to 3.9
+* Relicense to MIT (@shapiromatron #43)
+* Support python versions 3.6, 3.7, 3.8, and 3.9 (@shapiromatron #44)
 
 v0.6.0 (2020-11-04)
 -------------------
