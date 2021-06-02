@@ -12,6 +12,7 @@ New features:
 * Updated setup.py and build tooling to use setup.cfg; use wheel for testing in github actions (@KOLANICH #34)
 * Relicense to MIT (@shapiromatron #43)
 * Support python versions 3.6, 3.7, 3.8, and 3.9 (@shapiromatron #44)
+* Changed primary branch from `master` to `main`
 
 v0.6.0 (2020-11-04)
 -------------------
