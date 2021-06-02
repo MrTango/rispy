@@ -231,7 +231,7 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
 List tags can be customized in the same way, by passing a list to the ``list_tags`` parameter.
 
 Changing rispy behavior
-*********************
+***********************
 
 There are a few flags that can be passed to ``rispy.load()`` and ``rispy.dump()`` that change how ``rispy`` deals with tags. For example, setting ``skip_unknown_tags`` to ``True`` will cause ``rispy`` do not read or write tags not in the tag map. More can be found in the docstrings for each class. If more customization is necessary, a custom implementation can be created (see next section).
 
