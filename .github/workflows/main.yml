@@ -6,7 +6,7 @@ jobs:
 
   backend:
     name: lint + test
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     strategy:
       max-parallel: 4
@@ -20,7 +20,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: install
       run: |
-        python -m pip install --upgrade setuptools setuptools_scm wheel pip
+        python -m pip install --upgrade setuptools wheel pip
         python ./setup.py bdist_wheel
         export WHLNAME="./dist/rispy-0.CI-py3-none-any.whl"
         mv ./dist/*.whl $WHLNAME

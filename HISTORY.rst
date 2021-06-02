@@ -1,6 +1,19 @@
 History
 =======
 
+v0.7.0 (2021-06-01)
+-------------------
+
+New features:
+
+* Allow for subclassing of readers and writers for custom implementations and greater flexibility; these custom classes can be used in all high-level commands (load/loads/dump/dumps)  (@scott-8 #36)
+* Add encoding param to rispy.load if custom file encoding is needed (@scott-8 #36)
+* Add convenience method to pretty-print reference type (@scott-8 #37)
+* Updated setup.py and build tooling to use setup.cfg; use wheel for testing in github actions (@KOLANICH #34)
+* Relicense to MIT (@shapiromatron #43)
+* Support python versions 3.6, 3.7, 3.8, and 3.9 (@shapiromatron #44)
+* Changed primary branch from `master` to `main`
+
 v0.6.0 (2020-11-04)
 -------------------
 
