@@ -4,7 +4,7 @@ Python RIS files parser and reader
 .. image:: https://badge.fury.io/py/rispy.svg
    :target: https://badge.fury.io/py/rispy
 
-A Python 3.6+ reader/writer of RIS reference files.
+A Python 3.8+ reader/writer of RIS reference files.
 
 Usage
 -----
