@@ -22,8 +22,7 @@ def test_dump_and_load():
     assert actual == export
 
 
-def test_dumps_multiple_unknown_tags_ris(tmp_path):
-
+def test_dump_non_exported_unknown_tag_is_discarded(tmp_path):
     fp = tmp_path / "test_dump_unknown_tags.ris"
 
     results = [{"title": "my-title", "abstract": "my-abstract", "does_not_exists": "test"}]
@@ -129,3 +128,65 @@ def test_file_implementation_write():
         reload = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
 
     assert reload == entries
+
+
+def test_write_single_unknown_tag():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Shannon, Claude E."],
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "start_page": "379",
+            "unknown_tag": {"JP": ["CRISPR"]},
+        }
+    ]
+
+    text_output = rispy.dumps(entries)
+
+    # check output is as expected
+    lines = text_output.splitlines()
+    assert lines[6] == "JP  - CRISPR"
+    assert len(lines) == 8
+
+
+def test_write_multiple_unknown_tag_same_type():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Shannon, Claude E."],
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "start_page": "379",
+            "unknown_tag": {"JP": ["CRISPR", "PEOPLE"]},
+        }
+    ]
+
+    text_output = rispy.dumps(entries)
+
+    # check output is as expected
+    lines = text_output.splitlines()
+    assert lines[6] == "JP  - CRISPR"
+    assert lines[7] == "JP  - PEOPLE"
+    assert len(lines) == 9
+
+
+def test_write_multiple_unknown_tag_diff_type():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Shannon, Claude E."],
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "start_page": "379",
+            "unknown_tag": {"JP": ["CRISPR"], "ED": ["Swinburne, Ricardo"]},
+        }
+    ]
+
+    text_output = rispy.dumps(entries)
+
+    # check output is as expected
+    lines = text_output.splitlines()
+    assert lines[6] == "JP  - CRISPR"
+    assert lines[7] == "ED  - Swinburne, Ricardo"
+    assert len(lines) == 9

@@ -78,7 +78,6 @@ class BaseWriter(ABC):
         self.enforce_list_tags = enforce_list_tags
 
     def _get_reference_type(self, ref):
-
         if "type_of_reference" in ref.keys():
             # TODO add check
             return ref["type_of_reference"]
@@ -93,7 +92,6 @@ class BaseWriter(ABC):
         return self.PATTERN.format(tag=tag, value=value)
 
     def _format_reference(self, ref, count):
-
         lines = []
 
         header = self.set_header(count)
@@ -106,7 +104,6 @@ class BaseWriter(ABC):
             tags_to_skip.append("UK")
 
         for label, value in ref.items():
-
             # not available
             try:
                 tag = self._rev_mapping[label.lower()]
@@ -122,13 +119,13 @@ class BaseWriter(ABC):
             if tag in self.list_tags or (not self.enforce_list_tags and isinstance(value, list)):
                 for val_i in value:
                     lines.append(self._format_line(tag, val_i))
-            
+
             # unknown tag(s), which are lists held in a defaultdict
-            elif tag == 'UK':
+            elif tag == "UK":
                 for unknown_tag in value.keys():
                     for val_i in value[unknown_tag]:
-                        lines.append(self._format_line(unknown_tag, val_i))                
-            
+                        lines.append(self._format_line(unknown_tag, val_i))
+
             # all non-list tags
             else:
                 lines.append(self._format_line(tag, value))
@@ -141,7 +138,6 @@ class BaseWriter(ABC):
         return lines
 
     def _format_all_references(self, references):
-
         for i, ref in enumerate(references):
             lines_ref = self._format_reference(ref, count=i + 1)
             for line in lines_ref:
