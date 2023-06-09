@@ -4,7 +4,7 @@ Python RIS files parser and reader
 .. image:: https://badge.fury.io/py/rispy.svg
    :target: https://badge.fury.io/py/rispy
 
-A Python 3.6+ reader/writer of RIS reference files.
+A Python 3.8+ reader/writer of RIS reference files.
 
 Usage
 -----
@@ -57,7 +57,7 @@ Writing:
    >>> filepath = 'export.ris'
    >>> with open(filepath, 'w') as bibliography_file:
    ...     rispy.dump(entries, bibliography_file)
-   
+
 
 Example RIS entry
 -----------------
@@ -252,7 +252,7 @@ Custom parsers can inherit ``RisParser`` (the default parser) or ``BaseParser``.
 Examples:
 
 .. code:: python
-   
+
    class WokParser(BaseParser):
        """Subclass of Base for reading Wok RIS files."""
 
@@ -324,15 +324,15 @@ Common developer commands are in the provided `Makefile`; if you don't have `mak
    # setup environment
    python -m venv venv
    source venv/bin/activate
-   pip install -e .[dev,test]
+   pip install -e ".[dev,test]"
 
    # check if code format changes are required
    make lint
-   
+
    # reformat code
    make format
 
    # run tests
-   make test 
+   make test
 
 Github Actions are currently enabled to run `lint` and `test` when submitting a pull-request.
