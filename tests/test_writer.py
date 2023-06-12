@@ -22,7 +22,7 @@ def test_dump_and_load():
     assert actual == export
 
 
-def test_dump_non_exported_unknown_tag_is_discarded(tmp_path):
+def test_dumps_multiple_unknown_tags_ris(tmp_path):
     fp = tmp_path / "test_dump_unknown_tags.ris"
 
     results = [{"title": "my-title", "abstract": "my-abstract", "does_not_exists": "test"}]
