@@ -73,7 +73,7 @@ def test_load_example_full_ris():
             "issn": "1932-6208",
             "note": "1008150341",
             "file_attachments2": "http://example.com",
-            "url": "http://example_url.com",
+            "urls": ["http://example_url.com"],
         },
         {
             "type_of_reference": "JOUR",
@@ -94,7 +94,7 @@ def test_load_example_full_ris():
             "issn": "1732-4208",
             "note": "1228150341",
             "file_attachments2": "http://example2.com",
-            "url": "http://example_url.com",
+            "urls": ["http://example_url.com"],
         },
     ]
 
@@ -125,7 +125,7 @@ def test_load_example_extraneous_data_ris():
             "issn": "1932-6208",
             "note": "1008150341",
             "file_attachments2": "http://example.com",
-            "url": "http://example_url.com",
+            "urls": ["http://example_url.com"],
         },
         {
             "type_of_reference": "JOUR",
@@ -146,7 +146,7 @@ def test_load_example_extraneous_data_ris():
             "issn": "1732-4208",
             "note": "1228150341",
             "file_attachments2": "http://example2.com",
-            "url": "http://example_url.com",
+            "urls": ["http://example_url.com"],
         },
     ]
 
@@ -180,7 +180,7 @@ def test_load_example_full_ris_without_whitespace():
             "issn": "1932-6208",
             "note": "1008150341",
             "file_attachments2": "http://example.com",
-            "url": "http://example_url.com",
+            "urls": ["http://example_url.com"],
         },
         {
             "type_of_reference": "JOUR",
@@ -201,7 +201,7 @@ def test_load_example_full_ris_without_whitespace():
             "issn": "1732-4208",
             "note": "1228150341",
             "file_attachments2": "http://example2.com",
-            "url": "http://example_url.com",
+            "urls": ["http://example_url.com"],
         },
     ]
 
@@ -368,3 +368,14 @@ def test_list_tag_enforcement():
 
     entries = rispy.load(filepath, enforce_list_tags=False, list_tags=[])
     assert expected == entries[0]
+
+
+def test_url_tag():
+    filepath = DATA_DIR / "example_urls.ris"
+    with open(filepath, "r") as f:
+        entries = rispy.load(f)
+
+    assert len(entries) == 3
+    assert entries[0]["urls"] == ["http://example.com"]
+    assert entries[1]["urls"] == ["http://example.com", "http://www.example.com"]
+    assert entries[2]["urls"] == ["http://example.com", "http://www.example.com"]

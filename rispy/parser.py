@@ -1,6 +1,7 @@
 """RIS Parser."""
 
 from collections import defaultdict
+from itertools import chain
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, TextIO, Union, Optional
@@ -87,9 +88,9 @@ class BaseParser(ABC):
             enforce_list_tags (bool, optional): Bool for choosing whether to
                                                 strictly enforce list type tags.
                                                 If this is `False`, tags that
-                                                occur mutliple times in a reference
+                                                occur multiple times in a reference
                                                 will be converted to a list instead
-                                                of being overriden. Values set to
+                                                of being overridden. Values set to
                                                 be list tags will still be read as
                                                 list tags. Defaults to `True`.
 
@@ -137,6 +138,7 @@ class BaseParser(ABC):
             raise NextLine
 
         if tag == self.END_TAG:
+            self._finalize_record(self.current)
             return self.current
 
         if tag == self.START_TAG:
@@ -219,6 +221,17 @@ class BaseParser(ABC):
             self.current[name] = defaultdict(list)
 
         self.current[name][tag].append(value)
+
+    def _finalize_record(self, record: dict):
+        """Make final updates to record inplace prior to completion."""
+
+        # split/strip multiple URLs on a single line; consistent with the the UR
+        # specification: "multiple addresses can be entered on one line using a
+        # semi-colon as a separator"
+        if "urls" in record:
+            record["urls"] = [
+                url.strip() for url in chain(*[url.split(";") for url in record["urls"]])
+            ]
 
     def clean_text(self, text: str) -> str:
         """Clean string before parsing."""

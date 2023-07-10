@@ -8,6 +8,7 @@ LIST_TYPE_TAGS = [
     "AU",
     "KW",
     "N1",
+    "UR",
 ]
 
 TAG_KEY_MAPPING = {
@@ -70,7 +71,7 @@ TAG_KEY_MAPPING = {
     "TA": "translated_author",
     "TI": "title",
     "TT": "translated_title",
-    "UR": "url",
+    "UR": "urls",
     "VL": "volume",
     "Y1": "publication_year",
     "Y2": "access_date",
