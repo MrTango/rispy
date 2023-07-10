@@ -119,6 +119,14 @@ class BaseWriter(ABC):
             if tag in self.list_tags or (not self.enforce_list_tags and isinstance(value, list)):
                 for val_i in value:
                     lines.append(self._format_line(tag, val_i))
+
+            # unknown tag(s), which are lists held in a defaultdict
+            elif tag == "UK":
+                for unknown_tag in value.keys():
+                    for val_i in value[unknown_tag]:
+                        lines.append(self._format_line(unknown_tag, val_i))
+
+            # all non-list tags
             else:
                 lines.append(self._format_line(tag, value))
 
