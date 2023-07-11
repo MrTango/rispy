@@ -375,7 +375,8 @@ def test_url_tag():
     with open(filepath, "r") as f:
         entries = rispy.load(f)
 
-    assert len(entries) == 3
+    assert len(entries) == 4
     assert entries[0]["urls"] == ["http://example.com"]
     assert entries[1]["urls"] == ["http://example.com", "http://www.example.com"]
     assert entries[2]["urls"] == ["http://example.com", "http://www.example.com"]
+    assert entries[3]["urls"] == ["http://example.com", "http://www.example.com"]
