@@ -1,6 +1,27 @@
 History
 =======
 
+v0.8.0 (2023-07-13)
+-------------------
+
+Breaking changes:
+
+* Update minimum python version from 3.6 to 3.8
+* Improve URL parsing to be more robust and consistent with the spec; saved as a plural "urls" dictionary key instead of the singular "url" (@scott-8/shapiromatron #52)
+* Throw a `rispy.paser.ParseError` instead of a IOError for invalid parsing (@shapiromatron #54)
+
+Additional updates:
+
+* Write RIS unknown tags (@simon-20 #50)
+
+Tooling updates:
+
+* Support and test python 3.8 through 3.11
+* Update black
+* Switch to ruff from flake8 + isort
+* Switch to flit
+* Add basic coverage reports to github actions
+
 v0.7.1 (2021-06-01)
 -------------------
 
