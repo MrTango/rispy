@@ -2,7 +2,10 @@
 name = "rispy"
 license = {file = "LICENSE"}
 authors = [
-    {name = "Maik Derstappen (MrTango)", email = "md@derico.de"}
+    {name = "Maik Derstappen", email = "md@derico.de"}
+]
+maintainers = [
+    {name = "Andy Shapiro", email = "shapiromatron@gmail.com"}
 ]
 readme = "README.rst"
 dynamic = ["version", "description"]
