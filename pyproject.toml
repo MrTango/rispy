@@ -44,7 +44,7 @@ include = '\.pyi?$'
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py38"
 select = ["F", "E", "W", "I", "UP", "S", "B", "T20", "RUF"]
 
 [tool.ruff.per-file-ignores]

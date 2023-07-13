@@ -2,7 +2,7 @@
 
 import warnings
 from abc import ABC
-from typing import ClassVar, TextIO
+from typing import ClassVar, Dict, List, Optional, TextIO, Type
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
 from .utils import invert_dictionary
@@ -40,18 +40,18 @@ class BaseWriter(ABC):
     START_TAG: str
     END_TAG: str = "ER"
     PATTERN: str
-    DEFAULT_IGNORE: ClassVar[list[str]] = []
-    DEFAULT_MAPPING: dict
-    DEFAULT_LIST_TAGS: list[str]
+    DEFAULT_IGNORE: ClassVar[List[str]] = []
+    DEFAULT_MAPPING: Dict
+    DEFAULT_LIST_TAGS: List[str]
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
-    SEPARATOR: str | None = "\n"
+    SEPARATOR: Optional[str] = "\n"
 
     def __init__(
         self,
         *,
-        mapping: dict | None = None,
-        list_tags: list[str] | None = None,
-        ignore: list[str] | None = None,
+        mapping: Optional[Dict] = None,
+        list_tags: Optional[List[str]] = None,
+        ignore: Optional[List[str]] = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
     ):
@@ -142,12 +142,12 @@ class BaseWriter(ABC):
             for line in lines_ref:
                 yield line
 
-    def formats(self, references: list[dict]) -> str:
+    def formats(self, references: List[Dict]) -> str:
         """Format a list of references into an RIS string."""
         lines = self._format_all_references(references)
         return "\n".join(lines)
 
-    def set_header(self, count: int) -> str | None:
+    def set_header(self, count: int) -> Optional[str]:
         """Create the header for each reference."""
         return None
 
@@ -165,10 +165,10 @@ class RisWriter(BaseWriter):
 
 
 def dump(
-    references: list[dict],
+    references: List[Dict],
     file: TextIO,
     *,
-    implementation: BaseWriter | None = None,
+    implementation: Optional[BaseWriter] = None,
     **kw,
 ):
     """Write an RIS file to file or file-like object.
@@ -189,7 +189,9 @@ def dump(
     file.writelines(text)
 
 
-def dumps(references: list[dict], *, implementation: BaseWriter | None = None, **kw) -> str:
+def dumps(
+    references: List[Dict], *, implementation: Optional[Type[BaseWriter]] = None, **kw
+) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the

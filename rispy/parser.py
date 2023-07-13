@@ -4,7 +4,7 @@ import re
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from pathlib import Path
-from typing import ClassVar, TextIO
+from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
 
 from .config import (
     DELIMITED_TAG_MAPPING,
@@ -56,18 +56,18 @@ class BaseParser(ABC):
     START_TAG: str
     END_TAG: str = "ER"
     PATTERN: str
-    DEFAULT_IGNORE: ClassVar[list[str]] = []
-    DEFAULT_MAPPING: dict
-    DEFAULT_LIST_TAGS: list[str]
-    DEFAULT_DELIMITER_MAPPING: dict
+    DEFAULT_IGNORE: ClassVar[List[str]] = []
+    DEFAULT_MAPPING: Dict
+    DEFAULT_LIST_TAGS: List[str]
+    DEFAULT_DELIMITER_MAPPING: Dict
 
     def __init__(
         self,
         *,
-        mapping: dict | None = None,
-        list_tags: list[str] | None = None,
-        delimiter_mapping: dict | None = None,
-        ignore: list[str] | None = None,
+        mapping: Optional[Dict] = None,
+        list_tags: Optional[List[str]] = None,
+        delimiter_mapping: Optional[Dict] = None,
+        ignore: Optional[List[str]] = None,
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
@@ -113,7 +113,7 @@ class BaseParser(ABC):
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
 
-    def parse(self, text: str) -> list[dict]:
+    def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
         clean_body = self.clean_text(text)
         lines = clean_body.split("\n")
@@ -276,10 +276,10 @@ class WokParser(BaseParser):
 
     START_TAG = "PT"
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
-    DEFAULT_IGNORE: ClassVar[list[str]] = ["FN", "VR", "EF"]
+    DEFAULT_IGNORE: ClassVar[List[str]] = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
+    DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
 
     def get_content(self, line):
         return line[2:].strip()
@@ -308,12 +308,12 @@ class RisParser(BaseParser):
 
 
 def load(
-    file: TextIO | Path,
+    file: Union[TextIO, Path],
     *,
-    encoding: str | None = None,
-    implementation: BaseParser | None = None,
+    encoding: Optional[str] = None,
+    implementation: Optional[BaseParser] = None,
     **kw,
-) -> list[dict]:
+) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -338,7 +338,7 @@ def load(
     return loads(text, implementation=implementation, **kw)
 
 
-def loads(text: str, *, implementation: BaseParser | None = None, **kw) -> list[dict]:
+def loads(text: str, *, implementation: Optional[Type[BaseParser]] = None, **kw) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
