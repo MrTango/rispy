@@ -21,6 +21,10 @@ class NextLine(Exception):
     pass
 
 
+class ParseError(Exception):
+    pass
+
+
 class BaseParser(ABC):
     """Base parser class. Create a subclass to use.
 
@@ -153,13 +157,13 @@ class BaseParser(ABC):
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise OSError(f"Missing end of record tag in line {line_number}:\n {line}")
+                raise ParseError(f"Missing end of record tag in line {line_number}:\n {line}")
             self._add_tag(tag, line)
             self.in_ref = True
             raise NextLine
 
         if not self.in_ref:
-            raise OSError(f"Invalid start tag in line {line_number}:\n {line}")
+            raise ParseError(f"Invalid start tag in line {line_number}:\n {line}")
 
         if tag in self.mapping:
             self._add_tag(tag, line)
@@ -176,14 +180,14 @@ class BaseParser(ABC):
         if self.in_ref:
             # Active reference
             if self.last_tag is None:
-                raise OSError(f"Expected tag in line {line_number}:\n {line}")
+                raise ParseError(f"Expected tag in line {line_number}:\n {line}")
             # Active tag
             self._add_tag(self.last_tag, line, all_line=True)
             raise NextLine
 
         if self.is_header(line):
             raise NextLine
-        raise OSError(f"Expected start tag in line {line_number}:\n {line}")
+        raise ParseError(f"Expected start tag in line {line_number}:\n {line}")
 
     def _add_single_value(self, name, value, is_multi=False):
         """Process a single line.
