@@ -1,10 +1,30 @@
 History
 =======
 
+v0.8.0 (2023-07-13)
+-------------------
+
+Breaking changes:
+
+* Update minimum python version from 3.6 to 3.8
+* Improve URL parsing to be more robust and consistent with the spec; saved as a plural "urls" dictionary key instead of the singular "url" (@scott-8/shapiromatron #52)
+
+Additional updates:
+
+* Write RIS unknown tags (@simon-20 #50)
+
+Tooling updates:
+
+* Switch to flit
+* Update black
+* Switch from flake8 + isort to ruff
+* Support and test python 3.8 through 3.11
+
+
 v0.7.1 (2021-06-01)
 -------------------
 
-* README.rst formatting fixes 
+* README.rst formatting fixes
 
 v0.7.0 (2021-06-01)
 -------------------

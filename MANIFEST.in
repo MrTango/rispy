@@ -1,6 +1,0 @@
-include *.py
-include pytest.ini
-recursive-include tests *.py
-recursive-include tests *.ris
-include *.rst
-include LICENSE

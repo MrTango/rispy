@@ -266,7 +266,6 @@ def test_strip_bom():
     with open(filepath, "r", encoding="utf-8") as f:
         entries = rispy.load(f)
 
-    print(entries)
     assert expected == entries[0]
 
 
@@ -325,7 +324,6 @@ def test_type_conversion():
 
     # test reverse
     test2 = rispy.utils.convert_reference_types(test1, reverse=True)
-    print(test2)
     assert test2[0:2] == refs[0:2]
     assert test2[3] == refs[3]
     assert test2[2]["type_of_reference"] == "JOUR"
