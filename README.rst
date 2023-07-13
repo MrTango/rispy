@@ -114,7 +114,7 @@ Complete list of ListType tags
 
     >>> from rispy import LIST_TYPE_TAGS
     >>> print(LIST_TYPE_TAGS)
-    ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1']
+    ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1', 'UR']
 
 
 Complete default mapping
@@ -186,7 +186,7 @@ Complete default mapping
      'TT': 'translated_title',
      'TY': 'type_of_reference',
      'UK': 'unknown_tag',
-     'UR': 'url',
+     'UR': 'urls',
      'VL': 'volume',
      'Y1': 'publication_year',
      'Y2': 'access_date'}
@@ -225,7 +225,7 @@ The parser use a ``TAG_KEY_MAPPING``, which one can override by calling ``rispy.
     'publisher',
     'secondary_authors',
     'type_of_reference',
-    'url',
+    'urls',
     'volume']
 
 List tags can be customized in the same way, by passing a list to the ``list_tags`` parameter.

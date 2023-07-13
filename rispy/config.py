@@ -8,7 +8,12 @@ LIST_TYPE_TAGS = [
     "AU",
     "KW",
     "N1",
+    "UR",
 ]
+
+DELIMITED_TAG_MAPPING = {
+    "UR": ";",
+}
 
 TAG_KEY_MAPPING = {
     "TY": "type_of_reference",
@@ -70,7 +75,7 @@ TAG_KEY_MAPPING = {
     "TA": "translated_author",
     "TI": "title",
     "TT": "translated_title",
-    "UR": "url",
+    "UR": "urls",  # ListType
     "VL": "volume",
     "Y1": "publication_year",
     "Y2": "access_date",
