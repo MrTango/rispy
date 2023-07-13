@@ -1,12 +1,11 @@
 """Miscellaneous functions."""
 
-from typing import Dict, List
 from copy import deepcopy
 
 from .config import TYPE_OF_REFERENCE_MAPPING
 
 
-def invert_dictionary(mapping: Dict) -> Dict:
+def invert_dictionary(mapping: dict) -> dict:
     """Invert the keys and values of a dictionary."""
     remap = {v: k for k, v in mapping.items()}
     if len(remap) != len(mapping):
@@ -15,11 +14,11 @@ def invert_dictionary(mapping: Dict) -> Dict:
 
 
 def convert_reference_types(
-    reference_list: List[Dict],
+    reference_list: list[dict],
     reverse: bool = False,
     strict: bool = False,
-    type_map: Dict = TYPE_OF_REFERENCE_MAPPING,
-) -> List:
+    type_map: dict = TYPE_OF_REFERENCE_MAPPING,
+) -> list:
     """Convert RIS reference types to pretty names.
 
     This method takes a list of references and returns a copy with converted
@@ -41,9 +40,9 @@ def convert_reference_types(
         old_type = ref["type_of_reference"]
         try:
             ref["type_of_reference"] = d[old_type]
-        except KeyError:
+        except KeyError as err:
             if strict and old_type not in d.values():
-                raise KeyError(f'Type "{old_type}" not found.')
+                raise KeyError(f'Type "{old_type}" not found.') from err
         return ref
 
     if not reverse:

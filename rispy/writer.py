@@ -1,12 +1,11 @@
 """RIS Writer."""
 
 import warnings
-from typing import Dict, List, TextIO, Optional
 from abc import ABC
+from typing import ClassVar, TextIO
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
 from .utils import invert_dictionary
-
 
 __all__ = ["dump", "dumps", "BaseWriter", "RisWriter"]
 
@@ -41,18 +40,18 @@ class BaseWriter(ABC):
     START_TAG: str
     END_TAG: str = "ER"
     PATTERN: str
-    DEFAULT_IGNORE: List[str] = []
-    DEFAULT_MAPPING: Dict
-    DEFAULT_LIST_TAGS: List[str]
+    DEFAULT_IGNORE: ClassVar[list[str]] = []
+    DEFAULT_MAPPING: dict
+    DEFAULT_LIST_TAGS: list[str]
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
-    SEPARATOR: Optional[str] = "\n"
+    SEPARATOR: str | None = "\n"
 
     def __init__(
         self,
         *,
-        mapping: Optional[Dict] = None,
-        list_tags: Optional[List[str]] = None,
-        ignore: Optional[List[str]] = None,
+        mapping: dict | None = None,
+        list_tags: list[str] | None = None,
+        ignore: list[str] | None = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
     ):
@@ -99,7 +98,7 @@ class BaseWriter(ABC):
             lines.append(header)
         lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
 
-        tags_to_skip = [self.START_TAG] + self.ignore
+        tags_to_skip = [self.START_TAG, *self.ignore]
         if self.skip_unknown_tags:
             tags_to_skip.append("UK")
 
@@ -108,7 +107,7 @@ class BaseWriter(ABC):
             try:
                 tag = self._rev_mapping[label.lower()]
             except KeyError:
-                warnings.warn(UserWarning(f"label `{label}` not exported"))
+                warnings.warn(UserWarning(f"label `{label}` not exported"), stacklevel=2)
                 continue
 
             # ignore
@@ -143,12 +142,12 @@ class BaseWriter(ABC):
             for line in lines_ref:
                 yield line
 
-    def formats(self, references: List[Dict]) -> str:
+    def formats(self, references: list[dict]) -> str:
         """Format a list of references into an RIS string."""
         lines = self._format_all_references(references)
         return "\n".join(lines)
 
-    def set_header(self, count: int) -> Optional[str]:
+    def set_header(self, count: int) -> str | None:
         """Create the header for each reference."""
         return None
 
@@ -162,14 +161,14 @@ class RisWriter(BaseWriter):
     DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
 
     def set_header(self, count):
-        return "{i}.".format(i=count)
+        return f"{count}."
 
 
 def dump(
-    references: List[Dict],
+    references: list[dict],
     file: TextIO,
     *,
-    implementation: Optional[BaseWriter] = None,
+    implementation: BaseWriter | None = None,
     **kw,
 ):
     """Write an RIS file to file or file-like object.
@@ -190,7 +189,7 @@ def dump(
     file.writelines(text)
 
 
-def dumps(references: List[Dict], *, implementation: Optional[BaseWriter] = None, **kw) -> str:
+def dumps(references: list[dict], *, implementation: BaseWriter | None = None, **kw) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the

@@ -1,8 +1,8 @@
 from pathlib import Path
 
-import rispy
 import pytest
 
+import rispy
 
 DATA_DIR = Path(__file__).parent.resolve() / "data"
 
@@ -21,7 +21,7 @@ def test_load_example_basic_ris():
     }
 
     # test with file object
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
     assert expected == entries[0]
 
@@ -45,7 +45,7 @@ def test_load_multiline_ris():
         "notes": ["first line", "* second line", "* last line"],
         "volume": "27",
     }
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
 
     assert expected == entries[0]
@@ -98,7 +98,7 @@ def test_load_example_full_ris():
         },
     ]
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
     assert expected == entries
 
@@ -150,7 +150,7 @@ def test_load_example_extraneous_data_ris():
         },
     ]
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f, skip_missing_tags=True)
     assert expected == entries
 
@@ -205,7 +205,7 @@ def test_load_example_full_ris_without_whitespace():
         },
     ]
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
     assert expected == entries
 
@@ -224,7 +224,7 @@ def test_load_single_unknown_tag_ris():
         "unknown_tag": {"JP": ["CRISPR", "Direct Current"]},
     }
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
 
     assert expected == entries[0]
@@ -242,14 +242,14 @@ def test_load_multiple_unknown_tags_ris():
         "volume": "27",
         "unknown_tag": {"JP": ["CRISPR"], "DC": ["Direct Current"]},
     }
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
     assert expected == entries[0]
 
 
 def test_starting_newline():
     fn = DATA_DIR / "example_starting_newlines.ris"
-    with open(fn, "r") as f:
+    with open(fn) as f:
         entries = rispy.load(f)
     assert len(entries) == 1
 
@@ -263,7 +263,7 @@ def test_strip_bom():
     filepath = DATA_DIR / "example_bom.ris"
 
     # we properly decode the content of this file as UTF-8, but leave the BOM
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         entries = rispy.load(f)
 
     assert expected == entries[0]
@@ -271,7 +271,7 @@ def test_strip_bom():
 
 def test_wos_ris():
     fn = DATA_DIR / "example_wos.ris"
-    with open(fn, "r") as f:
+    with open(fn) as f:
         entries = rispy.load(f, implementation=rispy.WokParser)
 
     assert len(entries) == 2
@@ -295,7 +295,7 @@ def test_unkown_skip():
         "volume": "27",
     }
 
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f, skip_unknown_tags=True)
     assert expected == entries[0]
 
@@ -344,7 +344,7 @@ def test_encodings():
     fn = DATA_DIR / "example_utf_chars.ris"
     p = Path(fn)
 
-    with open(fn, "r", encoding="utf-8") as file:
+    with open(fn, encoding="utf-8") as file:
         expected = rispy.load(file)
 
     with pytest.raises(UnicodeDecodeError):
@@ -370,7 +370,7 @@ def test_list_tag_enforcement():
 
 def test_url_tag():
     filepath = DATA_DIR / "example_urls.ris"
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         entries = rispy.load(f)
 
     assert len(entries) == 4

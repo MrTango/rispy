@@ -1,19 +1,18 @@
 """RIS Parser."""
 
-from collections import defaultdict
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Dict, List, TextIO, Union, Optional
 import re
+from abc import ABC, abstractmethod
+from collections import defaultdict
+from pathlib import Path
+from typing import ClassVar, TextIO
 
 from .config import (
     DELIMITED_TAG_MAPPING,
     LIST_TYPE_TAGS,
     TAG_KEY_MAPPING,
-    WOK_TAG_KEY_MAPPING,
     WOK_LIST_TYPE_TAGS,
+    WOK_TAG_KEY_MAPPING,
 )
-
 
 __all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
 
@@ -57,18 +56,18 @@ class BaseParser(ABC):
     START_TAG: str
     END_TAG: str = "ER"
     PATTERN: str
-    DEFAULT_IGNORE: List[str] = []
-    DEFAULT_MAPPING: Dict
-    DEFAULT_LIST_TAGS: List[str]
-    DEFAULT_DELIMITER_MAPPING: Dict
+    DEFAULT_IGNORE: ClassVar[list[str]] = []
+    DEFAULT_MAPPING: dict
+    DEFAULT_LIST_TAGS: list[str]
+    DEFAULT_DELIMITER_MAPPING: dict
 
     def __init__(
         self,
         *,
-        mapping: Optional[Dict] = None,
-        list_tags: Optional[List[str]] = None,
-        delimiter_mapping: Optional[Dict] = None,
-        ignore: Optional[List[str]] = None,
+        mapping: dict | None = None,
+        list_tags: list[str] | None = None,
+        delimiter_mapping: dict | None = None,
+        ignore: list[str] | None = None,
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
@@ -114,7 +113,7 @@ class BaseParser(ABC):
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
 
-    def parse(self, text: str) -> List[Dict]:
+    def parse(self, text: str) -> list[dict]:
         """Parse RIS string."""
         clean_body = self.clean_text(text)
         lines = clean_body.split("\n")
@@ -154,13 +153,13 @@ class BaseParser(ABC):
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise IOError(f"Missing end of record tag in line {line_number}:\n {line}")
+                raise OSError(f"Missing end of record tag in line {line_number}:\n {line}")
             self._add_tag(tag, line)
             self.in_ref = True
             raise NextLine
 
         if not self.in_ref:
-            raise IOError(f"Invalid start tag in line {line_number}:\n {line}")
+            raise OSError(f"Invalid start tag in line {line_number}:\n {line}")
 
         if tag in self.mapping:
             self._add_tag(tag, line)
@@ -177,14 +176,14 @@ class BaseParser(ABC):
         if self.in_ref:
             # Active reference
             if self.last_tag is None:
-                raise IOError(f"Expected tag in line {line_number}:\n {line}")
+                raise OSError(f"Expected tag in line {line_number}:\n {line}")
             # Active tag
             self._add_tag(self.last_tag, line, all_line=True)
             raise NextLine
 
         if self.is_header(line):
             raise NextLine
-        raise IOError(f"Expected start tag in line {line_number}:\n {line}")
+        raise OSError(f"Expected start tag in line {line_number}:\n {line}")
 
     def _add_single_value(self, name, value, is_multi=False):
         """Process a single line.
@@ -217,7 +216,7 @@ class BaseParser(ABC):
             if not isinstance(self.current[name], str):
                 raise
             must_exist = self.current[name]
-            self.current[name] = [must_exist] + value_list
+            self.current[name] = [must_exist, *value_list]
 
     def _add_tag(self, tag, line, all_line=False):
         self.last_tag = tag
@@ -277,10 +276,10 @@ class WokParser(BaseParser):
 
     START_TAG = "PT"
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
-    DEFAULT_IGNORE = ["FN", "VR", "EF"]
+    DEFAULT_IGNORE: ClassVar[list[str]] = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING = {}
+    DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
 
     def get_content(self, line):
         return line[2:].strip()
@@ -309,12 +308,12 @@ class RisParser(BaseParser):
 
 
 def load(
-    file: Union[TextIO, Path],
+    file: TextIO | Path,
     *,
-    encoding: Optional[str] = None,
-    implementation: Optional[BaseParser] = None,
+    encoding: str | None = None,
+    implementation: BaseParser | None = None,
     **kw,
-) -> List[Dict]:
+) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -339,7 +338,7 @@ def load(
     return loads(text, implementation=implementation, **kw)
 
 
-def loads(text: str, *, implementation: Optional[BaseParser] = None, **kw) -> List[Dict]:
+def loads(text: str, *, implementation: BaseParser | None = None, **kw) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the

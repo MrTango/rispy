@@ -15,11 +15,11 @@ Additional updates:
 
 Tooling updates:
 
-* Switch to flit
-* Update black
-* Switch from flake8 + isort to ruff
 * Support and test python 3.8 through 3.11
-
+* Update black
+* Switch to ruff from flake8 + isort
+* Switch to flit
+* Add basic coverage reports to github actions
 
 v0.7.1 (2021-06-01)
 -------------------

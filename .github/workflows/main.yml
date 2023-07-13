@@ -14,20 +14,18 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: install
       run: |
-        python -m pip install --upgrade setuptools wheel pip
-        python ./setup.py bdist_wheel
-        export WHLNAME="./dist/rispy-0.CI-py3-none-any.whl"
-        mv ./dist/*.whl $WHLNAME
-        pip install --upgrade "$WHLNAME[dev,test]"
+        python -m pip install -U pip
+        pip install -e ".[dev]"
     - name: lint
       run: |
         make lint
     - name: test
       run: |
-        make test
+        make coverage
+        coverage report
