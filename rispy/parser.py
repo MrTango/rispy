@@ -1,13 +1,18 @@
 """RIS Parser."""
 
 from collections import defaultdict
-from itertools import chain
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, TextIO, Union, Optional
 import re
 
-from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, WOK_TAG_KEY_MAPPING, WOK_LIST_TYPE_TAGS
+from .config import (
+    DELIMITED_TAG_MAPPING,
+    LIST_TYPE_TAGS,
+    TAG_KEY_MAPPING,
+    WOK_TAG_KEY_MAPPING,
+    WOK_LIST_TYPE_TAGS,
+)
 
 
 __all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
@@ -55,12 +60,14 @@ class BaseParser(ABC):
     DEFAULT_IGNORE: List[str] = []
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
+    DEFAULT_DELIMITER_MAPPING: Dict
 
     def __init__(
         self,
         *,
         mapping: Optional[Dict] = None,
         list_tags: Optional[List[str]] = None,
+        delimiter_mapping: Optional[Dict] = None,
         ignore: Optional[List[str]] = None,
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
@@ -71,6 +78,7 @@ class BaseParser(ABC):
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
+            delimiter_mapping (dict, optional): Map of delimiters to tags.
             ignore (list, optional): List of tags to ignore.
             skip_missing_tags (bool, optional): Bool to skip lines that don't have
                                                 valid tags, regardless of whether
@@ -98,6 +106,9 @@ class BaseParser(ABC):
         self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
+        self.delimiter_map = (
+            delimiter_mapping if delimiter_mapping is not None else self.DEFAULT_DELIMITER_MAPPING
+        )
         self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
         self.skip_missing_tags = skip_missing_tags
         self.skip_unknown_tags = skip_unknown_tags
@@ -138,7 +149,6 @@ class BaseParser(ABC):
             raise NextLine
 
         if tag == self.END_TAG:
-            self._finalize_record(self.current)
             return self.current
 
         if tag == self.START_TAG:
@@ -177,27 +187,37 @@ class BaseParser(ABC):
         raise IOError(f"Expected start tag in line {line_number}:\n {line}")
 
     def _add_single_value(self, name, value, is_multi=False):
+        """Process a single line.
+
+        This method is only run on tags where repeated tags are not expected.
+        The output for a tag can be a list when a delimiter is specified,
+        even if it is not a list tag.
+        """
         if not is_multi:
             if self.enforce_list_tags or name not in self.current:
                 ignore_this_if_has_one = value
                 self.current.setdefault(name, ignore_this_if_has_one)
             else:
                 self._add_list_value(name, value)
-            return
-
-        value_must_exist_or_is_bug = self.current[name]
-        self.current[name] = " ".join((value_must_exist_or_is_bug, value))
+        else:
+            value_must_exist_or_is_bug = self.current[name]
+            if isinstance(value, list):
+                self.current[name].extend(value)
+            else:
+                self.current[name] = " ".join((value_must_exist_or_is_bug, value))
 
     def _add_list_value(self, name, value):
+        """Process tags with multiple values."""
+        value_list = value if isinstance(value, list) else [value]
         try:
-            self.current[name].append(value)
+            self.current[name].extend(value_list)
         except KeyError:
-            self.current[name] = [value]
+            self.current[name] = value_list
         except AttributeError:
             if not isinstance(self.current[name], str):
                 raise
             must_exist = self.current[name]
-            self.current[name] = [must_exist] + [value]
+            self.current[name] = [must_exist] + value_list
 
     def _add_tag(self, tag, line, all_line=False):
         self.last_tag = tag
@@ -207,11 +227,14 @@ class BaseParser(ABC):
         else:
             new_value = self.get_content(line)
 
-        if tag not in self.list_tags:
-            self._add_single_value(name, new_value, is_multi=all_line)
-            return
+        delimiter = self.delimiter_map.get(tag)
+        if delimiter is not None:
+            new_value = [i.strip() for i in new_value.split(delimiter)]
 
-        self._add_list_value(name, new_value)
+        if tag in self.list_tags:
+            self._add_list_value(name, new_value)
+        else:
+            self._add_single_value(name, new_value, is_multi=all_line)
 
     def _add_unknown_tag(self, tag, line):
         name = self.mapping["UK"]
@@ -221,17 +244,6 @@ class BaseParser(ABC):
             self.current[name] = defaultdict(list)
 
         self.current[name][tag].append(value)
-
-    def _finalize_record(self, record: dict):
-        """Make final updates to record inplace prior to completion."""
-
-        # split/strip multiple URLs on a single line; consistent with the the UR
-        # specification: "multiple addresses can be entered on one line using a
-        # semi-colon as a separator"
-        if "urls" in record:
-            record["urls"] = [
-                url.strip() for url in chain(*[url.split(";") for url in record["urls"]])
-            ]
 
     def clean_text(self, text: str) -> str:
         """Clean string before parsing."""
@@ -268,6 +280,7 @@ class WokParser(BaseParser):
     DEFAULT_IGNORE = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING = {}
 
     def get_content(self, line):
         return line[2:].strip()
@@ -283,6 +296,7 @@ class RisParser(BaseParser):
     PATTERN = r"^[A-Z][A-Z0-9]  - |^ER  -\s*$"
     DEFAULT_MAPPING = TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING = DELIMITED_TAG_MAPPING
 
     counter_re = re.compile("^[0-9]+.")
 
