@@ -1,15 +1,6 @@
-.PHONY: clean lint format test release dist
+.PHONY: clean lint format test coverage build publish
 
 .DEFAULT_GOAL := help
-define BROWSER_PYSCRIPT
-import os, webbrowser, sys
-try:
-    from urllib import pathname2url
-except:
-    from urllib.request import pathname2url
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
-endef
-export BROWSER_PYSCRIPT
 
 define PRINT_HELP_PYSCRIPT
 import re, sys
@@ -21,12 +12,12 @@ for line in sys.stdin:
 		print("%-20s %s" % (target, help))
 endef
 export PRINT_HELP_PYSCRIPT
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
+
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-clean:  ## remove all build, test and Python artifacts
+clean:  ## Remove all build, test and Python artifacts
 	# build artifacts
 	rm -fr build/
 	rm -fr dist/
@@ -34,7 +25,6 @@ clean:  ## remove all build, test and Python artifacts
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 	# test artifacts
-	rm -fr .tox/
 	rm -fr htmlcov/
 	# python artifacts
 	find . -name '*.pyc' -exec rm -f {} +
@@ -42,21 +32,24 @@ clean:  ## remove all build, test and Python artifacts
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
-lint:  ## Check for python formatting issues via black & flake8
-	@black . --check && flake8 .
+lint:  ## Check python formatting issues
+	@black . --check && ruff .
 
-format:  ## Modify python code using black & show flake8 issues
-	@black . && flake8 .
+format:  ## Fix python formatting issues where possible
+	@black . && ruff . --fix --show-fixes
 
 test:  ## Run unit test suite
 	@py.test
 
+coverage:  ## Run coverage and create html report
+	coverage run -m pytest
+	coverage html -d coverage_html
+
 build: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
+	flit build
 	ls -l dist
 
-release: clean build ## package and upload a release
-	twine upload dist/*
-	git tag -a "$(shell python setup.py --version)" -m ""
+publish: ## package and upload a release
+	flit publish
+	git tag -a "$(python -c 'import rispy; print(rispy.__version__)')" -m ""
 	git push --tags

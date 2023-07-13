@@ -1,24 +1,27 @@
 """RIS Parser."""
 
-from collections import defaultdict
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Dict, List, TextIO, Union, Optional
 import re
+from abc import ABC, abstractmethod
+from collections import defaultdict
+from pathlib import Path
+from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
 
 from .config import (
     DELIMITED_TAG_MAPPING,
     LIST_TYPE_TAGS,
     TAG_KEY_MAPPING,
-    WOK_TAG_KEY_MAPPING,
     WOK_LIST_TYPE_TAGS,
+    WOK_TAG_KEY_MAPPING,
 )
-
 
 __all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
 
 
 class NextLine(Exception):
+    pass
+
+
+class ParseError(Exception):
     pass
 
 
@@ -57,7 +60,7 @@ class BaseParser(ABC):
     START_TAG: str
     END_TAG: str = "ER"
     PATTERN: str
-    DEFAULT_IGNORE: List[str] = []
+    DEFAULT_IGNORE: ClassVar[List[str]] = []
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
     DEFAULT_DELIMITER_MAPPING: Dict
@@ -154,13 +157,13 @@ class BaseParser(ABC):
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise IOError(f"Missing end of record tag in line {line_number}:\n {line}")
+                raise ParseError(f"Missing end of record tag in line {line_number}:\n {line}")
             self._add_tag(tag, line)
             self.in_ref = True
             raise NextLine
 
         if not self.in_ref:
-            raise IOError(f"Invalid start tag in line {line_number}:\n {line}")
+            raise ParseError(f"Invalid start tag in line {line_number}:\n {line}")
 
         if tag in self.mapping:
             self._add_tag(tag, line)
@@ -177,14 +180,14 @@ class BaseParser(ABC):
         if self.in_ref:
             # Active reference
             if self.last_tag is None:
-                raise IOError(f"Expected tag in line {line_number}:\n {line}")
+                raise ParseError(f"Expected tag in line {line_number}:\n {line}")
             # Active tag
             self._add_tag(self.last_tag, line, all_line=True)
             raise NextLine
 
         if self.is_header(line):
             raise NextLine
-        raise IOError(f"Expected start tag in line {line_number}:\n {line}")
+        raise ParseError(f"Expected start tag in line {line_number}:\n {line}")
 
     def _add_single_value(self, name, value, is_multi=False):
         """Process a single line.
@@ -217,7 +220,7 @@ class BaseParser(ABC):
             if not isinstance(self.current[name], str):
                 raise
             must_exist = self.current[name]
-            self.current[name] = [must_exist] + value_list
+            self.current[name] = [must_exist, *value_list]
 
     def _add_tag(self, tag, line, all_line=False):
         self.last_tag = tag
@@ -277,10 +280,10 @@ class WokParser(BaseParser):
 
     START_TAG = "PT"
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
-    DEFAULT_IGNORE = ["FN", "VR", "EF"]
+    DEFAULT_IGNORE: ClassVar[List[str]] = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING = {}
+    DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
 
     def get_content(self, line):
         return line[2:].strip()
@@ -339,7 +342,7 @@ def load(
     return loads(text, implementation=implementation, **kw)
 
 
-def loads(text: str, *, implementation: Optional[BaseParser] = None, **kw) -> List[Dict]:
+def loads(text: str, *, implementation: Optional[Type[BaseParser]] = None, **kw) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the

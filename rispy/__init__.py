@@ -1,8 +1,8 @@
-"""Read and write RIS and WOK files."""
+"""A Python reader/writer of RIS reference files"""
 
 from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, TYPE_OF_REFERENCE_MAPPING
-from .parser import load, loads, BaseParser, RisParser, WokParser
-from .writer import dump, dumps, BaseWriter, RisWriter
+from .parser import BaseParser, RisParser, WokParser, load, loads
+from .writer import BaseWriter, RisWriter, dump, dumps
 
 __version__ = "0.7.1"
 

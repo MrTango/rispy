@@ -1,9 +1,10 @@
-from pathlib import Path
 from copy import deepcopy
+from pathlib import Path
+from typing import ClassVar, List
 
 import pytest
-import rispy
 
+import rispy
 
 DATA_DIR = Path(__file__).parent.resolve() / "data"
 
@@ -108,15 +109,15 @@ def test_writing_all_list_tags():
 
 def test_file_implementation_write():
     class CustomParser(rispy.RisParser):
-        DEFAULT_IGNORE = ["JF", "ID", "KW"]
+        DEFAULT_IGNORE: ClassVar[List[str]] = ["JF", "ID", "KW"]
 
     class CustomWriter(rispy.RisWriter):
-        DEFAULT_IGNORE = ["JF", "ID", "KW"]
+        DEFAULT_IGNORE: ClassVar[List[str]] = ["JF", "ID", "KW"]
 
     list_tags = ["SN", "T1", "A1", "UR"]
 
     fn = DATA_DIR / "example_full.ris"
-    with open(fn, "r") as f:
+    with open(fn) as f:
         entries = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
 
     fn_write = DATA_DIR / "example_full_write.ris"
@@ -124,7 +125,7 @@ def test_file_implementation_write():
     with open(fn_write, "w") as f:
         rispy.dump(entries, f, implementation=CustomWriter, list_tags=list_tags)
 
-    with open(fn_write, "r") as f:
+    with open(fn_write) as f:
         reload = rispy.load(f, implementation=CustomParser, list_tags=list_tags)
 
     assert reload == entries

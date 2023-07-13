@@ -1,7 +1,7 @@
 """Miscellaneous functions."""
 
-from typing import Dict, List
 from copy import deepcopy
+from typing import Dict, List
 
 from .config import TYPE_OF_REFERENCE_MAPPING
 
@@ -41,9 +41,9 @@ def convert_reference_types(
         old_type = ref["type_of_reference"]
         try:
             ref["type_of_reference"] = d[old_type]
-        except KeyError:
+        except KeyError as err:
             if strict and old_type not in d.values():
-                raise KeyError(f'Type "{old_type}" not found.')
+                raise KeyError(f'Type "{old_type}" not found.') from err
         return ref
 
     if not reverse:

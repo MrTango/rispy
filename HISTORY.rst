@@ -4,7 +4,7 @@ History
 v0.7.1 (2021-06-01)
 -------------------
 
-* README.rst formatting fixes 
+* README.rst formatting fixes
 
 v0.7.0 (2021-06-01)
 -------------------

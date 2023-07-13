@@ -324,7 +324,8 @@ Common developer commands are in the provided `Makefile`; if you don't have `mak
    # setup environment
    python -m venv venv
    source venv/bin/activate
-   pip install -e ".[dev,test]"
+   python -m pip install -U pip
+   python -m pip install -e ".[dev]"
 
    # check if code format changes are required
    make lint
