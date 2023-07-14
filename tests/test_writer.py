@@ -191,3 +191,22 @@ def test_write_multiple_unknown_tag_diff_type():
     assert lines[6] == "JP  - CRISPR"
     assert lines[7] == "ED  - Swinburne, Ricardo"
     assert len(lines) == 9
+
+
+def test_delimited_dump():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "start_page": "379",
+            "urls": ["https://example.com", "https://example2.com"],
+        }
+    ]
+
+    text_output = rispy.dumps(entries, list_tags=[])
+
+    # check output is as expected
+    lines = text_output.splitlines()
+    assert lines[5] == "UR  - https://example.com;https://example2.com"
+    assert len(lines) == 7

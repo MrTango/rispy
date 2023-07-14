@@ -59,6 +59,7 @@ class BaseParser(ABC):
 
     START_TAG: str
     END_TAG: str = "ER"
+    UNKNOWN_TAG: str = "UK"
     PATTERN: str
     DEFAULT_IGNORE: ClassVar[List[str]] = []
     DEFAULT_MAPPING: Dict
@@ -240,7 +241,7 @@ class BaseParser(ABC):
             self._add_single_value(name, new_value, is_multi=all_line)
 
     def _add_unknown_tag(self, tag, line):
-        name = self.mapping["UK"]
+        name = self.mapping[self.UNKNOWN_TAG]
         value = self.get_content(line)
         # check if unknown_tag dict exists
         if name not in self.current:
