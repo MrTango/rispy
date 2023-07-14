@@ -227,7 +227,7 @@ def test_delimited_dump():
     ]
 
     # remove URLs from list_tags and give it a custom delimiter
-    text_output = rispy.dumps(entries, list_tags=["AU"], delimiter_mapping={"UR": ","})
+    text_output = rispy.dumps(entries, list_tags=["AU"], delimiter_tags_mapping={"UR": ","})
 
     # check output is as expected
     lines = text_output.splitlines()

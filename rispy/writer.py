@@ -54,7 +54,7 @@ class BaseWriter(ABC):
         *,
         mapping: Optional[Dict] = None,
         list_tags: Optional[List[str]] = None,
-        delimiter_mapping: Optional[Dict] = None,
+        delimiter_tags_mapping: Optional[Dict] = None,
         ignore: Optional[List[str]] = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
@@ -64,7 +64,7 @@ class BaseWriter(ABC):
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
-            delimiter_mapping (dict, optional): Map of delimiters to tags.
+            delimiter_tags_mapping (dict, optional): Map of delimiters to tags.
             ignore (list, optional): List of tags to ignore.
             skip_unknown_tags (bool, optional): Bool for whether to write unknown
                                                 tags to the file. Defaults to
@@ -77,7 +77,9 @@ class BaseWriter(ABC):
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
         self.delimiter_map = (
-            delimiter_mapping if delimiter_mapping is not None else self.DEFAULT_DELIMITER_MAPPING
+            delimiter_tags_mapping
+            if delimiter_tags_mapping is not None
+            else self.DEFAULT_DELIMITER_MAPPING
         )
         self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
         self._rev_mapping = invert_dictionary(self.mapping)

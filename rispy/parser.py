@@ -71,7 +71,7 @@ class BaseParser(ABC):
         *,
         mapping: Optional[Dict] = None,
         list_tags: Optional[List[str]] = None,
-        delimiter_mapping: Optional[Dict] = None,
+        delimiter_tags_mapping: Optional[Dict] = None,
         ignore: Optional[List[str]] = None,
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
@@ -82,7 +82,7 @@ class BaseParser(ABC):
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
-            delimiter_mapping (dict, optional): Map of delimiters to tags.
+            delimiter_tags_mapping (dict, optional): Map of delimiters to tags.
             ignore (list, optional): List of tags to ignore.
             skip_missing_tags (bool, optional): Bool to skip lines that don't have
                                                 valid tags, regardless of whether
@@ -111,7 +111,9 @@ class BaseParser(ABC):
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
         self.delimiter_map = (
-            delimiter_mapping if delimiter_mapping is not None else self.DEFAULT_DELIMITER_MAPPING
+            delimiter_tags_mapping
+            if delimiter_tags_mapping is not None
+            else self.DEFAULT_DELIMITER_MAPPING
         )
         self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
         self.skip_missing_tags = skip_missing_tags
