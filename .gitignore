@@ -10,6 +10,7 @@
 .coverage
 .idea
 .mypy_cache
+.ruff_cache
 .ropeproject
 .tmp
 /.Python
@@ -18,6 +19,7 @@
 /.project
 /.pydevproject
 build
+coverage_html
 dist
 venv
 
