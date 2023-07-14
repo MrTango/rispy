@@ -193,6 +193,27 @@ def test_write_multiple_unknown_tag_diff_type():
     assert len(lines) == 9
 
 
+def test_default_dump():
+    entries = [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Shannon, Claude E.", "Doe, John"],
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "start_page": "379",
+            "urls": ["https://example.com", "https://example2.com"],
+        }
+    ]
+
+    text_output = rispy.dumps(entries)
+    lines = text_output.splitlines()
+    assert lines[2] == "AU  - Shannon, Claude E."
+    assert lines[3] == "AU  - Doe, John"
+    assert lines[7] == "UR  - https://example.com"
+    assert lines[8] == "UR  - https://example2.com"
+    assert len(lines) == 10
+
+
 def test_delimited_dump():
     entries = [
         {
@@ -205,6 +226,7 @@ def test_delimited_dump():
         }
     ]
 
+    # remove URLs from list_tags and give it a custom delimiter
     text_output = rispy.dumps(entries, list_tags=["AU"], delimiter_mapping={"UR": ","})
 
     # check output is as expected
