@@ -197,6 +197,7 @@ def test_delimited_dump():
     entries = [
         {
             "type_of_reference": "JOUR",
+            "authors": ["Shannon, Claude E.", "Doe, John"],
             "year": "1948/07//",
             "title": "A Mathematical Theory of Communication",
             "start_page": "379",
@@ -204,9 +205,11 @@ def test_delimited_dump():
         }
     ]
 
-    text_output = rispy.dumps(entries, list_tags=[])
+    text_output = rispy.dumps(entries, list_tags=["AU"], delimiter_mapping={"UR": ","})
 
     # check output is as expected
     lines = text_output.splitlines()
-    assert lines[5] == "UR  - https://example.com;https://example2.com"
-    assert len(lines) == 7
+    assert lines[2] == "AU  - Shannon, Claude E."
+    assert lines[3] == "AU  - Doe, John"
+    assert lines[7] == "UR  - https://example.com,https://example2.com"
+    assert len(lines) == 9
