@@ -4,7 +4,7 @@ import warnings
 from abc import ABC
 from typing import ClassVar, Dict, List, Optional, TextIO, Type
 
-from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING
+from .config import DELIMITED_TAG_MAPPING, LIST_TYPE_TAGS, TAG_KEY_MAPPING
 from .utils import invert_dictionary
 
 __all__ = ["dump", "dumps", "BaseWriter", "RisWriter"]
@@ -39,11 +39,14 @@ class BaseWriter(ABC):
 
     START_TAG: str
     END_TAG: str = "ER"
+    UNKNOWN_TAG: str = "UK"
     PATTERN: str
     DEFAULT_IGNORE: ClassVar[List[str]] = []
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
+    DEFAULT_DELIMITER_MAPPING: Dict
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
+    REFERENCE_TYPE_KEY: str = "type_of_reference"
     SEPARATOR: Optional[str] = "\n"
 
     def __init__(
@@ -51,6 +54,7 @@ class BaseWriter(ABC):
         *,
         mapping: Optional[Dict] = None,
         list_tags: Optional[List[str]] = None,
+        delimiter_tags_mapping: Optional[Dict] = None,
         ignore: Optional[List[str]] = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
@@ -60,6 +64,7 @@ class BaseWriter(ABC):
         Args:
             mapping (dict, optional): Map tags to tag names.
             list_tags (list, optional): List of list-type tags.
+            delimiter_tags_mapping (dict, optional): Map of delimiters to tags.
             ignore (list, optional): List of tags to ignore.
             skip_unknown_tags (bool, optional): Bool for whether to write unknown
                                                 tags to the file. Defaults to
@@ -71,15 +76,20 @@ class BaseWriter(ABC):
         """
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
+        self.delimiter_map = (
+            delimiter_tags_mapping
+            if delimiter_tags_mapping is not None
+            else self.DEFAULT_DELIMITER_MAPPING
+        )
         self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
         self._rev_mapping = invert_dictionary(self.mapping)
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
 
     def _get_reference_type(self, ref):
-        if "type_of_reference" in ref.keys():
+        if self.REFERENCE_TYPE_KEY in ref:
             # TODO add check
-            return ref["type_of_reference"]
+            return ref[self.REFERENCE_TYPE_KEY]
 
         if self.DEFAULT_REFERENCE_TYPE is not None:
             return self.DEFAULT_REFERENCE_TYPE
@@ -100,7 +110,7 @@ class BaseWriter(ABC):
 
         tags_to_skip = [self.START_TAG, *self.ignore]
         if self.skip_unknown_tags:
-            tags_to_skip.append("UK")
+            tags_to_skip.append(self.UNKNOWN_TAG)
 
         for label, value in ref.items():
             # not available
@@ -120,16 +130,21 @@ class BaseWriter(ABC):
                     lines.append(self._format_line(tag, val_i))
 
             # unknown tag(s), which are lists held in a defaultdict
-            elif tag == "UK":
+            elif tag == self.UNKNOWN_TAG:
                 for unknown_tag in value.keys():
                     for val_i in value[unknown_tag]:
                         lines.append(self._format_line(unknown_tag, val_i))
+
+            # write delimited tags
+            elif tag in self.delimiter_map:
+                combined_val = self.delimiter_map[tag].join(value)
+                lines.append(self._format_line(tag, combined_val))
 
             # all non-list tags
             else:
                 lines.append(self._format_line(tag, value))
 
-        lines.append(self._format_line("ER"))
+        lines.append(self._format_line(self.END_TAG))
 
         if self.SEPARATOR is not None:
             lines.append(self.SEPARATOR.replace("\n", "", 1))
@@ -159,6 +174,7 @@ class RisWriter(BaseWriter):
     PATTERN = "{tag}  - {value}"
     DEFAULT_MAPPING = TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING = DELIMITED_TAG_MAPPING
 
     def set_header(self, count):
         return f"{count}."
