@@ -1,6 +1,11 @@
 History
 =======
 
+v0.8.1 (2023-07-17)
+-------------------
+
+* Update RIS exporter to optionally write list tags or delimited single tags (@scott-8 #55)
+
 v0.8.0 (2023-07-13)
 -------------------
 
