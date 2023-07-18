@@ -13,6 +13,7 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
+VERSION := $(shell python -c "import rispy; print(rispy.__version__)")
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -51,5 +52,5 @@ build: clean ## builds source and wheel package
 
 publish: ## package and upload a release
 	flit publish
-	git tag -a "$(python -c 'import rispy; print(rispy.__version__)')" -m ""
+	git tag $(VERSION)
 	git push --tags

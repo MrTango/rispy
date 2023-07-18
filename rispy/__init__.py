@@ -4,7 +4,7 @@ from .config import LIST_TYPE_TAGS, TAG_KEY_MAPPING, TYPE_OF_REFERENCE_MAPPING
 from .parser import BaseParser, RisParser, WokParser, load, loads
 from .writer import BaseWriter, RisWriter, dump, dumps
 
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 
 __all__ = [
     "__version__",
