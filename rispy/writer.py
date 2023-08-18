@@ -49,6 +49,7 @@ class BaseWriter(ABC):
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     REFERENCE_TYPE_KEY: str = "type_of_reference"
     SEPARATOR: Optional[str] = "\n"
+    NEWLINE: str = "\n"
 
     def __init__(
         self,
@@ -146,7 +147,7 @@ class BaseWriter(ABC):
         yield self._format_line(self.END_TAG)
 
         if self.SEPARATOR is not None and count < n:
-            yield self.SEPARATOR.replace(self.SEPARATOR, "", 1)
+            yield self.SEPARATOR.replace(self.NEWLINE, "", 1)
 
     def _yield_lines(self, references, extra_line=False):
         n = len(references)
@@ -158,12 +159,12 @@ class BaseWriter(ABC):
     def format_lines(self, file, references):
         """Write references to a file."""
         for line in self._yield_lines(references):
-            file.write(f"{line}{self.SEPARATOR}")
+            file.write(f"{line}{self.NEWLINE}")
 
     def formats(self, references: List[Dict]) -> str:
         """Format a list of references into an RIS string."""
         lines = self._yield_lines(references, extra_line=True)
-        return self.SEPARATOR.join(lines)
+        return self.NEWLINE.join(lines)
 
     def set_header(self, count: int) -> Optional[str]:
         """Create the header for each reference."""
