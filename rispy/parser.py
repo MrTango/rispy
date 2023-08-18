@@ -130,7 +130,7 @@ class BaseParser(ABC):
         lines = clean_body.split(self.newline)
         return list(self._yield_lines(lines, clean=False))
 
-    def parse_lines(self, lines: TextIO | List[str]):
+    def parse_lines(self, lines: Union[TextIO, List[str]]):
         """Parse RIS file line by line."""
         return list(self._yield_lines(lines, clean=True))
 
