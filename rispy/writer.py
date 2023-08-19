@@ -48,7 +48,7 @@ class BaseWriter(ABC):
     DEFAULT_DELIMITER_MAPPING: Dict
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     REFERENCE_TYPE_KEY: str = "type_of_reference"
-    SEPARATOR: Optional[str] = "\n"
+    SEPARATOR: Optional[str] = ""
     NEWLINE: str = "\n"
 
     def __init__(
@@ -147,7 +147,7 @@ class BaseWriter(ABC):
         yield self._format_line(self.END_TAG)
 
         if self.SEPARATOR is not None and count < n:
-            yield self.SEPARATOR.replace(self.NEWLINE, "", 1)
+            yield self.SEPARATOR
 
     def _yield_lines(self, references, extra_line=False):
         n = len(references)
