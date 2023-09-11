@@ -52,8 +52,9 @@ class BaseParser(ABC):
                  first two characters.
         is_tag: Determines whether a line has a tag, returning a bool. Uses
                 regex in `PATTERN` by default.
-        clean_text: Clean the text body before parsing begins. By default,
+        clean_start: Clean the first line of the document. By default,
                     it removes UTF-BOM characters.
+        clean_text: Clean each line before it's parsed.
 
     """
 
@@ -126,15 +127,14 @@ class BaseParser(ABC):
 
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
-        clean_body = self.clean_text(text)
-        lines = clean_body.split(self.newline)
-        return list(self._yield_lines(lines, clean=False))
+        lines = text.split(self.newline)
+        return list(self._yield_lines(lines))
 
     def parse_lines(self, lines: Union[TextIO, List[str]]):
         """Parse RIS file line by line."""
-        return list(self._yield_lines(lines, clean=True))
+        return list(self._yield_lines(lines))
 
-    def _yield_lines(self, lines, clean=True):
+    def _yield_lines(self, lines):
         self.in_ref = False
         self.current = {}
         self.last_tag = None
@@ -142,7 +142,11 @@ class BaseParser(ABC):
 
         for line in lines:
             self.line_number += 1
-            line = self.clean_text(line) if clean else line
+
+            if self.line_number == 0:
+                line = self.clean_start(line)
+
+            line = self.clean_text(line)
 
             if not line.strip():
                 continue
@@ -266,7 +270,11 @@ class BaseParser(ABC):
         self.current[name][tag].append(value)
 
     def clean_text(self, text: str) -> str:
-        """Clean string before parsing."""
+        """CLean each line."""
+        return text
+
+    def clean_start(self, text: str) -> str:
+        """Clean the first line."""
         # remove BOM if present
         text = text.lstrip("\ufeff")
         return text
