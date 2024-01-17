@@ -154,8 +154,7 @@ class BaseWriter(ABC):
     def _format_all_references(self, references):
         for i, ref in enumerate(references):
             lines_ref = self._format_reference(ref, count=i + 1)
-            for line in lines_ref:
-                yield line
+            yield from lines_ref
 
     def formats(self, references: List[Dict]) -> str:
         """Format a list of references into an RIS string."""
