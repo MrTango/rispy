@@ -23,10 +23,10 @@ classifiers = [
 requires-python = ">=3.8"
 
 [project.urls]
-Source = "https://github.com/mrtango/rispy"
-Changes = "https://github.com/MrTango/rispy/blob/main/HISTORY.md"
-Issue Tracker = "https://github.com/MrTango/rispy/issues"
-Download = "https://pypi.org/project/rispy/"
+"Source" = "https://github.com/mrtango/rispy"
+"Changes" = "https://github.com/MrTango/rispy/blob/main/HISTORY.md"
+"Issue Tracker" = "https://github.com/MrTango/rispy/issues"
+"Download" = "https://pypi.org/project/rispy/"
 
 [project.optional-dependencies]
 dev = [
