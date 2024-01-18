@@ -45,6 +45,9 @@ omit = [
     "tests/*",
 ]
 
+[tool.flit.sdist]
+exclude = [".github", "Makefile", "tests"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py38"
