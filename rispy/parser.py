@@ -52,8 +52,9 @@ class BaseParser(ABC):
                  first two characters.
         is_tag: Determines whether a line has a tag, returning a bool. Uses
                 regex in `PATTERN` by default.
-        clean_text: Clean the text body before parsing begins. By default,
+        clean_start: Clean the first line of the document. By default,
                     it removes UTF-BOM characters.
+        clean_text: Clean each line before it's parsed.
 
     """
 
@@ -65,6 +66,7 @@ class BaseParser(ABC):
     DEFAULT_MAPPING: Dict
     DEFAULT_LIST_TAGS: List[str]
     DEFAULT_DELIMITER_MAPPING: Dict
+    DEFAULT_NEWLINE: ClassVar[str] = "\n"
 
     def __init__(
         self,
@@ -76,6 +78,7 @@ class BaseParser(ABC):
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
+        newline: Optional[str] = None,
     ):
         """Initialize the parser function.
 
@@ -105,6 +108,7 @@ class BaseParser(ABC):
                                                 of being overridden. Values set to
                                                 be list tags will still be read as
                                                 list tags. Defaults to `True`.
+            newline (str, optional): Line separator.
 
         """
         self.pattern = re.compile(self.PATTERN)
@@ -119,25 +123,37 @@ class BaseParser(ABC):
         self.skip_missing_tags = skip_missing_tags
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
+        self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
 
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
-        clean_body = self.clean_text(text)
-        lines = clean_body.split("\n")
-        return list(self._parse_lines(lines))
+        lines = text.split(self.newline)
+        return list(self._yield_lines(lines))
 
-    def _parse_lines(self, lines):
+    def parse_lines(self, lines: Union[TextIO, List[str]]):
+        """Parse RIS file line by line."""
+        return list(self._yield_lines(lines))
+
+    def _yield_lines(self, lines):
         self.in_ref = False
         self.current = {}
         self.last_tag = None
+        self.line_number = -1
 
-        for line_number, line in enumerate(lines):
+        for line in lines:
+            self.line_number += 1
+
+            if self.line_number == 0:
+                line = self.clean_start(line)
+
+            line = self.clean_text(line)
+
             if not line.strip():
                 continue
 
             if self.is_tag(line):
                 try:
-                    yield self._parse_tag(line, line_number)
+                    yield self._parse_tag(line)
                     self.current = {}
                     self.in_ref = False
                     self.last_tag = None
@@ -145,11 +161,11 @@ class BaseParser(ABC):
                     continue
             else:
                 try:
-                    yield self._parse_other(line, line_number)
+                    yield self._parse_other(line)
                 except NextLine:
                     continue
 
-    def _parse_tag(self, line, line_number):
+    def _parse_tag(self, line):
         tag = self.get_tag(line)
         if tag in self.ignore:
             raise NextLine
@@ -160,13 +176,13 @@ class BaseParser(ABC):
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise ParseError(f"Missing end of record tag in line {line_number}:\n {line}")
+                raise ParseError(f"Missing end of record tag in line {self.line_number}:\n {line}")
             self._add_tag(tag, line)
             self.in_ref = True
             raise NextLine
 
         if not self.in_ref:
-            raise ParseError(f"Invalid start tag in line {line_number}:\n {line}")
+            raise ParseError(f"Invalid start tag in line {self.line_number}:\n {line}")
 
         if tag in self.mapping:
             self._add_tag(tag, line)
@@ -177,20 +193,20 @@ class BaseParser(ABC):
 
         raise NextLine
 
-    def _parse_other(self, line, line_number):
+    def _parse_other(self, line):
         if self.skip_missing_tags:
             raise NextLine
         if self.in_ref:
             # Active reference
             if self.last_tag is None:
-                raise ParseError(f"Expected tag in line {line_number}:\n {line}")
+                raise ParseError(f"Expected tag in line {self.line_number}:\n {line}")
             # Active tag
             self._add_tag(self.last_tag, line, all_line=True)
             raise NextLine
 
         if self.is_header(line):
             raise NextLine
-        raise ParseError(f"Expected start tag in line {line_number}:\n {line}")
+        raise ParseError(f"Expected start tag in line {self.line_number}:\n {line}")
 
     def _add_single_value(self, name, value, is_multi=False):
         """Process a single line.
@@ -252,7 +268,11 @@ class BaseParser(ABC):
         self.current[name][tag].append(value)
 
     def clean_text(self, text: str) -> str:
-        """Clean string before parsing."""
+        """CLean each line."""
+        return text
+
+    def clean_start(self, text: str) -> str:
+        """Clean the first line."""
         # remove BOM if present
         text = text.lstrip("\ufeff")
         return text
@@ -318,6 +338,7 @@ def load(
     file: Union[TextIO, Path],
     *,
     encoding: Optional[str] = None,
+    newline: Optional[str] = None,
     implementation: Optional[BaseParser] = None,
     **kw,
 ) -> List[Dict]:
@@ -335,14 +356,27 @@ def load(
                                  Consistent with the python standard library,
                                  if `None` is supplied, the default system
                                  encoding is used.
+        newline(str, optional): File line separator.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
 
     Returns:
         list: Returns list of RIS entries.
     """
-    text = file.read_text(encoding=encoding) if isinstance(file, Path) else file.read()
-    return loads(text, implementation=implementation, **kw)
+    if implementation is None:
+        parser = RisParser
+    else:
+        parser = implementation
+
+    if hasattr(file, "readline"):
+        return parser(newline=newline, **kw).parse_lines(file)
+    elif hasattr(file, "open"):
+        with file.open(mode="r", newline=newline, encoding=encoding) as f:
+            return parser(**kw).parse_lines(f)
+    elif hasattr(file, "read"):
+        return loads(file.read(), implementation=implementation, newline=newline, **kw)
+    else:
+        raise ValueError("File must be a file-like object or a Path object")
 
 
 def loads(text: str, *, implementation: Optional[Type[BaseParser]] = None, **kw) -> List[Dict]:
