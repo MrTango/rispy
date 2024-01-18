@@ -7,7 +7,7 @@ authors = [
 maintainers = [
     {name = "Andy Shapiro", email = "shapiromatron@gmail.com"}
 ]
-readme = "README.rst"
+readme = "README.md"
 dynamic = ["version", "description"]
 keywords = ["RIS", "parser", "bibliograph"]
 classifiers = [
@@ -24,6 +24,9 @@ requires-python = ">=3.8"
 
 [project.urls]
 Source = "https://github.com/mrtango/rispy"
+Changes = "https://github.com/MrTango/rispy/blob/main/HISTORY.md"
+Issue Tracker = "https://github.com/MrTango/rispy/issues"
+Download = "https://pypi.org/project/rispy/"
 
 [project.optional-dependencies]
 dev = [
@@ -51,4 +54,4 @@ select = ["F", "E", "W", "I", "UP", "S", "B", "T20", "RUF"]
 "test_*.py" = ["S101"]
 
 [tool.pytest.ini_options]
-addopts = "--doctest-glob='*.rst'"
+addopts = "--doctest-glob='*.md'"
