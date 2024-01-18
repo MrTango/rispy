@@ -1,6 +1,12 @@
 History
 =======
 
+v0.9.0 (2024-XX-XX)
+-------------------
+
+* Update to support python 3.12
+* (dev) Remove black; use ruff format instead
+
 v0.8.1 (2023-07-17)
 -------------------
 

@@ -27,21 +27,15 @@ Source = "https://github.com/mrtango/rispy"
 
 [project.optional-dependencies]
 dev = [
-    "pytest ~=7.4.0",
+    "pytest ~=7.4.4",
     "flit ~= 3.9.0",
-    "black ~= 23.7.0",
-    "ruff ~= 0.0.278",
-    "coverage ~= 7.2.7",
+    "ruff ~= 0.1.13",
+    "coverage ~= 7.4.0",
 ]
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
-
-[tool.black]
-line-length = 98
-target-version = ['py37', 'py38', 'py39', 'py310', 'py311', 'py312']
-include = '\.pyi?$'
 
 [tool.coverage.run]
 omit = [
