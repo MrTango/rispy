@@ -2,7 +2,8 @@
 
 import warnings
 from abc import ABC
-from typing import ClassVar, Dict, List, Optional, TextIO, Type
+from pathlib import Path
+from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
 
 from .config import DELIMITED_TAG_MAPPING, LIST_TYPE_TAGS, TAG_KEY_MAPPING
 from .utils import invert_dictionary
@@ -47,7 +48,8 @@ class BaseWriter(ABC):
     DEFAULT_DELIMITER_MAPPING: Dict
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     REFERENCE_TYPE_KEY: str = "type_of_reference"
-    SEPARATOR: Optional[str] = "\n"
+    SEPARATOR: Optional[str] = ""
+    NEWLINE: str = "\n"
 
     def __init__(
         self,
@@ -100,13 +102,11 @@ class BaseWriter(ABC):
         """Format a RIS line."""
         return self.PATTERN.format(tag=tag, value=value)
 
-    def _format_reference(self, ref, count):
-        lines = []
-
+    def _format_reference(self, ref, count, n):
         header = self.set_header(count)
         if header is not None:
-            lines.append(header)
-        lines.append(self._format_line(self.START_TAG, self._get_reference_type(ref)))
+            yield header
+        yield self._format_line(self.START_TAG, self._get_reference_type(ref))
 
         tags_to_skip = [self.START_TAG, *self.ignore]
         if self.skip_unknown_tags:
@@ -127,40 +127,44 @@ class BaseWriter(ABC):
             # list tag
             if tag in self.list_tags or (not self.enforce_list_tags and isinstance(value, list)):
                 for val_i in value:
-                    lines.append(self._format_line(tag, val_i))
+                    yield self._format_line(tag, val_i)
 
             # unknown tag(s), which are lists held in a defaultdict
             elif tag == self.UNKNOWN_TAG:
                 for unknown_tag in value.keys():
                     for val_i in value[unknown_tag]:
-                        lines.append(self._format_line(unknown_tag, val_i))
+                        yield self._format_line(unknown_tag, val_i)
 
             # write delimited tags
             elif tag in self.delimiter_map:
                 combined_val = self.delimiter_map[tag].join(value)
-                lines.append(self._format_line(tag, combined_val))
+                yield self._format_line(tag, combined_val)
 
             # all non-list tags
             else:
-                lines.append(self._format_line(tag, value))
+                yield self._format_line(tag, value)
 
-        lines.append(self._format_line(self.END_TAG))
+        yield self._format_line(self.END_TAG)
 
-        if self.SEPARATOR is not None:
-            lines.append(self.SEPARATOR.replace("\n", "", 1))
+        if self.SEPARATOR is not None and count < n:
+            yield self.SEPARATOR
 
-        return lines
-
-    def _format_all_references(self, references):
+    def _yield_lines(self, references, extra_line=False):
+        n = len(references)
         for i, ref in enumerate(references):
-            lines_ref = self._format_reference(ref, count=i + 1)
-            for line in lines_ref:
-                yield line
+            yield from self._format_reference(ref, count=i + 1, n=n)
+        if extra_line:
+            yield ""
+
+    def format_lines(self, file, references):
+        """Write references to a file."""
+        for line in self._yield_lines(references):
+            file.write(f"{line}{self.NEWLINE}")
 
     def formats(self, references: List[Dict]) -> str:
         """Format a list of references into an RIS string."""
-        lines = self._format_all_references(references)
-        return "\n".join(lines)
+        lines = self._yield_lines(references, extra_line=True)
+        return self.NEWLINE.join(lines)
 
     def set_header(self, count: int) -> Optional[str]:
         """Create the header for each reference."""
@@ -182,8 +186,9 @@ class RisWriter(BaseWriter):
 
 def dump(
     references: List[Dict],
-    file: TextIO,
+    file: Union[TextIO, Path],
     *,
+    encoding: Optional[str] = None,
     implementation: Optional[BaseWriter] = None,
     **kw,
 ):
@@ -198,11 +203,22 @@ def dump(
     Args:
         references (List[Dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
+        encoding (str, optional): Encoding to use when opening file.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
     """
-    text = dumps(references, implementation=implementation, **kw)
-    file.writelines(text)
+    if implementation is None:
+        writer = RisWriter
+    else:
+        writer = implementation
+
+    if hasattr(file, "write"):
+        writer(**kw).format_lines(file, references)
+    elif hasattr(file, "open"):
+        with file.open(mode="w", encoding=encoding) as f:
+            writer(**kw).format_lines(f, references)
+    else:
+        raise ValueError("File must be a file-like object or a Path object")
 
 
 def dumps(
