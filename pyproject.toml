@@ -7,7 +7,7 @@ authors = [
 maintainers = [
     {name = "Andy Shapiro", email = "shapiromatron@gmail.com"}
 ]
-readme = "README.rst"
+readme = "README.md"
 dynamic = ["version", "description"]
 keywords = ["RIS", "parser", "bibliograph"]
 classifiers = [
@@ -18,29 +18,27 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 requires-python = ">=3.8"
 
 [project.urls]
-Source = "https://github.com/mrtango/rispy"
+"Source" = "https://github.com/mrtango/rispy"
+"Changes" = "https://github.com/MrTango/rispy/blob/main/HISTORY.md"
+"Issue Tracker" = "https://github.com/MrTango/rispy/issues"
+"Download" = "https://pypi.org/project/rispy/"
 
 [project.optional-dependencies]
 dev = [
-    "pytest ~=7.4.0",
+    "pytest ~=7.4.4",
     "flit ~= 3.9.0",
-    "black ~= 23.7.0",
-    "ruff ~= 0.0.278",
-    "coverage ~= 7.2.7",
+    "ruff ~= 0.1.13",
+    "coverage ~= 7.4.0",
 ]
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
-
-[tool.black]
-line-length = 98
-target-version = ['py37', 'py38', 'py39', 'py310', 'py311']
-include = '\.pyi?$'
 
 [tool.coverage.run]
 omit = [
@@ -56,4 +54,4 @@ select = ["F", "E", "W", "I", "UP", "S", "B", "T20", "RUF"]
 "test_*.py" = ["S101"]
 
 [tool.pytest.ini_options]
-addopts = "--doctest-glob='*.rst'"
+addopts = "--doctest-glob='*.md'"

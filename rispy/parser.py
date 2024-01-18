@@ -176,9 +176,7 @@ class BaseParser(ABC):
         if tag == self.START_TAG:
             # New entry
             if self.in_ref:
-                raise ParseError(
-                    f"Missing end of record tag in line {self.line_number}:\n {line}"
-                )
+                raise ParseError(f"Missing end of record tag in line {self.line_number}:\n {line}")
             self._add_tag(tag, line)
             self.in_ref = True
             raise NextLine
