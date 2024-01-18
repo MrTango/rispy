@@ -1,6 +1,6 @@
 # History
 
-## v0.9.0 (2024-XX-XX)
+## v0.9.0 (2024-01-17)
 
 * Improve performance to yield from file objects instead of loading into memory at once (@scott-8 #57)
 * Support Python 3.12
