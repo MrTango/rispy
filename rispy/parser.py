@@ -319,7 +319,7 @@ class RisParser(BaseParser):
     """Subclass of Base for reading base RIS files."""
 
     START_TAG = "TY"
-    PATTERN = r"^[A-Z][A-Z0-9]  - |^ER  -\s*$"
+    PATTERN = r"^[A-Z][A-Z0-9]  - ?|^ER  -\s*$"
     DEFAULT_MAPPING = TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING = DELIMITED_TAG_MAPPING

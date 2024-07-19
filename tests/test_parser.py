@@ -378,3 +378,12 @@ def test_url_tag():
     assert entries[1]["urls"] == ["http://example.com", "http://www.example.com"]
     assert entries[2]["urls"] == ["http://example.com", "http://www.example.com"]
     assert entries[3]["urls"] == ["http://example.com", "http://www.example.com"]
+
+def test_empty_tag():
+    filepath = DATA_DIR / "example_empty_tag.ris"
+    with open(filepath) as f:
+        entries = rispy.load(f)
+
+    assert len(entries) == 1
+    assert entries[0]['number'] == '9'
+    assert entries[0]['start_page'] == ''
