@@ -52,8 +52,6 @@ class BaseParser(ABC):
                  first two characters.
         is_tag: Determines whether a line has a tag, returning a bool. Uses
                 regex in `PATTERN` by default.
-        clean_start: Clean the first line of the document. By default,
-                    it removes UTF-BOM characters.
         clean_text: Clean each line before it's parsed.
 
     """
@@ -142,9 +140,6 @@ class BaseParser(ABC):
 
         for line in lines:
             self.line_number += 1
-
-            if self.line_number == 0:
-                line = self.clean_start(line)
 
             line = self.clean_text(line)
 
@@ -269,12 +264,6 @@ class BaseParser(ABC):
 
     def clean_text(self, text: str) -> str:
         """CLean each line."""
-        return text
-
-    def clean_start(self, text: str) -> str:
-        """Clean the first line."""
-        # remove BOM if present
-        text = text.lstrip("\ufeff")
         return text
 
     def get_tag(self, line: str) -> str:

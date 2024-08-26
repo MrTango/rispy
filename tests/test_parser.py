@@ -263,7 +263,7 @@ def test_strip_bom():
     filepath = DATA_DIR / "example_bom.ris"
 
     # we properly decode the content of this file as UTF-8, but leave the BOM
-    with open(filepath, encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8-sig") as f:
         entries = rispy.load(f)
 
     assert expected == entries[0]
