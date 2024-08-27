@@ -45,13 +45,8 @@ class BaseParser(ABC):
 
     Class methods:
         get_content: Returns the non-tag part of a line. Required.
-        is_header: Returns a bool for whether a line is a header and should be
-                   skipped. This method only operates on lines outside of a
-                   reference. Defaults to `False` for all lines.
         get_tag: Returns the tag part of a line. Default is to return the
                  first two characters.
-        is_tag: Determines whether a line has a tag, returning a bool. Uses
-                regex in `PATTERN` by default.
         clean_text: Clean each line before it's parsed.
 
     """
@@ -73,7 +68,6 @@ class BaseParser(ABC):
         list_tags: Optional[List[str]] = None,
         delimiter_tags_mapping: Optional[Dict] = None,
         ignore: Optional[List[str]] = None,
-        skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
         newline: Optional[str] = None,
@@ -85,14 +79,6 @@ class BaseParser(ABC):
             list_tags (list, optional): List of list-type tags.
             delimiter_tags_mapping (dict, optional): Map of delimiters to tags.
             ignore (list, optional): List of tags to ignore.
-            skip_missing_tags (bool, optional): Bool to skip lines that don't have
-                                                valid tags, regardless of whether
-                                                of where they are in a reference.
-                                                This is the inverse of the former
-                                                `strict` parameter. If the goal is
-                                                to skip reference headers, see the
-                                                `is_header` method. Defaults to
-                                                `False`.
             skip_unknown_tags (bool, optional): Bool to skip tags that are not in
                                                 `TAG_KEY_MAPPING`. If unknown tags
                                                 are not skipped, they will be added
@@ -118,92 +104,64 @@ class BaseParser(ABC):
             else self.DEFAULT_DELIMITER_MAPPING
         )
         self.ignore = ignore if ignore is not None else self.DEFAULT_IGNORE
-        self.skip_missing_tags = skip_missing_tags
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
         self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
 
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
-        lines = text.split(self.newline)
-        return list(self._yield_lines(lines))
+        return self.parse_lines((l for l in text.split(self.newline)))
 
     def parse_lines(self, lines: Union[TextIO, List[str]]):
         """Parse RIS file line by line."""
         return list(self._yield_lines(lines))
 
-    def _yield_lines(self, lines):
-        self.in_ref = False
-        self.current = {}
-        self.last_tag = None
-        self.line_number = -1
-
-        for line in lines:
-            self.line_number += 1
-
-            line = self.clean_text(line)
-
-            if not line.strip():
-                continue
-
-            if self.is_tag(line):
-                try:
-                    yield self._parse_tag(line)
-                    self.current = {}
-                    self.in_ref = False
-                    self.last_tag = None
-                except NextLine:
-                    continue
-            else:
-                try:
-                    yield self._parse_other(line)
-                except NextLine:
-                    continue
-
     def _parse_tag(self, line):
-        tag = self.get_tag(line)
-        if tag in self.ignore:
-            raise NextLine
 
-        if tag == self.END_TAG:
-            return self.current
+        return (self.get_tag(line), self.get_content(line))
 
-        if tag == self.START_TAG:
-            # New entry
-            if self.in_ref:
-                raise ParseError(f"Missing end of record tag in line {self.line_number}:\n {line}")
-            self._add_tag(tag, line)
-            self.in_ref = True
-            raise NextLine
+    def _iter_till_start(self, lines):
 
-        if not self.in_ref:
-            raise ParseError(f"Invalid start tag in line {self.line_number}:\n {line}")
+        while True:
+            line = next(lines)
+            if line.startswith(self.START_TAG):
+                return {self.mapping[self.START_TAG]: self.get_content(line)}
 
-        if tag in self.mapping:
-            self._add_tag(tag, line)
-            raise NextLine
-        elif not self.skip_unknown_tags:
-            self._add_unknown_tag(tag, line)
-            raise NextLine
+    def _yield_lines(self, lines):
 
-        raise NextLine
+        last_tag = None
 
-    def _parse_other(self, line):
-        if self.skip_missing_tags:
-            raise NextLine
-        if self.in_ref:
-            # Active reference
-            if self.last_tag is None:
-                raise ParseError(f"Expected tag in line {self.line_number}:\n {line}")
-            # Active tag
-            self._add_tag(self.last_tag, line, all_line=True)
-            raise NextLine
+        try:
 
-        if self.is_header(line):
-            raise NextLine
-        raise ParseError(f"Expected start tag in line {self.line_number}:\n {line}")
+            record = self._iter_till_start(lines)
 
-    def _add_single_value(self, name, value, is_multi=False):
+            while True:
+
+                tag, content = self._parse_tag(next(lines))
+
+                if tag == "  ":
+                    self._add_tag(record, last_tag, content, extend_multiline=True)
+                    continue
+
+                if tag in self.ignore:
+                    continue
+
+                if tag == self.END_TAG:
+
+                    yield record
+
+                    # iterate lines to get the next start tag
+                    record = self._iter_till_start(lines)
+
+                    continue
+
+                self._add_tag(record, tag, content)
+                last_tag = tag
+
+        except StopIteration:
+            pass
+
+    def _add_single_value(self, record, name, value, is_multi=False):
         """Process a single line.
 
         This method is only run on tags where repeated tags are not expected.
@@ -211,80 +169,69 @@ class BaseParser(ABC):
         even if it is not a list tag.
         """
         if not is_multi:
-            if self.enforce_list_tags or name not in self.current:
+            if self.enforce_list_tags or name not in record:
                 ignore_this_if_has_one = value
-                self.current.setdefault(name, ignore_this_if_has_one)
+                record.setdefault(name, ignore_this_if_has_one)
             else:
-                self._add_list_value(name, value)
+                self._add_list_value(record, name, value)
         else:
-            value_must_exist_or_is_bug = self.current[name]
+            value_must_exist_or_is_bug = record[name]
             if isinstance(value, list):
-                self.current[name].extend(value)
+                record[name].extend(value)
             else:
-                self.current[name] = " ".join((value_must_exist_or_is_bug, value))
+                record[name] = " ".join((value_must_exist_or_is_bug, value))
 
-    def _add_list_value(self, name, value):
+    def _add_list_value(self, record, name, value):
         """Process tags with multiple values."""
         value_list = value if isinstance(value, list) else [value]
         try:
-            self.current[name].extend(value_list)
+            record[name].extend(value_list)
         except KeyError:
-            self.current[name] = value_list
+            record[name] = value_list
         except AttributeError:
-            if not isinstance(self.current[name], str):
+            if not isinstance(record[name], str):
                 raise
-            must_exist = self.current[name]
-            self.current[name] = [must_exist, *value_list]
+            must_exist = record[name]
+            record[name] = [must_exist, *value_list]
 
-    def _add_tag(self, tag, line, all_line=False):
-        self.last_tag = tag
-        name = self.mapping[tag]
-        if all_line:
-            new_value = line.strip()
+    def _add_tag(self, record, tag, content, extend_multiline=False):
+
+        try:
+            name = self.mapping[tag]
+        except KeyError:
+            if self.skip_unknown_tags:
+                return
+
+            # handle unknown tag
+            name = self.mapping[self.UNKNOWN_TAG]
+            if name not in record:
+                record[name] = defaultdict(list)
+            record[name][tag].append(content)
+
         else:
-            new_value = self.get_content(line)
 
-        delimiter = self.delimiter_map.get(tag)
-        if delimiter is not None:
-            new_value = [i.strip() for i in new_value.split(delimiter)]
+            if delimiter := self.delimiter_map.get(tag):
+                content = [i.strip() for i in content.split(delimiter)]
 
-        if tag in self.list_tags:
-            self._add_list_value(name, new_value)
-        else:
-            self._add_single_value(name, new_value, is_multi=all_line)
-
-    def _add_unknown_tag(self, tag, line):
-        name = self.mapping[self.UNKNOWN_TAG]
-        value = self.get_content(line)
-        # check if unknown_tag dict exists
-        if name not in self.current:
-            self.current[name] = defaultdict(list)
-
-        self.current[name][tag].append(value)
+            if tag in self.list_tags:
+                self._add_list_value(record, name, content)
+            else:
+                self._add_single_value(record, name, content, is_multi=extend_multiline)
 
     def clean_text(self, text: str) -> str:
-        """CLean each line."""
+        """Clean each line."""
         return text
 
     def get_tag(self, line: str) -> str:
         """Get the tag from a line in the RIS file."""
         return line[0:2]
 
-    def is_tag(self, line: str) -> bool:
-        """Determine if the line has a tag using regex."""
-        return bool(self.pattern.match(line))
-
     @abstractmethod
     def get_content(self, line: str) -> str:
         """Get the content (non-tag part) of a line."""
-        raise NotImplementedError
 
-    def is_header(self, line: str) -> bool:
-        """Determine whether a line is a header and should be skipped.
-
-        Only operates on lines outside of the reference.
-        """
-        return False
+    def get_content(self, line):
+        return line[6:].strip()
 
 
 class WokParser(BaseParser):
@@ -300,9 +247,6 @@ class WokParser(BaseParser):
     def get_content(self, line):
         return line[2:].strip()
 
-    def is_header(self, line):
-        return True
-
 
 class RisParser(BaseParser):
     """Subclass of Base for reading base RIS files."""
@@ -314,13 +258,6 @@ class RisParser(BaseParser):
     DEFAULT_DELIMITER_MAPPING = DELIMITED_TAG_MAPPING
 
     counter_re = re.compile("^[0-9]+.")
-
-    def get_content(self, line):
-        return line[6:].strip()
-
-    def is_header(self, line):
-        none_or_match = self.counter_re.match(line)
-        return bool(none_or_match)
 
 
 def load(

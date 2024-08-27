@@ -31,6 +31,23 @@ def test_load_example_basic_ris():
     assert expected == entries[0]
 
 
+def test_loads():
+
+    ristext = (DATA_DIR / "example_basic.ris").read_text()
+    expected = {
+        "type_of_reference": "JOUR",
+        "authors": ["Shannon,Claude E."],
+        "year": "1948/07//",
+        "title": "A Mathematical Theory of Communication",
+        "alternate_title3": "Bell System Technical Journal",
+        "start_page": "379",
+        "end_page": "423",
+        "volume": "27",
+    }
+
+    assert expected == rispy.loads(ristext)[0]
+
+
 def test_load_multiline_ris():
     filepath = DATA_DIR / "multiline.ris"
     expected = {
@@ -151,7 +168,7 @@ def test_load_example_extraneous_data_ris():
     ]
 
     with open(filepath) as f:
-        entries = rispy.load(f, skip_missing_tags=True)
+        entries = rispy.load(f)
     assert expected == entries
 
 
