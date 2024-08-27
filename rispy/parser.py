@@ -110,33 +110,29 @@ class BaseParser(ABC):
 
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
-        return self.parse_lines((l for l in text.split(self.newline)))
+        line_gen = (line for line in text.split(self.newline))
+        return self.parse_lines(line_gen)
 
     def parse_lines(self, lines: Union[TextIO, List[str]]):
         """Parse RIS file line by line."""
         return list(self._yield_lines(lines))
 
     def _parse_tag(self, line):
-
         return (self.get_tag(line), self.get_content(line))
 
     def _iter_till_start(self, lines):
-
         while True:
             line = next(lines)
             if line.startswith(self.START_TAG):
                 return {self.mapping[self.START_TAG]: self.get_content(line)}
 
     def _yield_lines(self, lines):
-
         last_tag = None
 
         try:
-
             record = self._iter_till_start(lines)
 
             while True:
-
                 tag, content = self._parse_tag(next(lines))
 
                 if tag == "  ":
@@ -147,7 +143,6 @@ class BaseParser(ABC):
                     continue
 
                 if tag == self.END_TAG:
-
                     yield record
 
                     # iterate lines to get the next start tag
@@ -195,7 +190,6 @@ class BaseParser(ABC):
             record[name] = [must_exist, *value_list]
 
     def _add_tag(self, record, tag, content, extend_multiline=False):
-
         try:
             name = self.mapping[tag]
         except KeyError:
@@ -209,7 +203,6 @@ class BaseParser(ABC):
             record[name][tag].append(content)
 
         else:
-
             if delimiter := self.delimiter_map.get(tag):
                 content = [i.strip() for i in content.split(delimiter)]
 
@@ -229,9 +222,6 @@ class BaseParser(ABC):
     @abstractmethod
     def get_content(self, line: str) -> str:
         """Get the content (non-tag part) of a line."""
-
-    def get_content(self, line):
-        return line[6:].strip()
 
 
 class WokParser(BaseParser):
@@ -258,6 +248,9 @@ class RisParser(BaseParser):
     DEFAULT_DELIMITER_MAPPING = DELIMITED_TAG_MAPPING
 
     counter_re = re.compile("^[0-9]+.")
+
+    def get_content(self, line):
+        return line[6:].strip()
 
 
 def load(

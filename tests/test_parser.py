@@ -32,7 +32,6 @@ def test_load_example_basic_ris():
 
 
 def test_loads():
-
     ristext = (DATA_DIR / "example_basic.ris").read_text()
     expected = {
         "type_of_reference": "JOUR",
