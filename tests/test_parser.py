@@ -357,16 +357,15 @@ def test_type_conversion():
 
 
 def test_encodings():
-    fn = DATA_DIR / "example_utf_chars.ris"
-    p = Path(fn)
+    p = DATA_DIR / "example_utf_chars.ris"
 
-    with open(fn, encoding="utf-8") as file:
+    with open(p, encoding="utf-8-sig") as file:
         expected = rispy.load(file)
 
     with pytest.raises(UnicodeDecodeError):
         rispy.load(p, encoding="cp1252")
 
-    entries = rispy.load(p, encoding="utf-8")
+    entries = rispy.load(p, encoding="utf-8-sig")
 
     assert entries == expected
 
