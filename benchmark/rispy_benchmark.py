@@ -45,4 +45,4 @@ if __name__ == "__main__":
     ristext = make_dataset()
 
     time_result = timeit.timeit("rispy.loads(ristext)", globals=globals(), number=100)
-    print(f"Time: {time_result:.4f} s")
+    print(f"Time: {time_result:.4f} s")  # noqa
