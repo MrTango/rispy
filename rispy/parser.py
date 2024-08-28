@@ -43,12 +43,6 @@ class RisParser():
         DEFAULT_LIST_TAGS (list): A list of tags that should be read as lists.
                                   Required.
 
-    Class methods:
-        get_content: Returns the non-tag part of a line. Required.
-        get_tag: Returns the tag part of a line. Default is to return the
-                 first two characters.
-        clean_text: Clean each line before it's parsed.
-
     """
 
     START_TAG: str = "TY"
@@ -116,14 +110,36 @@ class RisParser():
         """Parse RIS file line by line."""
         return list(self._yield_lines(lines))
 
-    def _parse_line(self, line):
-        return (self.get_tag(line), self.get_content(line))
+    def parse_line(self, line):
+        """Parse line of RIS file.
+
+        This method parses a line between the start and end tag.
+        It returns the tag and the content of the line. Typically,
+        the first 2 characters are the tag, followed by a seperator,
+        and the rest of the line is the content.
+
+        Custom parsers can override this method to change the way
+        lines are parsed. For example, a very basic RIS parser would
+        return the first 2 characters as the tag and the rest of the
+        line as the content of the tag. `(line[0:2], line[6:].strip())`
+
+        Parameters
+        ----------
+        line : str
+            Line of RIS file between start and end tag.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the tag and the content of the tag.
+        """
+        return (line[0:2], line[6:].strip())
 
     def _iter_till_start(self, lines):
         while True:
             line = next(lines)
             if line.startswith(self.START_TAG):
-                return {self.mapping[self.START_TAG]: self.get_content(line)}
+                return {self.mapping[self.START_TAG]: self.parse_line(line)[1]}
 
     def _yield_lines(self, lines):
         last_tag = None
@@ -132,7 +148,7 @@ class RisParser():
             record = self._iter_till_start(lines)
 
             while True:
-                tag, content = self._parse_line(next(lines))
+                tag, content = self.parse_line(next(lines))
 
                 if tag == "  ":
                     self._add_tag(record, last_tag, content, extend_multiline=True)
@@ -208,18 +224,6 @@ class RisParser():
             else:
                 self._add_single_value(record, name, content, is_multi=extend_multiline)
 
-    def clean_text(self, text: str) -> str:
-        """Clean each line."""
-        return text
-
-    def get_tag(self, line: str) -> str:
-        """Get the tag from a line in the RIS file."""
-        return line[0:2]
-
-    def get_content(self, line: str) -> str:
-        """Get the content (non-tag part) of a line."""
-        return line[6:].strip()
-
 
 class WokParser(RisParser):
     """Subclass of Base for reading Wok RIS files."""
@@ -230,8 +234,25 @@ class WokParser(RisParser):
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
 
-    def get_content(self, line):
-        return line[2:].strip()
+    def parse_line(self, line):
+        """Parse line of RIS file.
+
+        This method parses a line between the start and end tag.
+        It returns the tag and the content of the line. Typically,
+        the first 2 characters are the tag, and the rest of the line
+        is the content.
+
+        Parameters
+        ----------
+        line : str
+            Line of RIS file between start and end tag.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the tag and the content of the tag.
+        """
+        return line[0:2], line[2:].strip(),
 
 
 def load(
