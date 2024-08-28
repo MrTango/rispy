@@ -51,20 +51,14 @@ def test_load_multiline_ris():
     filepath = DATA_DIR / "multiline.ris"
     expected = {
         "type_of_reference": "JOUR",
-        "authors": ["Shannon,Claude E."],
-        "year": "1948/07//",
-        "title": "A Mathematical Theory of Communication",
-        "alternate_title3": "Bell System Technical Journal",
-        "start_page": "379",
-        "end_page": "423",
         "notes_abstract": "first line, then second line and at the end the last line",
         "notes": ["first line", "* second line", "* last line"],
-        "volume": "27",
     }
     with open(filepath) as f:
         entries = rispy.load(f)
 
-    assert expected == entries[0]
+    for entry in entries:
+        assert expected == entry
 
 
 def test_load_example_full_ris():
