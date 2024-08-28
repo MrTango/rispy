@@ -101,6 +101,12 @@ class RisParser():
         self.enforce_list_tags = enforce_list_tags
         self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
 
+    def _iter_till_start(self, lines):
+        while True:
+            line = next(lines)
+            if line.startswith(self.START_TAG):
+                return {self.mapping[self.START_TAG]: self.parse_line(line)[1]}
+
     def parse(self, text: str) -> List[Dict]:
         """Parse RIS string."""
         line_gen = (line for line in text.split(self.newline))
@@ -108,7 +114,34 @@ class RisParser():
 
     def parse_lines(self, lines: Union[TextIO, List[str]]):
         """Parse RIS file line by line."""
-        return list(self._yield_lines(lines))
+
+        result = []
+        last_tag = None
+
+        try:
+            record = self._iter_till_start(lines)
+
+            while True:
+                tag, content = self.parse_line(next(lines))
+
+                if tag == "  ":
+                    self._add_tag(record, last_tag, content, extend_multiline=True)
+                    continue
+
+                if tag in self.ignore:
+                    continue
+
+                if tag == self.END_TAG:
+                    result.append(record)
+
+                    record = self._iter_till_start(lines)
+                    continue
+
+                self._add_tag(record, tag, content)
+                last_tag = tag
+
+        except StopIteration:
+            return result
 
     def parse_line(self, line):
         """Parse line of RIS file.
@@ -134,40 +167,6 @@ class RisParser():
             Tuple containing the tag and the content of the tag.
         """
         return (line[0:2], line[6:].strip())
-
-    def _iter_till_start(self, lines):
-        while True:
-            line = next(lines)
-            if line.startswith(self.START_TAG):
-                return {self.mapping[self.START_TAG]: self.parse_line(line)[1]}
-
-    def _yield_lines(self, lines):
-        last_tag = None
-
-        try:
-            record = self._iter_till_start(lines)
-
-            while True:
-                tag, content = self.parse_line(next(lines))
-
-                if tag == "  ":
-                    self._add_tag(record, last_tag, content, extend_multiline=True)
-                    continue
-
-                if tag in self.ignore:
-                    continue
-
-                if tag == self.END_TAG:
-                    yield record
-
-                    record = self._iter_till_start(lines)
-                    continue
-
-                self._add_tag(record, tag, content)
-                last_tag = tag
-
-        except StopIteration:
-            pass
 
     def _add_single_value(self, record, name, value, is_multi=False):
         """Process a single line.
