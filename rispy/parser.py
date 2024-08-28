@@ -1,7 +1,5 @@
 """RIS Parser."""
 
-import re
-from abc import ABC, abstractmethod
 from collections import defaultdict
 from pathlib import Path
 from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
@@ -25,7 +23,7 @@ class ParseError(Exception):
     pass
 
 
-class RisParser():
+class RisParser:
     """RIS parser class
 
     When creating a new implementation class, some variables and classes need
@@ -254,7 +252,10 @@ class WokParser(RisParser):
         tuple
             Tuple containing the tag and the content of the tag.
         """
-        return line[0:2], line[2:].strip(),
+        return (
+            line[0:2],
+            line[2:].strip(),
+        )
 
 
 def load(
