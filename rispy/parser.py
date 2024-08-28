@@ -14,7 +14,7 @@ from .config import (
     WOK_TAG_KEY_MAPPING,
 )
 
-__all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
+__all__ = ["load", "loads", "WokParser", "RisParser"]
 
 
 class NextLine(Exception):
@@ -25,8 +25,8 @@ class ParseError(Exception):
     pass
 
 
-class BaseParser(ABC):
-    """Base parser class. Create a subclass to use.
+class RisParser():
+    """RIS parser class
 
     When creating a new implementation class, some variables and classes need
     to be overridden. This docstring documents how to override these
@@ -51,14 +51,14 @@ class BaseParser(ABC):
 
     """
 
-    START_TAG: str
+    START_TAG: str = "TY"
     END_TAG: str = "ER"
     UNKNOWN_TAG: str = "UK"
     PATTERN: str
     DEFAULT_IGNORE: ClassVar[List[str]] = []
-    DEFAULT_MAPPING: Dict
-    DEFAULT_LIST_TAGS: List[str]
-    DEFAULT_DELIMITER_MAPPING: Dict
+    DEFAULT_MAPPING: Dict = TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS: List[str] = LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING: Dict = DELIMITED_TAG_MAPPING
     DEFAULT_NEWLINE: ClassVar[str] = "\n"
 
     def __init__(
@@ -95,7 +95,6 @@ class BaseParser(ABC):
             newline (str, optional): Line separator.
 
         """
-        self.pattern = re.compile(self.PATTERN)
         self.mapping = mapping if mapping is not None else self.DEFAULT_MAPPING
         self.list_tags = list_tags if list_tags is not None else self.DEFAULT_LIST_TAGS
         self.delimiter_map = (
@@ -117,7 +116,7 @@ class BaseParser(ABC):
         """Parse RIS file line by line."""
         return list(self._yield_lines(lines))
 
-    def _parse_tag(self, line):
+    def _parse_line(self, line):
         return (self.get_tag(line), self.get_content(line))
 
     def _iter_till_start(self, lines):
@@ -133,7 +132,7 @@ class BaseParser(ABC):
             record = self._iter_till_start(lines)
 
             while True:
-                tag, content = self._parse_tag(next(lines))
+                tag, content = self._parse_line(next(lines))
 
                 if tag == "  ":
                     self._add_tag(record, last_tag, content, extend_multiline=True)
@@ -145,9 +144,7 @@ class BaseParser(ABC):
                 if tag == self.END_TAG:
                     yield record
 
-                    # iterate lines to get the next start tag
                     record = self._iter_till_start(lines)
-
                     continue
 
                 self._add_tag(record, tag, content)
@@ -219,16 +216,15 @@ class BaseParser(ABC):
         """Get the tag from a line in the RIS file."""
         return line[0:2]
 
-    @abstractmethod
     def get_content(self, line: str) -> str:
         """Get the content (non-tag part) of a line."""
+        return line[6:].strip()
 
 
-class WokParser(BaseParser):
+class WokParser(RisParser):
     """Subclass of Base for reading Wok RIS files."""
 
     START_TAG = "PT"
-    PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
     DEFAULT_IGNORE: ClassVar[List[str]] = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
@@ -238,27 +234,12 @@ class WokParser(BaseParser):
         return line[2:].strip()
 
 
-class RisParser(BaseParser):
-    """Subclass of Base for reading base RIS files."""
-
-    START_TAG = "TY"
-    PATTERN = r"^[A-Z][A-Z0-9]  - |^ER  -\s*$"
-    DEFAULT_MAPPING = TAG_KEY_MAPPING
-    DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING = DELIMITED_TAG_MAPPING
-
-    counter_re = re.compile("^[0-9]+.")
-
-    def get_content(self, line):
-        return line[6:].strip()
-
-
 def load(
     file: Union[TextIO, Path],
     *,
     encoding: Optional[str] = None,
     newline: Optional[str] = None,
-    implementation: Optional[BaseParser] = None,
+    implementation: Optional[RisParser] = None,
     **kw,
 ) -> List[Dict]:
     """Load a RIS file and return a list of entries.
@@ -298,7 +279,7 @@ def load(
         raise ValueError("File must be a file-like object or a Path object")
 
 
-def loads(text: str, *, implementation: Optional[Type[BaseParser]] = None, **kw) -> List[Dict]:
+def loads(text: str, *, implementation: Optional[Type[RisParser]] = None, **kw) -> List[Dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the

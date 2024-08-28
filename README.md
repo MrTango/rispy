@@ -234,12 +234,12 @@ Creating a custom implentation involves creating a class that inherits a base cl
 
 #### Parsing
 
-Custom parsers can inherit `RisParser` (the default parser) or `BaseParser`. Various parameters and methods can be overridden when creating a new parser. These are documented in the `BaseParser` docstring.
+Custom parsers can inherit `RisParser` (the default parser). Various parameters and methods can be overridden when creating a new parser.
 
 Examples:
 
 ```python
-class WokParser(BaseParser):
+class WokParser(RisParser):
       """Subclass of Base for reading Wok RIS files."""
 
       START_TAG = "PT"
