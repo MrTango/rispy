@@ -166,7 +166,10 @@ class RisParser():
         tuple
             Tuple containing the tag and the content of the tag.
         """
-        return (line[0:2], line[6:].strip())
+        if line[3:5] == " -" and line[:2].isupper():
+            return (line[0:2], line[6:].strip())
+        else:
+            return ("  ", line.strip())
 
     def _add_single_value(self, record, name, value, is_multi=False):
         """Process a single line.
