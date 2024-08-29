@@ -164,7 +164,7 @@ class RisParser:
         tuple
             Tuple containing the tag and the content of the tag.
         """
-        if line[3:5] == " -" and line[:2].isupper():
+        if line[2:5] == "  -" and line[:2].isupper() and line[0:1].isalpha():
             return (line[0:2], line[6:].strip())
         else:
             return (None, line.strip())
