@@ -122,7 +122,7 @@ class RisParser:
             while True:
                 tag, content = self.parse_line(next(lines))
 
-                if tag == "  ":
+                if tag is None:
                     self._add_tag(record, last_tag, content, extend_multiline=True)
                     continue
 
@@ -167,7 +167,7 @@ class RisParser:
         if line[3:5] == " -" and line[:2].isupper():
             return (line[0:2], line[6:].strip())
         else:
-            return ("  ", line.strip())
+            return (None, line.strip())
 
     def _add_single_value(self, record, name, value, is_multi=False):
         """Process a single line.
@@ -252,10 +252,10 @@ class WokParser(RisParser):
         tuple
             Tuple containing the tag and the content of the tag.
         """
-        return (
-            line[0:2],
-            line[2:].strip(),
-        )
+        if line[0:2] == "  ":
+            return (None, line[3:].strip())
+        else:
+            return (line[0:2], line[3:].strip())
 
 
 def load(
