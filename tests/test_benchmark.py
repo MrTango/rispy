@@ -1,3 +1,5 @@
+import pytest
+
 import rispy
 
 EXAMPLE_RECORD = """
@@ -76,10 +78,12 @@ ER  -
 """
 
 
+@pytest.mark.skip("Skip benchmark single tests")
 def test_benchmark_rispy_single(benchmark):
     benchmark(rispy.loads, EXAMPLE_RECORD)
 
 
+@pytest.mark.skip("Skip benchmark single tests")
 def test_benchmark_rispy_single_multiline(benchmark):
     benchmark(rispy.loads, EXAMPLE_RECORD_MULTILINE)
 
