@@ -40,7 +40,10 @@ format:  ## Fix python formatting issues where possible
 	@ruff format . && ruff . --fix --show-fixes
 
 test:  ## Run unit test suite
-	@py.test
+	@py.test --benchmark-skip
+
+bench:  ## Run benchmark test suite
+	@py.test --benchmark-only
 
 coverage:  ## Run coverage and create html report
 	coverage run -m pytest
