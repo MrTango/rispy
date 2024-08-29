@@ -1,5 +1,5 @@
 TY  - JOUR
-N2  - first line, then second line and at the end the last line
+N2  - first line, ER then second line and at the end the last line
 N1  - first line
       * second line
       * last line
@@ -7,7 +7,7 @@ ER  -
 
 TY  - JOUR
 N2  - first line,
-      then second line and at the end
+      ER then second line and at the end
       the last line
 N1  - first line
       * second line
@@ -16,7 +16,7 @@ ER  -
 
 TY  - JOUR
 N2  - first line,
-then second line and at the end
+ER then second line and at the end
 the last line
 N1  - first line
       * second line

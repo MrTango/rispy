@@ -48,10 +48,10 @@ def test_loads():
 
 
 def test_load_multiline_ris():
-    filepath = DATA_DIR / "multiline.ris"
+    filepath = DATA_DIR / "example_multiline.ris"
     expected = {
         "type_of_reference": "JOUR",
-        "notes_abstract": "first line, then second line and at the end the last line",
+        "notes_abstract": "first line, ER then second line and at the end the last line",
         "notes": ["first line", "* second line", "* last line"],
     }
     with open(filepath) as f:
