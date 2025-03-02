@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/rispy.svg)](https://badge.fury.io/py/rispy)
 
-A Python 3.8+ reader/writer of RIS reference files.
+A Python 3.9+ reader/writer of RIS reference files.
 
 *Pronunciation* - `rispee` - like "crispy", but without the c.
 
@@ -11,13 +11,17 @@ A Python 3.8+ reader/writer of RIS reference files.
 Parsing:
 
 ```python
->>> import rispy
->>> filepath = 'tests/data/example_full.ris'
->>> with open(filepath, 'r') as bibliography_file:
-...     entries = rispy.load(bibliography_file)
-...     for entry in entries:
-...         print(entry['id'])
-...         print(entry['first_authors'])
+>> > import rispy
+>> > filepath = 'tests/data/example_full.ris'
+>> > with open(filepath, 'r') as bibliography_file:
+    ...
+entries = rispy.load(bibliography_file)
+...
+for entry in entries:
+    ...
+print(entry['id'])
+...
+print(entry['first_authors'])
 12345
 ['Marx, Karl', 'Lindgren, Astrid']
 12345
@@ -25,37 +29,47 @@ Parsing:
 
 ```
 
-A file path can also be used to read RIS files. If an encoding is not specified in ``load``, the default system encoding will be used.
+A file path can also be used to read RIS files. If an encoding is not specified in ``load``, the default system encoding
+will be used.
 
 ```python
->>> from pathlib import Path
->>> import rispy
->>> p = Path('tests', 'data', 'example_utf_chars.ris')
->>> entries = rispy.load(p, encoding='utf-8')
->>> for entry in entries:
-...     print(entry['authors'][0])
-Dobrokhotova, Yu E.
+>> > from pathlib import Path
+>> > import rispy
+>> > p = Path('tests', 'data', 'example_utf_chars.ris')
+>> > entries = rispy.load(p, encoding='utf-8')
+>> > for entry in entries:
+    ...
+print(entry['authors'][0])
+Dobrokhotova, Yu
+E.
 
 ```
 
 Writing:
 
 ```python
->>> import rispy
->>> entries = [
-... {'type_of_reference': 'JOUR',
-...  'id': '42',
-...  'primary_title': 'The title of the reference',
-...  'first_authors': ['Marxus, Karlus', 'Lindgren, Astrid']
-...  },{
-... 'type_of_reference': 'JOUR',
-...  'id': '43',
-...  'primary_title': 'Reference 43',
-...  'abstract': 'Lorem ipsum'
-...  }]
->>> filepath = 'export.ris'
->>> with open(filepath, 'w') as bibliography_file:
-...     rispy.dump(entries, bibliography_file)
+>> > import rispy
+>> > entries = [
+    ... {'type_of_reference': 'JOUR',
+         ...  'id': '42',
+...
+'primary_title': 'The title of the reference',
+...
+'first_authors': ['Marxus, Karlus', 'Lindgren, Astrid']
+...}, {
+    ...
+'type_of_reference': 'JOUR',
+...
+'id': '43',
+...
+'primary_title': 'Reference 43',
+...
+'abstract': 'Lorem ipsum'
+...}]
+>> > filepath = 'export.ris'
+>> > with open(filepath, 'w') as bibliography_file:
+    ...
+rispy.dump(entries, bibliography_file)
 
 ```
 
@@ -90,7 +104,9 @@ Writing:
 
 ## TAG_KEY_MAPPING
 
-The most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping were created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth, so these may need to be modified for specific export systems:
+The most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping were
+created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth,
+so these may need to be modified for specific export systems:
 
 - [Wikipedia](https://en.wikipedia.org/wiki/RIS_(file_format))
 - [ResearcherId](https://web.archive.org/web/20170707033254/http://www.researcherid.com/resources/html/help_upload.htm)
@@ -101,8 +117,8 @@ The most fields contain string values, but some like first_authors (A1) are pars
 ### Complete list of ListType tags
 
 ```python
->>> from rispy import LIST_TYPE_TAGS
->>> print(LIST_TYPE_TAGS)
+>> > from rispy import LIST_TYPE_TAGS
+>> > print(LIST_TYPE_TAGS)
 ['A1', 'A2', 'A3', 'A4', 'AU', 'KW', 'N1', 'UR']
 
 ```
@@ -110,9 +126,9 @@ The most fields contain string values, but some like first_authors (A1) are pars
 ### Complete default mapping
 
 ```python
->>> from rispy import TAG_KEY_MAPPING
->>> from pprint import pprint
->>> pprint(TAG_KEY_MAPPING)
+>> > from rispy import TAG_KEY_MAPPING
+>> > from pprint import pprint
+>> > pprint(TAG_KEY_MAPPING)
 {'A1': 'first_authors',
  'A2': 'secondary_authors',
  'A3': 'tertiary_authors',
@@ -186,16 +202,18 @@ The most fields contain string values, but some like first_authors (A1) are pars
 The parser use a `TAG_KEY_MAPPING`, which one can override by calling `rispy.load()` with the `mapping` parameter.
 
 ```python
->>> from copy import deepcopy
->>> import rispy
->>> from pprint import pprint
+>> > from copy import deepcopy
+>> > import rispy
+>> > from pprint import pprint
 
->>> filepath = 'tests/data/example_full.ris'
->>> mapping = deepcopy(rispy.TAG_KEY_MAPPING)
->>> mapping["SP"] = "pages_this_is_my_fun"
->>> with open(filepath, 'r') as bibliography_file:
-...     entries = rispy.load(bibliography_file, mapping=mapping)
-...     pprint(sorted(entries[0].keys()))
+>> > filepath = 'tests/data/example_full.ris'
+>> > mapping = deepcopy(rispy.TAG_KEY_MAPPING)
+>> > mapping["SP"] = "pages_this_is_my_fun"
+>> > with open(filepath, 'r') as bibliography_file:
+    ...
+entries = rispy.load(bibliography_file, mapping=mapping)
+...
+pprint(sorted(entries[0].keys()))
 ['alternate_title2',
  'alternate_title3',
  'file_attachments2',
@@ -222,57 +240,67 @@ List tags can be customized in the same way, by passing a list to the `list_tags
 
 ### Changing rispy behavior
 
-There are a few flags that can be passed to `rispy.load()` and `rispy.dump()` that change how `rispy` deals with tags. For example, setting `skip_unknown_tags` to `True` will cause `rispy` do not read or write tags not in the tag map. More can be found in the docstrings for each class. If more customization is necessary, a custom implementation can be created (see next section).
+There are a few flags that can be passed to `rispy.load()` and `rispy.dump()` that change how `rispy` deals with tags.
+For example, setting `skip_unknown_tags` to `True` will cause `rispy` do not read or write tags not in the tag map. More
+can be found in the docstrings for each class. If more customization is necessary, a custom implementation can be
+created (see next section).
 
 ## Using custom implementations
 
-Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and should be passed to `rispy.load()` or `rispy.dump()`.
+Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for
+reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and
+should be passed to `rispy.load()` or `rispy.dump()`.
 
 ### Customizing implementations
 
-Creating a custom implentation involves creating a class that inherits a base class, and overriding the necessary variables and methods. One of the existing parsers can also be inherited. Inheriting an existing class is advantageous if only minor changes need to be made. The sections below document what is available to be overriden, along with a few examples.
+Creating a custom implentation involves creating a class that inherits a base class, and overriding the necessary
+variables and methods. One of the existing parsers can also be inherited. Inheriting an existing class is advantageous
+if only minor changes need to be made. The sections below document what is available to be overriden, along with a few
+examples.
 
 #### Parsing
 
-Custom parsers can inherit `RisParser` (the default parser) or `BaseParser`. Various parameters and methods can be overridden when creating a new parser. These are documented in the `BaseParser` docstring.
+Custom parsers can inherit `RisParser` (the default parser) or `BaseParser`. Various parameters and methods can be
+overridden when creating a new parser. These are documented in the `BaseParser` docstring.
 
 Examples:
 
 ```python
 class WokParser(BaseParser):
-      """Subclass of Base for reading Wok RIS files."""
+    """Subclass of Base for reading Wok RIS files."""
 
-      START_TAG = "PT"
-      IGNORE = ["FN", "VR", "EF"]
-      PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
-      DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
-      DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
+    START_TAG = "PT"
+    IGNORE = ["FN", "VR", "EF"]
+    PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
+    DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
 
-      def get_content(self, line):
-         return line[2:].strip()
+    def get_content(self, line):
+        return line[2:].strip()
 
-      def is_header(self, line):
-         return True
+    def is_header(self, line):
+        return True
 
 ```
 
 ### Writing
 
-Writing is very similar to parsing. A custom writer class can inherit `BaseWriter` or one if its subclasses, such as `RisWriter`.
+Writing is very similar to parsing. A custom writer class can inherit `BaseWriter` or one if its subclasses, such as
+`RisWriter`.
 
 Examples:
 
 ```python
 class RisWriter(BaseWriter):
-      """Subclass of BaseWriter for writing RIS files."""
+    """Subclass of BaseWriter for writing RIS files."""
 
-      START_TAG = "TY"
-      PATTERN = "{tag}  - {value}"
-      DEFAULT_MAPPING = TAG_KEY_MAPPING
-      DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
+    START_TAG = "TY"
+    PATTERN = "{tag}  - {value}"
+    DEFAULT_MAPPING = TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS = LIST_TYPE_TAGS
 
-      def set_header(self, count):
-         return "{i}.".format(i=count)
+    def set_header(self, count):
+        return "{i}.".format(i=count)
 
 ```
 
@@ -282,12 +310,13 @@ Other various utilities included in `rispy` are documented below.
 
 ### Reference type conversion
 
-A method is available to convert common RIS reference types into more readable terms. It takes a list of references and returns a copy of that list with modified reference types. The map for this conversion is located in ``config.py``.
+A method is available to convert common RIS reference types into more readable terms. It takes a list of references and
+returns a copy of that list with modified reference types. The map for this conversion is located in ``config.py``.
 
 ```python
->>> from rispy.utils import convert_reference_types
->>> refs = [{"type_of_reference": "JOUR"}]
->>> print(convert_reference_types(refs))
+>> > from rispy.utils import convert_reference_types
+>> > refs = [{"type_of_reference": "JOUR"}]
+>> > print(convert_reference_types(refs))
 [{'type_of_reference': 'Journal'}]
 
 ```
@@ -301,7 +330,8 @@ support. Software specializing on these formats include:
 
 ## Developer instructions
 
-Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make commands and run the commands from the command-line manually:
+Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make
+commands and run the commands from the command-line manually:
 
 ```bash
 # setup environment
