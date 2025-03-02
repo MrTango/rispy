@@ -8,7 +8,7 @@ from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
 from .config import DELIMITED_TAG_MAPPING, LIST_TYPE_TAGS, TAG_KEY_MAPPING
 from .utils import invert_dictionary
 
-__all__ = ["dump", "dumps", "BaseWriter", "RisWriter"]
+__all__ = ["BaseWriter", "RisWriter", "dump", "dumps"]
 
 
 class BaseWriter(ABC):
