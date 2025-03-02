@@ -14,7 +14,7 @@ from .config import (
     WOK_TAG_KEY_MAPPING,
 )
 
-__all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
+__all__ = ["BaseParser", "RisParser", "WokParser", "load", "loads"]
 
 
 class NextLine(Exception):
