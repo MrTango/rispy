@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/rispy.svg)](https://badge.fury.io/py/rispy)
 
-A Python 3.8+ reader/writer of RIS reference files.
+A Python 3.9+ reader/writer of RIS reference files.
 
 *Pronunciation* - `rispee` - like "crispy", but without the c.
 
@@ -25,7 +25,8 @@ Parsing:
 
 ```
 
-A file path can also be used to read RIS files. If an encoding is not specified in ``load``, the default system encoding will be used.
+A file path can also be used to read RIS files. If an encoding is not specified in ``load``, the default system encoding
+will be used.
 
 ```python
 >>> from pathlib import Path
@@ -90,7 +91,9 @@ Writing:
 
 ## TAG_KEY_MAPPING
 
-The most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping were created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth, so these may need to be modified for specific export systems:
+The most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping were
+created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth,
+so these may need to be modified for specific export systems:
 
 - [Wikipedia](https://en.wikipedia.org/wiki/RIS_(file_format))
 - [ResearcherId](https://web.archive.org/web/20170707033254/http://www.researcherid.com/resources/html/help_upload.htm)
@@ -222,15 +225,23 @@ List tags can be customized in the same way, by passing a list to the `list_tags
 
 ### Changing rispy behavior
 
-There are a few flags that can be passed to `rispy.load()` and `rispy.dump()` that change how `rispy` deals with tags. For example, setting `skip_unknown_tags` to `True` will cause `rispy` do not read or write tags not in the tag map. More can be found in the docstrings for each class. If more customization is necessary, a custom implementation can be created (see next section).
+There are a few flags that can be passed to `rispy.load()` and `rispy.dump()` that change how `rispy` deals with tags.
+For example, setting `skip_unknown_tags` to `True` will cause `rispy` do not read or write tags not in the tag map. More
+can be found in the docstrings for each class. If more customization is necessary, a custom implementation can be
+created (see next section).
 
 ## Using custom implementations
 
-Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and should be passed to `rispy.load()` or `rispy.dump()`.
+Not all RIS files follow the same formatting guidelines. There is an interface for creating custom implementations for
+reading and writing such files. An implementation contains the methods and parameters used to work with RIS files, and
+should be passed to `rispy.load()` or `rispy.dump()`.
 
 ### Customizing implementations
 
-Creating a custom implentation involves creating a class that inherits a base class, and overriding the necessary variables and methods. One of the existing parsers can also be inherited. Inheriting an existing class is advantageous if only minor changes need to be made. The sections below document what is available to be overriden, along with a few examples.
+Creating a custom implentation involves creating a class that inherits a base class, and overriding the necessary
+variables and methods. One of the existing parsers can also be inherited. Inheriting an existing class is advantageous
+if only minor changes need to be made. The sections below document what is available to be overriden, along with a few
+examples.
 
 #### Parsing
 
@@ -258,7 +269,8 @@ class WokParser(RisParser):
 
 ### Writing
 
-Writing is very similar to parsing. A custom writer class can inherit `BaseWriter` or one if its subclasses, such as `RisWriter`.
+Writing is very similar to parsing. A custom writer class can inherit `BaseWriter` or one if its subclasses, such as
+`RisWriter`.
 
 Examples:
 
@@ -282,7 +294,8 @@ Other various utilities included in `rispy` are documented below.
 
 ### Reference type conversion
 
-A method is available to convert common RIS reference types into more readable terms. It takes a list of references and returns a copy of that list with modified reference types. The map for this conversion is located in ``config.py``.
+A method is available to convert common RIS reference types into more readable terms. It takes a list of references and
+returns a copy of that list with modified reference types. The map for this conversion is located in ``config.py``.
 
 ```python
 >>> from rispy.utils import convert_reference_types
@@ -301,7 +314,8 @@ support. Software specializing on these formats include:
 
 ## Developer instructions
 
-Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make commands and run the commands from the command-line manually:
+Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make
+commands and run the commands from the command-line manually:
 
 ```bash
 # setup environment
