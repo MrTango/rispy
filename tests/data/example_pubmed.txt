@@ -1,0 +1,1136 @@
+PMID- 30922926
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20201005
+LR  - 20210109
+IS  - 1878-0849 (Electronic)
+IS  - 1769-7212 (Print)
+IS  - 1769-7212 (Linking)
+VI  - 63
+IP  - 2
+DP  - 2020 Feb
+TI  - Time lapse: A glimpse into prehistoric genomics.
+PG  - 103640
+LID - S1769-7212(19)30059-X [pii]
+LID - 10.1016/j.ejmg.2019.03.004 [doi]
+LID - 103640
+AB  - For the purpose of this review, 'time-lapse' refers to the reconstruction of
+      ancestral (in this case dinosaur) karyotypes using genome assemblies of extant
+      species. Such reconstructions are only usually possible when genomes are
+      assembled to 'chromosome level' i.e. a complete representation of all the
+      sequences, correctly ordered contiguously on each of the chromosomes. Recent
+      paleontological evidence is very clear that birds are living dinosaurs, the
+      latest example of dinosaurs emerging from a catastrophic extinction event.
+      Non-avian dinosaurs (ever present in the public imagination through art, and
+      broadcast media) emerged some 240 million years ago and have displayed incredible
+      phenotypic diversity. Here we report on our recent studies to infer the overall
+      karyotype of the Theropod dinosaur lineage from extant avian chromosome level
+      genome assemblies. Our work first focused on determining the likely karyotype of
+      the avian ancestor (most likely a chicken-sized, two-legged, feathered, land
+      dinosaur from the Jurassic period) finding karyotypic similarity to the chicken.
+      We then took the work further to determine the likely karyotype of the
+      bird-lizard ancestor and the chromosomal changes (chiefly translocations and
+      inversions) that occurred between then and modern birds. A combination of
+      bioinformatics and cross-species fluorescence in situ hybridization (zoo-FISH)
+      uncovered a considerable number of translocations and fissions from a
+      'lizard-like' genome structure of 2n = 36-46 to one similar to that of
+      soft-shelled turtles (2n = 66) from 275 to 255 million years ago (mya).
+      Remarkable karyotypic similarities between some soft-shelled turtles and chicken
+      suggests that there were few translocations from the bird-turtle ancestor (plus
+      ∼7 fissions) through the dawn of the dinosaurs and pterosaurs, through the
+      theropod linage and on to most to modern birds. In other words, an avian-like
+      karyotype was in place about 240mya when the dinosaurs and pterosaurs first
+      emerged. We mapped 49 chromosome inversions from then to the present day,
+      uncovering some gene ontology enrichment in evolutionary breakpoint regions. This
+      avian-like karyotype with its many (micro)chromosomes provides the basis for
+      variation (the driver of natural selection) through increased random segregation
+      and recombination. It may therefore contribute to the ability of dinosaurs to
+      survive multiple extinction events, emerging each time as speciose and diverse.
+CI  - Copyright © 2019 The Authors. Published by Elsevier Masson SAS.. All rights
+      reserved.
+FAU - Griffin, Darren K
+AU  - Griffin DK
+AD  - School of Biosciences, University of Kent, Canterbury, CT2 7NJ, UK. Electronic
+      address: d.k.griffin@kent.ac.uk.
+FAU - Larkin, Denis M
+AU  - Larkin DM
+AD  - Department of Comparative Biomedical Sciences, Royal Veterinary College,
+      University of London, London, NW1 0TU, UK. Electronic address: dlarkin@rvc.ac.uk.
+FAU - O'Connor, Rebecca E
+AU  - O'Connor RE
+AD  - School of Biosciences, University of Kent, Canterbury, CT2 7NJ, UK. Electronic
+      address: R.O'Connor@kent.ac.uk.
+LA  - eng
+GR  - BB/E010652/1/BB_/Biotechnology and Biological Sciences Research Council/United
+      Kingdom
+PT  - Historical Article
+PT  - Journal Article
+PT  - Review
+DEP - 20190325
+PL  - Netherlands
+TA  - Eur J Med Genet
+JT  - European journal of medical genetics
+JID - 101247089
+SB  - IM
+MH  - Animals
+MH  - Birds/genetics
+MH  - Chromosome Aberrations
+MH  - Chromosomes
+MH  - Dinosaurs/genetics
+MH  - Evolution, Molecular
+MH  - Gene Ontology
+MH  - *Genome
+MH  - *Genomics/history
+MH  - History, Ancient
+MH  - Humans
+MH  - Karyotype
+MH  - Phenotype
+PMC - PMC7026692
+OTO - NOTNLM
+OT  - Chromosome
+OT  - Comparative
+OT  - Dinosaur
+OT  - Genome evolution
+OT  - Karyotype
+EDAT- 2019/03/30 06:00
+MHDA- 2020/10/06 06:00
+PMCR- 2020/02/01
+CRDT- 2019/03/30 06:00
+PHST- 2019/01/21 00:00 [received]
+PHST- 2019/03/10 00:00 [accepted]
+PHST- 2019/03/30 06:00 [pubmed]
+PHST- 2020/10/06 06:00 [medline]
+PHST- 2019/03/30 06:00 [entrez]
+PHST- 2020/02/01 00:00 [pmc-release]
+AID - S1769-7212(19)30059-X [pii]
+AID - 103640 [pii]
+AID - 10.1016/j.ejmg.2019.03.004 [doi]
+PST - ppublish
+SO  - Eur J Med Genet. 2020 Feb;63(2):103640. doi: 10.1016/j.ejmg.2019.03.004. Epub
+      2019 Mar 25.
+
+PMID- 37068225
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20230419
+LR  - 20231017
+IS  - 1091-6490 (Electronic)
+IS  - 0027-8424 (Print)
+IS  - 0027-8424 (Linking)
+VI  - 120
+IP  - 17
+DP  - 2023 Apr 25
+TI  - Symbiosis between Cretaceous dinosaurs and feather-feeding beetles.
+PG  - e2217872120
+LID - 10.1073/pnas.2217872120 [doi]
+LID - e2217872120
+AB  - Extant terrestrial vertebrates, including birds, have a panoply of symbiotic
+      relationships with many insects and arachnids, such as parasitism or mutualism.
+      Yet, identifying arthropod-vertebrate symbioses in the fossil record has been
+      based largely on indirect evidence; findings of direct association between
+      arthropod guests and dinosaur host remains are exceedingly scarce. Here, we
+      present direct and indirect evidence demonstrating that beetle larvae fed on
+      feathers from an undetermined theropod host (avian or nonavian) 105 million y
+      ago. An exceptional amber assemblage is reported of larval molts (exuviae)
+      intimately associated with plumulaceous feather and other remains, as well as
+      three additional amber pieces preserving isolated conspecific exuviae. Samples
+      were found in the roughly coeval Spanish amber deposits of El Soplao, San Just,
+      and Peñacerrada I. Integration of the morphological, systematic, and taphonomic
+      data shows that the beetle larval exuviae, belonging to three developmental
+      stages, are most consistent with skin/hide beetles (family Dermestidae), an
+      ecologically important group with extant keratophagous species that commonly
+      inhabit bird and mammal nests. These findings show that a symbiotic relationship
+      involving keratophagy comparable to that of beetles and birds in current
+      ecosystems existed between their Early Cretaceous relatives.
+FAU - Peñalver, Enrique
+AU  - Peñalver E
+AUID- ORCID: 0000-0001-8312-6087
+AD  - Centro Nacional Instituto Geológico y Minero de España, Consejo Superior de
+      Investigaciones Científicas, Valencia 46004, Spain.
+FAU - Peris, David
+AU  - Peris D
+AUID- ORCID: 0000-0003-4074-7400
+AD  - Departament de Dinàmica de la Terra i de l'Oceà, Facultat de Ciències de la
+      Terra, Universitat de Barcelona, Barcelona 08028, Spain.
+AD  - Institut de Recerca de la Biodiversitat, Universitat de Barcelona, Barcelona
+      08028, Spain.
+AD  - Institut Botànic de Barcelona (CSIC-Ajuntament de Barcelona), Barcelona 08038,
+      Spain.
+FAU - Álvarez-Parra, Sergio
+AU  - Álvarez-Parra S
+AUID- ORCID: 0000-0002-0232-1647
+AD  - Departament de Dinàmica de la Terra i de l'Oceà, Facultat de Ciències de la
+      Terra, Universitat de Barcelona, Barcelona 08028, Spain.
+AD  - Institut de Recerca de la Biodiversitat, Universitat de Barcelona, Barcelona
+      08028, Spain.
+FAU - Grimaldi, David A
+AU  - Grimaldi DA
+AD  - Division of Invertebrate Zoology, American Museum of Natural History, New York NY
+      10024-5192.
+FAU - Arillo, Antonio
+AU  - Arillo A
+AD  - Departamento de Biodiversidad, Ecología y Evolución, Facultad de Biología,
+      Universidad Complutense, Madrid 28040, Spain.
+FAU - Chiappe, Luis
+AU  - Chiappe L
+AUID- ORCID: 0000-0001-9661-0601
+AD  - Dinosaur Institute, Natural History Museum of Los Angeles County, Los Angeles
+      90007.
+FAU - Delclòs, Xavier
+AU  - Delclòs X
+AUID- ORCID: 0000-0002-2233-5480
+AD  - Departament de Dinàmica de la Terra i de l'Oceà, Facultat de Ciències de la
+      Terra, Universitat de Barcelona, Barcelona 08028, Spain.
+AD  - Institut de Recerca de la Biodiversitat, Universitat de Barcelona, Barcelona
+      08028, Spain.
+FAU - Alcalá, Luis
+AU  - Alcalá L
+AUID- ORCID: 0000-0002-6369-6186
+AD  - Parque de las Ciencias de Andalucía, Granada 18006, Spain.
+FAU - Sanz, José Luis
+AU  - Sanz JL
+AUID- ORCID: 0000-0002-5214-5725
+AD  - Unidad de Paleontología, Facultad de Ciencias, Universidad Autónoma de Madrid,
+      Madrid 28049, Spain.
+AD  - Real Academia Española de Ciencias Exactas, Físicas y Naturales, Madrid 28004,
+      Spain.
+FAU - Solórzano-Kraemer, Mónica M
+AU  - Solórzano-Kraemer MM
+AUID- ORCID: 0000-0003-3065-119X
+AD  - Department of Palaeontology and Historical Geology, Senckenberg Research
+      Institute, Frankfurt am Main 60325, Germany.
+FAU - Pérez-de la Fuente, Ricardo
+AU  - Pérez-de la Fuente R
+AUID- ORCID: 0000-0002-2830-2639
+AD  - Oxford University Museum of Natural History, Oxford OX1 3PW, UK.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20230417
+PL  - United States
+TA  - Proc Natl Acad Sci U S A
+JT  - Proceedings of the National Academy of Sciences of the United States of America
+JID - 7505876
+RN  - 0 (Amber)
+SB  - IM
+CIN - Nature. 2023 Apr;616(7958):632. doi: 10.1038/d41586-023-01282-9. PMID: 37081273
+MH  - Animals
+MH  - *Dinosaurs/anatomy & histology
+MH  - Feathers/anatomy & histology
+MH  - *Coleoptera
+MH  - Symbiosis
+MH  - Amber
+MH  - Ecosystem
+MH  - Fossils
+MH  - Birds/anatomy & histology
+MH  - Biological Evolution
+MH  - Mammals
+PMC - PMC10151472
+OTO - NOTNLM
+OT  - Cretaceous
+OT  - amber
+OT  - arthropod-dinosaur interaction
+OT  - paleoecology
+OT  - symbiosis
+COIS- The authors declare no competing interest.
+EDAT- 2023/04/18 06:00
+MHDA- 2023/04/19 06:41
+PMCR- 2023/04/17
+CRDT- 2023/04/17 15:23
+PHST- 2023/04/19 06:41 [medline]
+PHST- 2023/04/17 15:23 [entrez]
+PHST- 2023/04/18 06:00 [pubmed]
+PHST- 2023/04/17 00:00 [pmc-release]
+AID - 202217872 [pii]
+AID - 10.1073/pnas.2217872120 [doi]
+PST - ppublish
+SO  - Proc Natl Acad Sci U S A. 2023 Apr 25;120(17):e2217872120. doi:
+      10.1073/pnas.2217872120. Epub 2023 Apr 17.
+
+PMID- 36448670
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20221201
+LR  - 20221208
+IS  - 2050-084X (Electronic)
+IS  - 2050-084X (Linking)
+VI  - 11
+DP  - 2022 Nov 30
+TI  - Spinosaurus is not an aquatic dinosaur.
+LID - 10.7554/eLife.80092 [doi]
+LID - e80092
+AB  - A predominantly fish-eating diet was envisioned for the sail-backed theropod
+      dinosaur Spinosaurus aegyptiacus when its elongate jaws with subconical teeth
+      were unearthed a century ago in Egypt. Recent discovery of the high-spined tail
+      of that skeleton, however, led to a bolder conjecture that S. aegyptiacus was the
+      first fully aquatic dinosaur. The 'aquatic hypothesis' posits that S. aegyptiacus
+      was a slow quadruped on land but a capable pursuit predator in coastal waters,
+      powered by an expanded tail. We test these functional claims with skeletal and
+      flesh models of S. aegyptiacus. We assembled a CT-based skeletal reconstruction
+      based on the fossils, to which we added internal air and muscle to create a
+      posable flesh model. That model shows that on land S. aegyptiacus was bipedal and
+      in deep water was an unstable, slow-surface swimmer (<1 m/s) too buoyant to dive.
+      Living reptiles with similar spine-supported sails over trunk and tail are used
+      for display rather than aquatic propulsion, and nearly all extant secondary
+      swimmers have reduced limbs and fleshy tail flukes. New fossils also show that
+      Spinosaurus ranged far inland. Two stages are clarified in the evolution of
+      Spinosaurus, which is best understood as a semiaquatic bipedal ambush piscivore
+      that frequented the margins of coastal and inland waterways.
+CI  - © 2022, Sereno et al.
+FAU - Sereno, Paul C
+AU  - Sereno PC
+AUID- ORCID: 0000-0001-7958-3701
+AD  - 1Department of Organismal Biology, University of Chicago, Chicago, United States.
+AD  - Committee on Evolutionary Biology, University of Chicago, Chicago, United States.
+FAU - Myhrvold, Nathan
+AU  - Myhrvold N
+AD  - Intellectual Ventures, Bellevue, United States.
+FAU - Henderson, Donald M
+AU  - Henderson DM
+AD  - Royal Tyrrell Museum of Palaeontology, Alberta, Canada.
+FAU - Fish, Frank E
+AU  - Fish FE
+AD  - Department of Biology, West Chester University, West Chester, United States.
+FAU - Vidal, Daniel
+AU  - Vidal D
+AUID- ORCID: 0000-0002-6054-1357
+AD  - Grupo de Biología Evolutiva, UNED, Madrid, Spain.
+FAU - Baumgart, Stephanie L
+AU  - Baumgart SL
+AUID- ORCID: 0000-0001-9534-7389
+AD  - 1Department of Organismal Biology, University of Chicago, Chicago, United States.
+FAU - Keillor, Tyler M
+AU  - Keillor TM
+AD  - 1Department of Organismal Biology, University of Chicago, Chicago, United States.
+FAU - Formoso, Kiersten K
+AU  - Formoso KK
+AD  - Department of Earth Sciences, University of Southern California, Los Angeles,
+      United States.
+AD  - Dinosaur Institute, Natural History Museum of Los Angeles County, Los Angeles,
+      United States.
+FAU - Conroy, Lauren L
+AU  - Conroy LL
+AD  - 1Department of Organismal Biology, University of Chicago, Chicago, United States.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20221130
+PL  - England
+TA  - Elife
+JT  - eLife
+JID - 101579614
+SB  - IM
+MH  - Animals
+MH  - *Dinosaurs
+MH  - Fossils
+MH  - Skeleton
+MH  - Muscles
+MH  - Spine
+PMC - PMC9711522
+OTO - NOTNLM
+OT  - Spinosaurus
+OT  - ambush predator
+OT  - aquatic
+OT  - dinosaur
+OT  - evolution
+OT  - evolutionary biology
+OT  - spinosaurid
+COIS- PS, NM, DH, FF, DV, SB, TK, KF, LC No competing interests declared
+EDAT- 2022/12/01 06:00
+MHDA- 2022/12/02 06:00
+PMCR- 2022/11/30
+CRDT- 2022/11/30 07:53
+PHST- 2022/05/07 00:00 [received]
+PHST- 2022/10/05 00:00 [accepted]
+PHST- 2022/11/30 07:53 [entrez]
+PHST- 2022/12/01 06:00 [pubmed]
+PHST- 2022/12/02 06:00 [medline]
+PHST- 2022/11/30 00:00 [pmc-release]
+AID - 80092 [pii]
+AID - 10.7554/eLife.80092 [doi]
+PST - epublish
+SO  - Elife. 2022 Nov 30;11:e80092. doi: 10.7554/eLife.80092.
+
+PMID- 26754250
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20160804
+LR  - 20240324
+IS  - 1471-2148 (Electronic)
+IS  - 1471-2148 (Linking)
+VI  - 16
+DP  - 2016 Jan 11
+TI  - On the probability of dinosaur fleas.
+PG  - 9
+LID - 10.1186/s12862-015-0568-x [doi]
+LID - 9
+AB  - Recently, a set of publications described flea fossils from Jurassic and Early
+      Cretaceous geological strata in northeastern China, which were suggested to have
+      parasitized feathered dinosaurs, pterosaurs, and early birds or mammals. In
+      support of these fossils being fleas, a recent publication in BMC Evolutionary
+      Biology described the extended abdomen of a female fossil specimen as due to
+      blood feeding.We here comment on these findings, and conclude that the current
+      interpretation of the evolutionary trajectory and ecology of these putative
+      dinosaur fleas is based on appeal to probability, rather than evidence. Hence,
+      their taxonomic positioning as fleas, or stem fleas, as well as their ecological
+      classification as ectoparasites and blood feeders is not supported by currently
+      available data.
+FAU - Dittmar, Katharina
+AU  - Dittmar K
+AD  - Department of Biological Sciences, University at Buffalo, Cooke 109, Buffalo, NY,
+      14260, USA. kd52@buffalo.edu.
+AD  - Graduate Program of Evolution, Ecology, and Behavior, University at Buffalo,
+      State University of New York, 411 Cooke Hall, Buffalo, NY, 14260, USA.
+      kd52@buffalo.edu.
+FAU - Zhu, Qiyun
+AU  - Zhu Q
+AD  - Department of Biological Sciences, University at Buffalo, Cooke 109, Buffalo, NY,
+      14260, USA.
+FAU - Hastriter, Michael W
+AU  - Hastriter MW
+AD  - Monte L. Bean Museum, Brigham Young University, 336 MLB, Provo, UT, 84602, USA.
+FAU - Whiting, Michael F
+AU  - Whiting MF
+AD  - Department of Biology and M. L. Bean Museum, Brigham Young University, 4142 LSB,
+      Provo, UT, 84602, USA.
+LA  - eng
+PT  - Letter
+DEP - 20160111
+PL  - England
+TA  - BMC Evol Biol
+JT  - BMC evolutionary biology
+JID - 100966975
+SB  - IM
+MH  - Animals
+MH  - Biological Evolution
+MH  - China
+MH  - Dinosaurs/*parasitology
+MH  - Female
+MH  - Fossils
+MH  - Probability
+MH  - *Siphonaptera/classification
+PMC - PMC4710018
+EDAT- 2016/01/13 06:00
+MHDA- 2016/08/05 06:00
+PMCR- 2016/01/11
+CRDT- 2016/01/13 06:00
+PHST- 2014/12/19 00:00 [received]
+PHST- 2015/12/14 00:00 [accepted]
+PHST- 2016/01/13 06:00 [entrez]
+PHST- 2016/01/13 06:00 [pubmed]
+PHST- 2016/08/05 06:00 [medline]
+PHST- 2016/01/11 00:00 [pmc-release]
+AID - 10.1186/s12862-015-0568-x [pii]
+AID - 568 [pii]
+AID - 10.1186/s12862-015-0568-x [doi]
+PST - epublish
+SO  - BMC Evol Biol. 2016 Jan 11;16:9. doi: 10.1186/s12862-015-0568-x.
+
+PMID- 21251189
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20110502
+LR  - 20240416
+IS  - 1469-185X (Electronic)
+IS  - 1464-7931 (Print)
+IS  - 0006-3231 (Linking)
+VI  - 86
+IP  - 1
+DP  - 2011 Feb
+TI  - Biology of the sauropod dinosaurs: the evolution of gigantism.
+PG  - 117-55
+LID - 10.1111/j.1469-185X.2010.00137.x [doi]
+AB  - The herbivorous sauropod dinosaurs of the Jurassic and Cretaceous periods were
+      the largest terrestrial animals ever, surpassing the largest herbivorous mammals
+      by an order of magnitude in body mass. Several evolutionary lineages among
+      Sauropoda produced giants with body masses in excess of 50 metric tonnes by
+      conservative estimates. With body mass increase driven by the selective
+      advantages of large body size, animal lineages will increase in body size until
+      they reach the limit determined by the interplay of bauplan, biology, and
+      resource availability. There is no evidence, however, that resource availability
+      and global physicochemical parameters were different enough in the Mesozoic to
+      have led to sauropod gigantism. We review the biology of sauropod dinosaurs in
+      detail and posit that sauropod gigantism was made possible by a specific
+      combination of plesiomorphic characters (phylogenetic heritage) and evolutionary
+      innovations at different levels which triggered a remarkable evolutionary
+      cascade. Of these key innovations, the most important probably was the very long
+      neck, the most conspicuous feature of the sauropod bauplan. Compared to other
+      herbivores, the long neck allowed more efficient food uptake than in other large
+      herbivores by covering a much larger feeding envelope and making food accessible
+      that was out of the reach of other herbivores. Sauropods thus must have been able
+      to take up more energy from their environment than other herbivores. The long
+      neck, in turn, could only evolve because of the small head and the extensive
+      pneumatization of the sauropod axial skeleton, lightening the neck. The small
+      head was possible because food was ingested without mastication. Both mastication
+      and a gastric mill would have limited food uptake rate. Scaling relationships
+      between gastrointestinal tract size and basal metabolic rate (BMR) suggest that
+      sauropods compensated for the lack of particle reduction with long retention
+      times, even at high uptake rates. The extensive pneumatization of the axial
+      skeleton resulted from the evolution of an avian-style respiratory system,
+      presumably at the base of Saurischia. An avian-style respiratory system would
+      also have lowered the cost of breathing, reduced specific gravity, and may have
+      been important in removing excess body heat. Another crucial innovation inherited
+      from basal dinosaurs was a high BMR. This is required for fueling the high growth
+      rate necessary for a multi-tonne animal to survive to reproductive maturity. The
+      retention of the plesiomorphic oviparous mode of reproduction appears to have
+      been critical as well, allowing much faster population recovery than in
+      megaherbivore mammals. Sauropods produced numerous but small offspring each
+      season while land mammals show a negative correlation of reproductive output to
+      body size. This permitted lower population densities in sauropods than in
+      megaherbivore mammals but larger individuals. Our work on sauropod dinosaurs thus
+      informs us about evolutionary limits to body size in other groups of herbivorous
+      terrestrial tetrapods. Ectothermic reptiles are strongly limited by their low
+      BMR, remaining small. Mammals are limited by their extensive mastication and
+      their vivipary, while ornithsichian dinosaurs were only limited by their
+      extensive mastication, having greater average body sizes than mammals.
+CI  - © 2010 The Authors. Biological Reviews © 2010 Cambridge Philosophical Society.
+FAU - Sander, P Martin
+AU  - Sander PM
+AD  - Steinmann Institute, University of Bonn, Germany. martin.sander@uni-bonn.de
+FAU - Christian, Andreas
+AU  - Christian A
+FAU - Clauss, Marcus
+AU  - Clauss M
+FAU - Fechner, Regina
+AU  - Fechner R
+FAU - Gee, Carole T
+AU  - Gee CT
+FAU - Griebeler, Eva-Maria
+AU  - Griebeler EM
+FAU - Gunga, Hanns-Christian
+AU  - Gunga HC
+FAU - Hummel, Jürgen
+AU  - Hummel J
+FAU - Mallison, Heinrich
+AU  - Mallison H
+FAU - Perry, Steven F
+AU  - Perry SF
+FAU - Preuschoft, Holger
+AU  - Preuschoft H
+FAU - Rauhut, Oliver W M
+AU  - Rauhut OW
+FAU - Remes, Kristian
+AU  - Remes K
+FAU - Tütken, Thomas
+AU  - Tütken T
+FAU - Wings, Oliver
+AU  - Wings O
+FAU - Witzel, Ulrich
+AU  - Witzel U
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+PL  - England
+TA  - Biol Rev Camb Philos Soc
+JT  - Biological reviews of the Cambridge Philosophical Society
+JID - 0414576
+SB  - IM
+MH  - Animals
+MH  - *Biological Evolution
+MH  - *Body Size
+MH  - *Bone Development
+MH  - Bone and Bones/*anatomy & histology
+MH  - Dinosaurs/*anatomy & histology/classification/*growth & development
+MH  - Fossils
+MH  - Phylogeny
+PMC - PMC3045712
+EDAT- 2011/01/22 06:00
+MHDA- 2011/05/03 06:00
+PMCR- 2011/02/28
+CRDT- 2011/01/22 06:00
+PHST- 2011/01/22 06:00 [entrez]
+PHST- 2011/01/22 06:00 [pubmed]
+PHST- 2011/05/03 06:00 [medline]
+PHST- 2011/02/28 00:00 [pmc-release]
+AID - 10.1111/j.1469-185X.2010.00137.x [doi]
+PST - ppublish
+SO  - Biol Rev Camb Philos Soc. 2011 Feb;86(1):117-55. doi:
+      10.1111/j.1469-185X.2010.00137.x.
+
+PMID- 35962036
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20220816
+LR  - 20221118
+IS  - 2399-3642 (Electronic)
+IS  - 2399-3642 (Linking)
+VI  - 5
+IP  - 1
+DP  - 2022 Aug 12
+TI  - The exquisitely preserved integument of Psittacosaurus and the scaly skin of
+      ceratopsian dinosaurs.
+PG  - 809
+LID - 10.1038/s42003-022-03749-3 [doi]
+LID - 809
+AB  - The Frankfurt specimen of the early-branching ceratopsian dinosaur Psittacosaurus
+      is remarkable for the exquisite preservation of squamous (scaly) skin and other
+      soft tissues that cover almost its entire body. New observations under
+      Laser-Stimulated Fluorescence (LSF) reveal the complexity of the squamous skin of
+      Psittacosaurus, including several unique features and details of newly detected
+      and previously-described integumentary structures. Variations in the scaly skin
+      are found to be strongly regionalized in Psittacosaurus. For example, feature
+      scales consist of truncated cone-shaped scales on the shoulder, but form a
+      longitudinal row of quadrangular scales on the tail. Re-examined through LSF, the
+      cloaca of Psittacosaurus has a longitudinal opening, or vent; a condition that it
+      shares only with crocodylians. This implies that the cloaca may have had
+      crocodylian-like internal anatomy, including a single, ventrally-positioned
+      copulatory organ. Combined with these new integumentary data, a comprehensive
+      review of integument in ceratopsian dinosaurs reveals that scalation was
+      generally conservative in ceratopsians and typically consisted of large
+      subcircular-to-polygonal feature scales surrounded by a network of smaller
+      non-overlapping polygonal basement scales. This study highlights the importance
+      of combining exceptional specimens with modern imaging techniques, which are
+      helping to redefine the perceived complexity of squamation in ceratopsians and
+      other dinosaurs.
+CI  - © 2022. The Author(s).
+FAU - Bell, Phil R
+AU  - Bell PR
+AUID- ORCID: 0000-0001-5890-8183
+AD  - School of Environmental and Rural Science, University of New England, Armidale,
+      NSW, 2351, Australia. pbell23@une.edu.au.
+FAU - Hendrickx, Christophe
+AU  - Hendrickx C
+AUID- ORCID: 0000-0002-8500-2405
+AD  - Unidad Ejecutora Lillo, CONICET-Fundación Miguel Lillo, Miguel Lillo 251, 4000,
+      San Miguel de Tucumán, Tucumán, Argentina. christophendrickx@gmail.com.
+FAU - Pittman, Michael
+AU  - Pittman M
+AUID- ORCID: 0000-0002-6149-3078
+AD  - School of Life Sciences, The Chinese University of Hong Kong, Shatin, Hong Kong
+      SAR, China. mpittman@cuhk.edu.hk.
+AD  - Foundation for Scientific Advancement, Sierra Vista, AZ, USA.
+      mpittman@cuhk.edu.hk.
+FAU - Kaye, Thomas G
+AU  - Kaye TG
+AUID- ORCID: 0000-0001-7996-618X
+AD  - Foundation for Scientific Advancement, Sierra Vista, AZ, USA.
+FAU - Mayr, Gerald
+AU  - Mayr G
+AD  - Ornithological Section, Senckenberg Research Institute and Natural History Museum
+      Frankfurt, Senckenberganlage 25, D-60325, Frankfurt am Main, Germany.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+DEP - 20220812
+PL  - England
+TA  - Commun Biol
+JT  - Communications biology
+JID - 101719179
+SB  - IM
+MH  - Animals
+MH  - *Carcinoma, Squamous Cell
+MH  - *Dinosaurs/anatomy & histology
+MH  - Fossils
+MH  - Preservation, Biological
+MH  - Skin
+PMC - PMC9374759
+COIS- The authors declare no competing interests.
+EDAT- 2022/08/13 06:00
+MHDA- 2022/08/17 06:00
+PMCR- 2022/08/12
+CRDT- 2022/08/12 23:21
+PHST- 2022/02/18 00:00 [received]
+PHST- 2022/07/20 00:00 [accepted]
+PHST- 2022/08/12 23:21 [entrez]
+PHST- 2022/08/13 06:00 [pubmed]
+PHST- 2022/08/17 06:00 [medline]
+PHST- 2022/08/12 00:00 [pmc-release]
+AID - 10.1038/s42003-022-03749-3 [pii]
+AID - 3749 [pii]
+AID - 10.1038/s42003-022-03749-3 [doi]
+PST - epublish
+SO  - Commun Biol. 2022 Aug 12;5(1):809. doi: 10.1038/s42003-022-03749-3.
+
+PMID- 37464026
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20230721
+LR  - 20230802
+IS  - 2045-2322 (Electronic)
+IS  - 2045-2322 (Linking)
+VI  - 13
+IP  - 1
+DP  - 2023 Jul 18
+TI  - An extraordinary fossil captures the struggle for existence during the Mesozoic.
+PG  - 11221
+LID - 10.1038/s41598-023-37545-8 [doi]
+LID - 11221
+AB  - Dinosaurs and mammals have coexisted for the last ~ 230 million years. Both
+      groups arose during the Late Triassic and diversified throughout the Mesozoic and
+      into the Cenozoic (the latter in the form of birds). Although they undoubtedly
+      interacted in many ways, direct fossil evidence for their interaction is rare.
+      Here we report a new fossil find from the Lujiatun Member of the Lower Cretaceous
+      Yixian Formation of China, showing a gobiconodontid mammal and psittacosaurid
+      dinosaur locked in mortal combat. We entertain various hypothesized explanations
+      for this association, but the balance of the evidence suggests that it represents
+      a predation attempt on the part of the smaller mammal, suddenly interrupted by,
+      and preserved within, a lahar-type volcanic debris flow. Mesozoic mammals are
+      usually depicted as having lived in the shadows of their larger dinosaurian
+      contemporaries, but this new fossil convincingly demonstrates that mammals could
+      pose a threat even to near fully-grown dinosaurs. The Yixian Formation-and the
+      Chinese fossil Jehol Biota more broadly-have played a particularly important role
+      in revealing the diversity of small-bodied dinosaurs and other fauna. We
+      anticipate that the volcanically derived obrution deposits specific to the
+      Lujiatun Member will likewise continue to yield evidence for biotic interactions
+      otherwise unknown from the rest of the fossil record.
+CI  - © 2023. The Author(s).
+FAU - Han, Gang
+AU  - Han G
+AD  - Hainan Vocational University of Science and Technology, Haikou, Hainan, China.
+AD  - Hainan Tropical Ocean University, Sanya, Hainan, China.
+FAU - Mallon, Jordan C
+AU  - Mallon JC
+AD  - Beaty Centre for Species Discovery and Palaeobiology Section, Canadian Museum of
+      Nature, Ottawa, Ontario, Canada. jmallon@nature.ca.
+AD  - Department of Earth Sciences, Carleton University, Ottawa, Ontario, Canada.
+      jmallon@nature.ca.
+FAU - Lussier, Aaron J
+AU  - Lussier AJ
+AD  - Beaty Centre for Species Discovery and Mineralogy Section, Canadian Museum of
+      Nature, Ottawa, Ontario, Canada.
+FAU - Wu, Xiao-Chun
+AU  - Wu XC
+AD  - Beaty Centre for Species Discovery and Palaeobiology Section, Canadian Museum of
+      Nature, Ottawa, Ontario, Canada.
+FAU - Mitchell, Robert
+AU  - Mitchell R
+AD  - Department of Geography, University of Calgary, Calgary, Alberta, Canada.
+FAU - Li, Ling-Ji
+AU  - Li LJ
+AD  - Weihai Ziguang Shi Yan School, Weihai, Shandong, China.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20230718
+PL  - England
+TA  - Sci Rep
+JT  - Scientific reports
+JID - 101563288
+SB  - IM
+MH  - Animals
+MH  - *Fossils
+MH  - *Dinosaurs/anatomy & histology
+MH  - Birds
+MH  - Mammals
+MH  - Predatory Behavior
+MH  - Biological Evolution
+MH  - Phylogeny
+PMC - PMC10354204
+COIS- The authors declare no competing interests.
+EDAT- 2023/07/19 01:06
+MHDA- 2023/07/21 06:43
+PMCR- 2023/07/18
+CRDT- 2023/07/18 23:26
+PHST- 2023/02/02 00:00 [received]
+PHST- 2023/06/23 00:00 [accepted]
+PHST- 2023/07/21 06:43 [medline]
+PHST- 2023/07/19 01:06 [pubmed]
+PHST- 2023/07/18 23:26 [entrez]
+PHST- 2023/07/18 00:00 [pmc-release]
+AID - 10.1038/s41598-023-37545-8 [pii]
+AID - 37545 [pii]
+AID - 10.1038/s41598-023-37545-8 [doi]
+PST - epublish
+SO  - Sci Rep. 2023 Jul 18;13(1):11221. doi: 10.1038/s41598-023-37545-8.
+
+PMID- 33990610
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20210603
+LR  - 20240402
+IS  - 2041-1723 (Electronic)
+IS  - 2041-1723 (Linking)
+VI  - 12
+IP  - 1
+DP  - 2021 May 14
+TI  - Niche partitioning shaped herbivore macroevolution through the early Mesozoic.
+PG  - 2796
+LID - 10.1038/s41467-021-23169-x [doi]
+LID - 2796
+AB  - The Triassic (252-201 Ma) marks a major punctuation in Earth history, when
+      ecosystems rebuilt themselves following the devastating Permian-Triassic mass
+      extinction. Herbivory evolved independently several times as ecosystems
+      comprising diverse assemblages of therapsids, parareptiles and archosauromorphs
+      rose and fell, leading to a world dominated by dinosaurs. It was assumed that
+      dinosaurs prevailed either through long-term competitive replacement of the
+      incumbent clades or rapidly and opportunistically following one or more
+      extinction events. Here we use functional morphology and ecology to explore
+      herbivore morphospace through the Triassic and Early Jurassic. We identify five
+      main herbivore guilds (ingestion generalists, prehension specialists, durophagous
+      specialists, shearing pulpers, and heavy oral processors), and find that
+      herbivore clades generally avoided competition by almost exclusively occupying
+      different guilds. Major ecosystem remodelling was triggered multiple times by
+      external environmental challenges, and previously dominant herbivores were
+      marginalised by newly emerging forms. Dinosaur dominance was a mix of opportunity
+      following disaster, combined with competitive advantage in their new world.
+FAU - Singh, Suresh A
+AU  - Singh SA
+AUID- ORCID: 0000-0002-5262-3758
+AD  - School of Earth Sciences, University of Bristol, Bristol, UK.
+      ss1314@bristol.ac.uk.
+FAU - Elsler, Armin
+AU  - Elsler A
+AUID- ORCID: 0000-0001-8673-9591
+AD  - School of Earth Sciences, University of Bristol, Bristol, UK.
+FAU - Stubbs, Thomas L
+AU  - Stubbs TL
+AUID- ORCID: 0000-0001-7358-1051
+AD  - School of Earth Sciences, University of Bristol, Bristol, UK.
+FAU - Bond, Russell
+AU  - Bond R
+AD  - School of Earth Sciences, University of Bristol, Bristol, UK.
+FAU - Rayfield, Emily J
+AU  - Rayfield EJ
+AUID- ORCID: 0000-0002-2618-750X
+AD  - School of Earth Sciences, University of Bristol, Bristol, UK.
+FAU - Benton, Michael J
+AU  - Benton MJ
+AUID- ORCID: 0000-0002-4323-1824
+AD  - School of Earth Sciences, University of Bristol, Bristol, UK.
+LA  - eng
+SI  - Dryad/10.5061/dryad.0cfxpnw24
+PT  - Historical Article
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20210514
+PL  - England
+TA  - Nat Commun
+JT  - Nature communications
+JID - 101528555
+SB  - IM
+EIN - Nat Commun. 2021 Jul 22;12(1):4591. doi: 10.1038/s41467-021-24593-9. PMID:
+      34294709
+MH  - Animals
+MH  - Biodiversity
+MH  - *Biological Evolution
+MH  - Cluster Analysis
+MH  - Diet
+MH  - Dinosaurs/anatomy & histology/physiology
+MH  - *Ecosystem
+MH  - Extinction, Biological
+MH  - Food Chain
+MH  - Fossils
+MH  - *Herbivory
+MH  - History, Ancient
+MH  - Phylogeny
+PMC - PMC8121902
+COIS- The authors declare no competing interests.
+EDAT- 2021/05/16 06:00
+MHDA- 2021/06/04 06:00
+PMCR- 2021/05/14
+CRDT- 2021/05/15 05:49
+PHST- 2020/03/12 00:00 [received]
+PHST- 2021/04/16 00:00 [accepted]
+PHST- 2021/05/15 05:49 [entrez]
+PHST- 2021/05/16 06:00 [pubmed]
+PHST- 2021/06/04 06:00 [medline]
+PHST- 2021/05/14 00:00 [pmc-release]
+AID - 10.1038/s41467-021-23169-x [pii]
+AID - 23169 [pii]
+AID - 10.1038/s41467-021-23169-x [doi]
+PST - epublish
+SO  - Nat Commun. 2021 May 14;12(1):2796. doi: 10.1038/s41467-021-23169-x.
+
+PMID- 35444275
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20220429
+LR  - 20220722
+IS  - 1476-4687 (Electronic)
+IS  - 0028-0836 (Print)
+IS  - 0028-0836 (Linking)
+VI  - 604
+IP  - 7907
+DP  - 2022 Apr
+TI  - Pterosaur melanosomes support signalling functions for early feathers.
+PG  - 684-688
+LID - 10.1038/s41586-022-04622-3 [doi]
+AB  - Remarkably well-preserved soft tissues in Mesozoic fossils have yielded
+      substantial insights into the evolution of feathers(1). New evidence of branched
+      feathers in pterosaurs suggests that feathers originated in the avemetatarsalian
+      ancestor of pterosaurs and dinosaurs in the Early Triassic(2), but the homology
+      of these pterosaur structures with feathers is controversial(3,4). Reports of
+      pterosaur feathers with homogeneous ovoid melanosome geometries(2,5) suggest that
+      they exhibited limited variation in colour, supporting hypotheses that early
+      feathers functioned primarily in thermoregulation(6). Here we report the presence
+      of diverse melanosome geometries in the skin and simple and branched feathers of
+      a tapejarid pterosaur from the Early Cretaceous found in Brazil. The melanosomes
+      form distinct populations in different feather types and the skin, a feature
+      previously known only in theropod dinosaurs, including birds. These
+      tissue-specific melanosome geometries in pterosaurs indicate that manipulation of
+      feather colour-and thus functions of feathers in visual communication-has deep
+      evolutionary origins. These features show that genetic regulation of melanosome
+      chemistry and shape(7-9) was active early in feather evolution.
+CI  - © 2022. The Author(s).
+FAU - Cincotta, Aude
+AU  - Cincotta A
+AUID- ORCID: 0000-0003-0039-0160
+AD  - Directorate Earth and History of Life, Royal Belgian Institute of Natural
+      Sciences, Brussels, Belgium. acincotta@naturalsciences.be.
+AD  - Institute of Life, Earth and Environment, University of Namur, Namur, Belgium.
+      acincotta@naturalsciences.be.
+AD  - School of Biological, Earth and Environmental Sciences, University College Cork,
+      Cork, Ireland. acincotta@naturalsciences.be.
+AD  - Environmental Research Institute, University College Cork, Cork, Ireland.
+      acincotta@naturalsciences.be.
+FAU - Nicolaï, Michaël
+AU  - Nicolaï M
+AUID- ORCID: 0000-0002-9570-0311
+AD  - Evolution and Optics of Nanostructures Group, Biology Department, Ghent
+      University, Ghent, Belgium.
+FAU - Campos, Hebert Bruno Nascimento
+AU  - Campos HBN
+AD  - Centro Universitário Maurício de Nassau, Campina Grande, Brazil.
+FAU - McNamara, Maria
+AU  - McNamara M
+AUID- ORCID: 0000-0003-0968-4624
+AD  - School of Biological, Earth and Environmental Sciences, University College Cork,
+      Cork, Ireland. maria.mcnamara@ucc.ie.
+AD  - Environmental Research Institute, University College Cork, Cork, Ireland.
+      maria.mcnamara@ucc.ie.
+FAU - D'Alba, Liliana
+AU  - D'Alba L
+AUID- ORCID: 0000-0002-2478-3455
+AD  - Evolution and Optics of Nanostructures Group, Biology Department, Ghent
+      University, Ghent, Belgium.
+AD  - Naturalis Biodiversity Center, Leiden, The Netherlands.
+FAU - Shawkey, Matthew D
+AU  - Shawkey MD
+AUID- ORCID: 0000-0002-5131-8209
+AD  - Evolution and Optics of Nanostructures Group, Biology Department, Ghent
+      University, Ghent, Belgium.
+FAU - Kischlat, Edio-Ernst
+AU  - Kischlat EE
+AD  - Divisão de Bacias Sedimentares, Geological Survey of Brazil, Porto Alegre,
+      Brazil.
+FAU - Yans, Johan
+AU  - Yans J
+AD  - Institute of Life, Earth and Environment, University of Namur, Namur, Belgium.
+FAU - Carleer, Robert
+AU  - Carleer R
+AD  - Research Group of Analytical and Circular Chemistry, Institute for Material
+      Research, Hasselt University, Diepenbeek, Belgium.
+FAU - Escuillié, François
+AU  - Escuillié F
+AD  - ELDONIA, Gannat, France.
+FAU - Godefroit, Pascal
+AU  - Godefroit P
+AD  - Directorate Earth and History of Life, Royal Belgian Institute of Natural
+      Sciences, Brussels, Belgium.
+LA  - eng
+PT  - Journal Article
+DEP - 20220420
+PL  - England
+TA  - Nature
+JT  - Nature
+JID - 0410462
+SB  - IM
+CIN - Nature. 2022 Apr;604(7907):630-631. doi: 10.1038/d41586-022-01036-z. PMID:
+      35444308
+MH  - Animals
+MH  - *Biological Evolution
+MH  - *Dinosaurs/anatomy & histology
+MH  - *Feathers
+MH  - *Fossils
+MH  - *Melanosomes
+MH  - Pigmentation
+PMC - PMC9046085
+COIS- The authors declare no competing interests.
+EDAT- 2022/04/22 06:00
+MHDA- 2022/04/30 06:00
+PMCR- 2022/04/20
+CRDT- 2022/04/21 05:34
+PHST- 2021/10/22 00:00 [received]
+PHST- 2022/03/07 00:00 [accepted]
+PHST- 2022/04/22 06:00 [pubmed]
+PHST- 2022/04/30 06:00 [medline]
+PHST- 2022/04/21 05:34 [entrez]
+PHST- 2022/04/20 00:00 [pmc-release]
+AID - 10.1038/s41586-022-04622-3 [pii]
+AID - 4622 [pii]
+AID - 10.1038/s41586-022-04622-3 [doi]
+PST - ppublish
+SO  - Nature. 2022 Apr;604(7907):684-688. doi: 10.1038/s41586-022-04622-3. Epub 2022
+      Apr 20.
+
+PMID- 36122246
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20220922
+LR  - 20230320
+IS  - 1091-6490 (Electronic)
+IS  - 0027-8424 (Print)
+IS  - 0027-8424 (Linking)
+VI  - 119
+IP  - 39
+DP  - 2022 Sep 27
+TI  - Low dinosaur biodiversity in central China 2 million years prior to the
+      end-Cretaceous mass extinction.
+PG  - e2211234119
+LID - 10.1073/pnas.2211234119 [doi]
+LID - e2211234119
+AB  - Whether or not nonavian dinosaur biodiversity declined prior to the
+      end-Cretaceous mass extinction remains controversial as the result of sampling
+      biases in the fossil record, differences in the analytical approaches used, and
+      the rarity of high-precision geochronological dating of dinosaur fossils. Using
+      magnetostratigraphy, cyclostratigraphy, and biostratigraphy, we establish a
+      high-resolution geochronological framework for the fossil-rich Late Cretaceous
+      sedimentary sequence in the Shanyang Basin of central China. We have found only
+      three dinosaurian eggshell taxa (Macroolithus yaotunensis, Elongatoolithus
+      elongatus, and Stromatoolithus pinglingensis) representing two clades
+      (Oviraptoridae and Hadrosauridae) in sediments deposited between ∼68.2 and ∼66.4
+      million y ago, indicating sustained low dinosaur biodiversity, and that
+      assessment is consistent with the known skeletal remains in the Shanyang and
+      surrounding basins of central China. Along with the dinosaur eggshell records
+      from eastern and southern China, we find a decline in dinosaur biodiversity from
+      the Campanian to the Maastrichtian. Our results support a long-term decline in
+      global dinosaur biodiversity prior to 66 million y ago, which likely set the
+      stage for the end-Cretaceous nonavian dinosaur mass extinction.
+FAU - Han, Fei
+AU  - Han F
+AUID- ORCID: 0000-0002-9450-006X
+AD  - Paleomagnetism and Planetary Magnetism Laboratory, School of Geophysics and
+      Geomatics, China University of Geosciences, Wuhan, Hubei 430074, China.
+FAU - Wang, Qiang
+AU  - Wang Q
+AUID- ORCID: 0000-0003-4881-521X
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+FAU - Wang, Huapei
+AU  - Wang H
+AUID- ORCID: 0000-0003-1676-3494
+AD  - Paleomagnetism and Planetary Magnetism Laboratory, School of Geophysics and
+      Geomatics, China University of Geosciences, Wuhan, Hubei 430074, China.
+FAU - Zhu, Xufeng
+AU  - Zhu X
+AUID- ORCID: 0000-0001-9731-6615
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+FAU - Zhou, Xinying
+AU  - Zhou X
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+AD  - Center for Excellence in Life and Paleoenvironment, Chinese Academy of Sciences,
+      Beijing 100044, China.
+FAU - Wang, Zhixiang
+AU  - Wang Z
+AD  - Department of Applied Geophysics, School of Geophysics and Geomatics, China
+      University of Geosciences, Wuhan, Hubei 430074, China.
+FAU - Fang, Kaiyong
+AU  - Fang K
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+FAU - Stidham, Thomas A
+AU  - Stidham TA
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+AD  - Center for Excellence in Life and Paleoenvironment, Chinese Academy of Sciences,
+      Beijing 100044, China.
+FAU - Wang, Wei
+AU  - Wang W
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+AD  - Center for Excellence in Life and Paleoenvironment, Chinese Academy of Sciences,
+      Beijing 100044, China.
+AD  - State Key Laboratory of Lithospheric Evolution, Institute of Geology and
+      Geophysics, Chinese Academy of Sciences, Beijing 100029, China.
+FAU - Wang, Xiaolin
+AU  - Wang X
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+AD  - Center for Excellence in Life and Paleoenvironment, Chinese Academy of Sciences,
+      Beijing 100044, China.
+FAU - Li, Xiaoqiang
+AU  - Li X
+AD  - Key Laboratory of Vertebrate Evolution and Human Origins of Chinese Academy of
+      Sciences, Institute of Vertebrate Paleontology and Paleoanthropology, Chinese
+      Academy of Sciences, Beijing 100044, China.
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+AD  - Center for Excellence in Life and Paleoenvironment, Chinese Academy of Sciences,
+      Beijing 100044, China.
+FAU - Qin, Huafeng
+AU  - Qin H
+AD  - State Key Laboratory of Lithospheric Evolution, Institute of Geology and
+      Geophysics, Chinese Academy of Sciences, Beijing 100029, China.
+FAU - Fan, Longgang
+AU  - Fan L
+AD  - Chinese Academy of Sciences Key Laboratory of Earth and Planetary Physics,
+      Institute of Geology and Geophysics, Chinese Academy of Sciences, Beijing 100029,
+      China.
+FAU - Wen, Chen
+AU  - Wen C
+AUID- ORCID: 0000-0003-3696-3696
+AD  - Paleomagnetism and Planetary Magnetism Laboratory, School of Geophysics and
+      Geomatics, China University of Geosciences, Wuhan, Hubei 430074, China.
+FAU - Luo, Jianhong
+AU  - Luo J
+AD  - Paleomagnetism and Planetary Magnetism Laboratory, School of Geophysics and
+      Geomatics, China University of Geosciences, Wuhan, Hubei 430074, China.
+FAU - Pan, Yongxin
+AU  - Pan Y
+AUID- ORCID: 0000-0002-4227-3061
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+AD  - Chinese Academy of Sciences Key Laboratory of Earth and Planetary Physics,
+      Institute of Geology and Geophysics, Chinese Academy of Sciences, Beijing 100029,
+      China.
+FAU - Deng, Chenglong
+AU  - Deng C
+AUID- ORCID: 0000-0003-1848-3170
+AD  - College of Earth and Planetary Sciences, University of Chinese Academy of
+      Sciences, Beijing 100049, China.
+AD  - State Key Laboratory of Lithospheric Evolution, Institute of Geology and
+      Geophysics, Chinese Academy of Sciences, Beijing 100029, China.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20220919
+PL  - United States
+TA  - Proc Natl Acad Sci U S A
+JT  - Proceedings of the National Academy of Sciences of the United States of America
+JID - 7505876
+SB  - IM
+MH  - Animals
+MH  - *Biodiversity
+MH  - China
+MH  - *Dinosaurs/classification
+MH  - *Extinction, Biological
+MH  - *Fossils
+PMC - PMC9522366
+OTO - NOTNLM
+OT  - dinosaur eggshells
+OT  - east Asia
+OT  - end-Cretaceous mass extinction
+OT  - magnetostratigraphy
+COIS- The authors declare no competing interest.
+EDAT- 2022/09/20 06:00
+MHDA- 2022/09/23 06:00
+PMCR- 2023/03/19
+CRDT- 2022/09/19 15:23
+PHST- 2022/09/19 15:23 [entrez]
+PHST- 2022/09/20 06:00 [pubmed]
+PHST- 2022/09/23 06:00 [medline]
+PHST- 2023/03/19 00:00 [pmc-release]
+AID - 202211234 [pii]
+AID - 10.1073/pnas.2211234119 [doi]
+PST - ppublish
+SO  - Proc Natl Acad Sci U S A. 2022 Sep 27;119(39):e2211234119. doi:
+      10.1073/pnas.2211234119. Epub 2022 Sep 19.

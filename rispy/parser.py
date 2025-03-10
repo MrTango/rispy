@@ -10,6 +10,8 @@ from .config import (
     TAG_KEY_MAPPING,
     WOK_LIST_TYPE_TAGS,
     WOK_TAG_KEY_MAPPING,
+    # PUBMED_LIST_TYPE_TAGS,
+    PUBMED_TAG_KEY_MAPPING,
 )
 
 __all__ = ["load", "loads", "WokParser", "RisParser"]
@@ -129,16 +131,21 @@ class RisParser:
                 if tag in self.ignore:
                     continue
 
-                if tag == self.END_TAG:
+                if self.END_TAG and tag == self.END_TAG:
                     result.append(record)
-
                     record = self._iter_till_start(lines)
                     continue
+
+                if self.END_TAG is None and tag == self.START_TAG:
+                    result.append(record)
 
                 self._add_tag(record, tag, content)
                 last_tag = tag
 
         except StopIteration:
+            if self.END_TAG is None:
+                result.append(record)
+
             return result
 
     def parse_line(self, line):
@@ -219,7 +226,7 @@ class RisParser:
             if delimiter := self.delimiter_map.get(tag):
                 content = [i.strip() for i in content.split(delimiter)]
 
-            if tag in self.list_tags:
+            if self.list_tags and tag in self.list_tags:
                 self._add_list_value(record, name, content)
             else:
                 self._add_single_value(record, name, content, is_multi=extend_multiline)
@@ -256,6 +263,40 @@ class WokParser(RisParser):
             return (None, line[3:].strip())
         else:
             return (line[0:2], line[3:].strip())
+
+
+class PubMedParser(RisParser):
+    """Subclass of Base for reading PubMed RIS files."""
+
+    START_TAG = "PMID"
+    END_TAG = None
+    UNKNOWN_TAG = None
+    DEFAULT_MAPPING = PUBMED_TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS = None
+    # DEFAULT_LIST_TAGS = PUBMED_LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
+
+    def __init__(self, *args, enforce_list_tags=False, **kwargs):
+        super().__init__(*args, enforce_list_tags=enforce_list_tags, **kwargs)
+
+    def parse_line(self, line):
+        """Parse line of PubMed file.
+
+        Parameters
+        ----------
+        line : str
+            Line of RIS file between start and end tag.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the tag and the content of the tag.
+        """
+
+        if line[4:5] == "-":
+            return (line[0:4].rstrip(), line[6:].rstrip())
+        else:
+            return (None, line[6:].rstrip())
 
 
 def load(
