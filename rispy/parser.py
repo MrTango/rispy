@@ -4,7 +4,7 @@ import re
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
+from typing import ClassVar, Optional, TextIO, Union
 
 from .config import (
     DELIMITED_TAG_MAPPING,
@@ -14,7 +14,7 @@ from .config import (
     WOK_TAG_KEY_MAPPING,
 )
 
-__all__ = ["load", "loads", "BaseParser", "WokParser", "RisParser"]
+__all__ = ["BaseParser", "RisParser", "WokParser", "load", "loads"]
 
 
 class NextLine(Exception):
@@ -60,19 +60,19 @@ class BaseParser(ABC):
     END_TAG: str = "ER"
     UNKNOWN_TAG: str = "UK"
     PATTERN: str
-    DEFAULT_IGNORE: ClassVar[List[str]] = []
-    DEFAULT_MAPPING: Dict
-    DEFAULT_LIST_TAGS: List[str]
-    DEFAULT_DELIMITER_MAPPING: Dict
+    DEFAULT_IGNORE: ClassVar[list[str]] = []
+    DEFAULT_MAPPING: dict
+    DEFAULT_LIST_TAGS: list[str]
+    DEFAULT_DELIMITER_MAPPING: dict
     DEFAULT_NEWLINE: ClassVar[str] = "\n"
 
     def __init__(
         self,
         *,
-        mapping: Optional[Dict] = None,
-        list_tags: Optional[List[str]] = None,
-        delimiter_tags_mapping: Optional[Dict] = None,
-        ignore: Optional[List[str]] = None,
+        mapping: Optional[dict] = None,
+        list_tags: Optional[list[str]] = None,
+        delimiter_tags_mapping: Optional[dict] = None,
+        ignore: Optional[list[str]] = None,
         skip_missing_tags: bool = False,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
@@ -123,12 +123,12 @@ class BaseParser(ABC):
         self.enforce_list_tags = enforce_list_tags
         self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
 
-    def parse(self, text: str) -> List[Dict]:
+    def parse(self, text: str) -> list[dict]:
         """Parse RIS string."""
         lines = text.split(self.newline)
         return list(self._yield_lines(lines))
 
-    def parse_lines(self, lines: Union[TextIO, List[str]]):
+    def parse_lines(self, lines: Union[TextIO, list[str]]):
         """Parse RIS file line by line."""
         return list(self._yield_lines(lines))
 
@@ -292,10 +292,10 @@ class WokParser(BaseParser):
 
     START_TAG = "PT"
     PATTERN = r"^[A-Z][A-Z0-9] |^ER\s?|^EF\s?"
-    DEFAULT_IGNORE: ClassVar[List[str]] = ["FN", "VR", "EF"]
+    DEFAULT_IGNORE: ClassVar[list[str]] = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
+    DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
 
     def get_content(self, line):
         return line[2:].strip()
@@ -330,7 +330,7 @@ def load(
     newline: Optional[str] = None,
     implementation: Optional[BaseParser] = None,
     **kw,
-) -> List[Dict]:
+) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -368,7 +368,7 @@ def load(
         raise ValueError("File must be a file-like object or a Path object")
 
 
-def loads(text: str, *, implementation: Optional[Type[BaseParser]] = None, **kw) -> List[Dict]:
+def loads(text: str, *, implementation: Optional[type[BaseParser]] = None, **kw) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
