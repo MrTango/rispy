@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/rispy.svg)](https://badge.fury.io/py/rispy)
 
-A Python 3.9+ reader/writer of RIS reference files.
+A Python reader/writer of [RIS](https://en.wikipedia.org/wiki/RIS_(file_format)) reference files.
 
 *Pronunciation* - `rispee` - like "crispy", but without the c.
 
