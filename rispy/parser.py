@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
+from typing import ClassVar, Dict, List, Optional, TextIO, Tuple, Type, Union
 
 from .config import (
     DELIMITED_TAG_MAPPING,
@@ -141,7 +141,7 @@ class RisParser:
         except StopIteration:
             return result
 
-    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
+    def parse_line(self, line: str) -> Union[Tuple[str, str], Tuple[None, str]]:
         """Parse line of RIS file.
 
         This method parses a line between the start and end tag.
@@ -238,7 +238,7 @@ class WokParser(RisParser):
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
 
-    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
+    def parse_line(self, line: str) -> Union[Tuple[str, str], Tuple[None, str]]:
         """Parse line of RIS file.
 
         This method parses a line between the start and end tag.
