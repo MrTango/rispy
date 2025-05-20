@@ -78,16 +78,6 @@ ER  -
 """
 
 
-@pytest.mark.skip("Skip benchmark single tests")
-def test_benchmark_rispy_single(benchmark):
-    benchmark(rispy.loads, EXAMPLE_RECORD)
-
-
-@pytest.mark.skip("Skip benchmark single tests")
-def test_benchmark_rispy_single_multiline(benchmark):
-    benchmark(rispy.loads, EXAMPLE_RECORD_MULTILINE)
-
-
 def test_benchmark_rispy_large(benchmark):
     benchmark_dataset = EXAMPLE_RECORD * 10000
 
