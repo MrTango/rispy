@@ -99,7 +99,7 @@ class RisParser:
         self.enforce_list_tags = enforce_list_tags
         self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
 
-    def _iter_till_start(self, lines):
+    def _iter_till_start(self, lines) -> Dict:
         while True:
             line = next(lines)
             if line.startswith(self.START_TAG):
@@ -110,7 +110,7 @@ class RisParser:
         line_gen = (line for line in text.split(self.newline))
         return self.parse_lines(line_gen)
 
-    def parse_lines(self, lines: Union[TextIO, List[str]]):
+    def parse_lines(self, lines: Union[TextIO, List[str]]) -> List[Dict]:
         """Parse RIS file line by line."""
 
         result = []
@@ -141,7 +141,7 @@ class RisParser:
         except StopIteration:
             return result
 
-    def parse_line(self, line):
+    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of RIS file.
 
         This method parses a line between the start and end tag.
@@ -169,7 +169,9 @@ class RisParser:
         else:
             return (None, line.strip())
 
-    def _add_single_value(self, record, name, value, is_multi=False):
+    def _add_single_value(
+        self, record: Dict, name: str, value: Union[str, List[str]], is_multi: bool = False
+    ) -> None:
         """Process a single line.
 
         This method is only run on tags where repeated tags are not expected.
@@ -189,7 +191,7 @@ class RisParser:
             else:
                 record[name] = " ".join((value_must_exist_or_is_bug, value))
 
-    def _add_list_value(self, record, name, value):
+    def _add_list_value(self, record: Dict, name: str, value: Union[str, List[str]]) -> None:
         """Process tags with multiple values."""
         value_list = value if isinstance(value, list) else [value]
         try:
@@ -202,7 +204,9 @@ class RisParser:
             must_exist = record[name]
             record[name] = [must_exist, *value_list]
 
-    def _add_tag(self, record, tag, content, extend_multiline=False):
+    def _add_tag(
+        self, record: Dict, tag: str, content: str, extend_multiline: bool = False
+    ) -> None:
         try:
             name = self.mapping[tag]
         except KeyError:
@@ -234,7 +238,7 @@ class WokParser(RisParser):
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
 
-    def parse_line(self, line):
+    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of RIS file.
 
         This method parses a line between the start and end tag.
