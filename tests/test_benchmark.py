@@ -1,5 +1,3 @@
-import pytest
-
 import rispy
 
 EXAMPLE_RECORD = """
