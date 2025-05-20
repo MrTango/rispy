@@ -46,7 +46,7 @@ bench:  ## Run benchmark test suite
 	@py.test --benchmark-only
 
 coverage:  ## Run coverage and create html report
-	coverage run -m pytest
+	coverage run -m pytest --benchmark-skip
 	coverage html -d coverage_html
 
 build: clean ## builds source and wheel package
