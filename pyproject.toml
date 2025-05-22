@@ -47,6 +47,10 @@ omit = [
     "tests/*",
 ]
 
+[tool.coverage.report]
+fail_under=94
+precision=1
+
 [tool.flit.sdist]
 exclude = [".github", "Makefile", "tests"]
 
