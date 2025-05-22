@@ -35,9 +35,9 @@ jobs:
     - name: Build a wheel
       run: uv run poe build
     - name: Upload wheel
-        if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheel
-          path: |
-            dist/*.whl
+      if: matrix.python-version == '3.13'
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheel
+        path: |
+          dist/*.whl
