@@ -91,7 +91,7 @@ Writing:
 
 ## TAG_KEY_MAPPING
 
-The most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping were
+Most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping is 
 created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth,
 so these may need to be modified for specific export systems:
 
@@ -186,7 +186,7 @@ so these may need to be modified for specific export systems:
 
 ### Override key mapping
 
-The parser use a `TAG_KEY_MAPPING`, which one can override by calling `rispy.load()` with the `mapping` parameter.
+The parser uses a `TAG_KEY_MAPPING`, which one can override by calling `rispy.load()` with the `mapping` parameter.
 
 ```python
 >>> from copy import deepcopy
@@ -238,9 +238,9 @@ should be passed to `rispy.load()` or `rispy.dump()`.
 
 ### Customizing implementations
 
-Creating a custom implentation involves creating a class that inherits a base class, and overriding the necessary
+Creating a custom implementation involves creating a class that inherits a base class, and overriding the necessary
 variables and methods. One of the existing parsers can also be inherited. Inheriting an existing class is advantageous
-if only minor changes need to be made. The sections below document what is available to be overriden, along with a few
+if only minor changes need to be made. The sections below document what is available to be overridden, along with a few
 examples.
 
 #### Parsing
@@ -308,7 +308,7 @@ returns a copy of that list with modified reference types. The map for this conv
 ## Software for other RIS-like formats
 
 Some RIS-like formats contain rich citation data, for example lists and nested attributes, that `rispy` does not
-support. Software specializing on these formats include:
+support. Software specializing in these formats includes:
 
 * [nbib](https://pypi.org/project/nbib/) - parses the "PubMed" or "MEDLINE" format
 
