@@ -35,7 +35,7 @@ jobs:
       run: |
         echo "# Python coverage report" >> $GITHUB_STEP_SUMMARY
         uv run coverage report --format=markdown >> $GITHUB_STEP_SUMMARY || true
-        uv run coverage json -q
+        uv run coverage json -q  # will cause pipeline failure if coverage < minimum
     - name: Build a wheel
       run: uv run poe build
     - name: Upload wheel

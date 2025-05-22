@@ -318,7 +318,7 @@ Install [uv](https://docs.astral.sh/uv/) and make it available and on your path.
 
 ```bash
 # setup environment
-uv venv --python=3.12
+uv venv --python=3.13
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e ".[dev]"
 
