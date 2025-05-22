@@ -30,6 +30,7 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = [
+    "poethepoet ~= 0.34.0",
     "pytest ~=7.4.4",
     "pytest-benchmark",
     "flit ~= 3.9.0",
@@ -59,3 +60,36 @@ select = ["F", "E", "W", "I", "UP", "S", "B", "T20", "RUF"]
 
 [tool.pytest.ini_options]
 addopts = "--doctest-glob='*.md'"
+
+[tool.poe.tasks.lint]
+help = "Check for formatting issues"
+sequence = [
+  {cmd = "ruff format . --check"},
+  {cmd = "ruff check ."},
+]
+
+[tool.poe.tasks.format]
+help = "Fix formatting issues (where possible)"
+sequence = [
+  {cmd = "ruff format ."},
+  {cmd = "ruff check . --fix --show-fixes"},
+]
+
+[tool.poe.tasks.test]
+help = "Run tests"
+cmd = "pytest --benchmark-skip"
+
+[tool.poe.tasks.bench]
+help = "Run benchmark tests"
+cmd = "pytest --benchmark-only"
+
+[tool.poe.tasks.coverage]
+help = "Generate test coverage report"
+sequence = [
+  {cmd = "coverage run -m pytest --benchmark-skip"},
+  {cmd = "coverage html"},
+]
+
+[tool.poe.tasks.build]
+help = "Build wheel package"
+cmd = "uv build"

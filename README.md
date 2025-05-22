@@ -301,23 +301,22 @@ support. Software specializing on these formats include:
 
 ## Developer instructions
 
-Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make commands and run the commands from the command-line manually:
+Install [uv](https://docs.astral.sh/uv/) and make it available and on your path. Then:
 
 ```bash
 # setup environment
-python -m venv venv
-source venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
+uv venv --python=3.12
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e ".[dev]"
 
 # check if code format changes are required
-make lint
+poe lint
 
 # reformat code
-make format
+poe format
 
 # run tests
-make test
+poe test
 ```
 
 Github Actions are currently enabled to run `lint` and `test` when submitting a pull-request.
