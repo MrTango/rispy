@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional, TextIO, Tuple, Type, Union
+from typing import ClassVar, Optional, TextIO, Union
 
 from .config import (
     DELIMITED_TAG_MAPPING,
@@ -12,7 +12,7 @@ from .config import (
     WOK_TAG_KEY_MAPPING,
 )
 
-__all__ = ["load", "loads", "WokParser", "RisParser"]
+__all__ = ["RisParser", "WokParser", "load", "loads"]
 
 
 class NextLine(Exception):
@@ -47,19 +47,19 @@ class RisParser:
     END_TAG: str = "ER"
     UNKNOWN_TAG: str = "UK"
     PATTERN: str
-    DEFAULT_IGNORE: ClassVar[List[str]] = []
-    DEFAULT_MAPPING: Dict = TAG_KEY_MAPPING
-    DEFAULT_LIST_TAGS: List[str] = LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING: Dict = DELIMITED_TAG_MAPPING
+    DEFAULT_IGNORE: ClassVar[list[str]] = []
+    DEFAULT_MAPPING: dict = TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS: list[str] = LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING: dict = DELIMITED_TAG_MAPPING
     DEFAULT_NEWLINE: ClassVar[str] = "\n"
 
     def __init__(
         self,
         *,
-        mapping: Optional[Dict] = None,
-        list_tags: Optional[List[str]] = None,
-        delimiter_tags_mapping: Optional[Dict] = None,
-        ignore: Optional[List[str]] = None,
+        mapping: Optional[dict] = None,
+        list_tags: Optional[list[str]] = None,
+        delimiter_tags_mapping: Optional[dict] = None,
+        ignore: Optional[list[str]] = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
         newline: Optional[str] = None,
@@ -99,18 +99,18 @@ class RisParser:
         self.enforce_list_tags = enforce_list_tags
         self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
 
-    def _iter_till_start(self, lines) -> Dict:
+    def _iter_till_start(self, lines) -> dict:
         while True:
             line = next(lines)
             if line.startswith(self.START_TAG):
                 return {self.mapping[self.START_TAG]: self.parse_line(line)[1]}
 
-    def parse(self, text: str) -> List[Dict]:
+    def parse(self, text: str) -> list[dict]:
         """Parse RIS string."""
         line_gen = (line for line in text.split(self.newline))
         return self.parse_lines(line_gen)
 
-    def parse_lines(self, lines: Union[TextIO, List[str]]) -> List[Dict]:
+    def parse_lines(self, lines: Union[TextIO, list[str]]) -> list[dict]:
         """Parse RIS file line by line."""
 
         result = []
@@ -141,7 +141,7 @@ class RisParser:
         except StopIteration:
             return result
 
-    def parse_line(self, line: str) -> Union[Tuple[str, str], Tuple[None, str]]:
+    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of RIS file.
 
         This method parses a line between the start and end tag.
@@ -170,7 +170,7 @@ class RisParser:
             return (None, line.strip())
 
     def _add_single_value(
-        self, record: Dict, name: str, value: Union[str, List[str]], is_multi: bool = False
+        self, record: dict, name: str, value: Union[str, list[str]], is_multi: bool = False
     ) -> None:
         """Process a single line.
 
@@ -191,7 +191,7 @@ class RisParser:
             else:
                 record[name] = " ".join((value_must_exist_or_is_bug, value))
 
-    def _add_list_value(self, record: Dict, name: str, value: Union[str, List[str]]) -> None:
+    def _add_list_value(self, record: dict, name: str, value: Union[str, list[str]]) -> None:
         """Process tags with multiple values."""
         value_list = value if isinstance(value, list) else [value]
         try:
@@ -205,7 +205,7 @@ class RisParser:
             record[name] = [must_exist, *value_list]
 
     def _add_tag(
-        self, record: Dict, tag: str, content: str, extend_multiline: bool = False
+        self, record: dict, tag: str, content: str, extend_multiline: bool = False
     ) -> None:
         try:
             name = self.mapping[tag]
@@ -233,12 +233,12 @@ class WokParser(RisParser):
     """Subclass of Base for reading Wok RIS files."""
 
     START_TAG = "PT"
-    DEFAULT_IGNORE: ClassVar[List[str]] = ["FN", "VR", "EF"]
+    DEFAULT_IGNORE: ClassVar[list[str]] = ["FN", "VR", "EF"]
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
-    DEFAULT_DELIMITER_MAPPING: ClassVar[Dict] = {}
+    DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
 
-    def parse_line(self, line: str) -> Union[Tuple[str, str], Tuple[None, str]]:
+    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of RIS file.
 
         This method parses a line between the start and end tag.
@@ -269,7 +269,7 @@ def load(
     newline: Optional[str] = None,
     implementation: Optional[RisParser] = None,
     **kw,
-) -> List[Dict]:
+) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -307,7 +307,7 @@ def load(
         raise ValueError("File must be a file-like object or a Path object")
 
 
-def loads(text: str, *, implementation: Optional[Type[RisParser]] = None, **kw) -> List[Dict]:
+def loads(text: str, *, implementation: Optional[type[RisParser]] = None, **kw) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
