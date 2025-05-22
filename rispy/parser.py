@@ -140,6 +140,8 @@ class RisParser:
                 if self.END_TAG is None and tag == self.START_TAG:
                     result.append(record)
                     record = {self.mapping[self.START_TAG]: content}
+                    last_tag = tag
+                    continue
 
                 self._add_tag(record, tag, content)
                 last_tag = tag

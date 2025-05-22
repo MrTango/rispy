@@ -407,3 +407,6 @@ def test_pubmed():
 
     assert len(entries) == 10
     assert entries[0]["pubmed_unique_identifier"] == "30922926"
+
+    assert entries[0]["source"][0].startswith("Eur J Med Genet. 2020")
+    assert isinstance(entries[1]["pubmed_unique_identifier"], str)
