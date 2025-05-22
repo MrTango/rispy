@@ -36,12 +36,3 @@ jobs:
         echo "# Python coverage report" >> $GITHUB_STEP_SUMMARY
         uv run coverage report --format=markdown >> $GITHUB_STEP_SUMMARY || true
         uv run coverage json -q  # will cause pipeline failure if coverage < minimum
-    - name: Build a wheel
-      run: uv run poe build
-    - name: Upload wheel
-      if: matrix.python-version == '3.13'  # only upload a single wheel; not Python-version specific
-      uses: actions/upload-artifact@v4
-      with:
-        name: wheel
-        path: |
-          dist/*.whl
