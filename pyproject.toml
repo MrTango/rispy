@@ -48,7 +48,7 @@ omit = [
 ]
 
 [tool.coverage.report]
-fail_under=94
+fail_under=99
 precision=1
 
 [tool.flit.sdist]
