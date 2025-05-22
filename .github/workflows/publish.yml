@@ -1,13 +1,13 @@
 name: Upload Python Package
 
 on:
-  workflow_dispatch:  # TODO - remove after testing
   push:
+    tags:
+      - 'v*'
 
 jobs:
   pypi-publish:
     runs-on: ubuntu-latest
-    environment: pypi
     permissions:
       id-token: write
     steps:
@@ -26,5 +26,3 @@ jobs:
       run: uv run poe build
     - name: Publish Package
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/  # TODO - remove after testing
