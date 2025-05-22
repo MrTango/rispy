@@ -199,8 +199,6 @@ class RisParser:
         except KeyError:
             record[name] = value_list
         except AttributeError:
-            if not isinstance(record[name], str):
-                raise
             must_exist = record[name]
             record[name] = [must_exist, *value_list]
 
@@ -267,7 +265,7 @@ def load(
     *,
     encoding: Optional[str] = None,
     newline: Optional[str] = None,
-    implementation: Optional[RisParser] = None,
+    implementation: type[RisParser] = RisParser,
     **kw,
 ) -> list[dict]:
     """Load a RIS file and return a list of entries.
@@ -279,35 +277,28 @@ def load(
     of strings.
 
     Args:
-        file (Union[TextIO, Path]): File handle to read ris formatted data.
+        file (Union[TextIO, Path]): File handle of RIS data.
         encoding(str, optional): File encoding, only used when a Path is supplied.
                                  Consistent with the python standard library,
                                  if `None` is supplied, the default system
                                  encoding is used.
         newline(str, optional): File line separator.
-        implementation (RisImplementation): RIS implementation; base by
-                                            default.
+        implementation (RisParser): RIS implementation; RisParser by default.
 
     Returns:
         list: Returns list of RIS entries.
     """
-    if implementation is None:
-        parser = RisParser
-    else:
-        parser = implementation
-
-    if hasattr(file, "readline"):
-        return parser(newline=newline, **kw).parse_lines(file)
-    elif hasattr(file, "open"):
+    if isinstance(file, Path):
         with file.open(mode="r", newline=newline, encoding=encoding) as f:
-            return parser(**kw).parse_lines(f)
+            return implementation(**kw).parse_lines(f)
+    if hasattr(file, "readline"):
+        return implementation(newline=newline, **kw).parse_lines(file)
     elif hasattr(file, "read"):
         return loads(file.read(), implementation=implementation, newline=newline, **kw)
-    else:
-        raise ValueError("File must be a file-like object or a Path object")
+    raise ValueError("File must be a file-like object or a Path object")
 
 
-def loads(text: str, *, implementation: Optional[type[RisParser]] = None, **kw) -> list[dict]:
+def loads(text: str, *, implementation: type[RisParser] = RisParser, **kw) -> list[dict]:
     """Load a RIS file and return a list of entries.
 
     Entries are codified as dictionaries whose keys are the
@@ -317,16 +308,10 @@ def loads(text: str, *, implementation: Optional[type[RisParser]] = None, **kw) 
     of strings.
 
     Args:
-        text (str): A string version of an RIS file.
-        implementation (RisImplementation): RIS implementation; base by
-                                            default.
+        text (str): A string version of RIS data
+        implementation (RisParser): RIS implementation; RisParser by default.
 
     Returns:
         list: Returns list of RIS entries.
     """
-    if implementation is None:
-        parser = RisParser
-    else:
-        parser = implementation
-
-    return parser(**kw).parse(text)
+    return implementation(**kw).parse(text)

@@ -1,3 +1,4 @@
+from io import StringIO
 from pathlib import Path
 
 import pytest
@@ -7,44 +8,62 @@ import rispy
 DATA_DIR = Path(__file__).parent.resolve() / "data"
 
 
-def test_load_example_basic_ris():
-    filepath = DATA_DIR / "example_basic.ris"
-    expected = {
-        "type_of_reference": "JOUR",
-        "authors": ["Shannon,Claude E."],
-        "year": "1948/07//",
-        "title": "A Mathematical Theory of Communication",
-        "alternate_title3": "Bell System Technical Journal",
-        "start_page": "379",
-        "end_page": "423",
-        "volume": "27",
-    }
+@pytest.fixture
+def example_basic():
+    # expected output from `example_basic.ris`
+    return [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Shannon,Claude E."],
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "alternate_title3": "Bell System Technical Journal",
+            "start_page": "379",
+            "end_page": "423",
+            "volume": "27",
+        }
+    ]
 
+
+def test_load_file(example_basic):
     # test with file object
+    filepath = DATA_DIR / "example_basic.ris"
     with open(filepath) as f:
         entries = rispy.load(f)
-    assert expected == entries[0]
+    assert example_basic == entries
 
-    # test with pathlib object
+
+def test_load_file_noreadline(example_basic):
+    # test with file object that has no readline
+
+    class NoReadline(StringIO):
+        @property
+        def readline(self):  # type: ignore
+            raise AttributeError("Not found")
+
+    filepath = DATA_DIR / "example_basic.ris"
+    f = NoReadline(filepath.read_text())
+    assert not hasattr(f, "readline")
+    entries = rispy.load(f)
+    assert example_basic == entries
+
+
+def test_load_path(example_basic):
+    # test with Path object
+    filepath = DATA_DIR / "example_basic.ris"
     p = Path(filepath)
     entries = rispy.load(p)
-    assert expected == entries[0]
+    assert example_basic == entries
 
 
-def test_loads():
+def test_load_bad_file():
+    with pytest.raises(ValueError, match="File must be a file-like object or a Path object"):
+        rispy.load("test")  # type: ignore
+
+
+def test_loads(example_basic):
     ristext = (DATA_DIR / "example_basic.ris").read_text()
-    expected = {
-        "type_of_reference": "JOUR",
-        "authors": ["Shannon,Claude E."],
-        "year": "1948/07//",
-        "title": "A Mathematical Theory of Communication",
-        "alternate_title3": "Bell System Technical Journal",
-        "start_page": "379",
-        "end_page": "423",
-        "volume": "27",
-    }
-
-    assert expected == rispy.loads(ristext)[0]
+    assert example_basic == rispy.loads(ristext)
 
 
 def test_load_multiline_ris():
