@@ -397,3 +397,13 @@ def test_empty_tag():
     assert len(entries) == 1
     assert entries[0]["number"] == "9"
     assert entries[0]["start_page"] == ""
+
+
+def test_pubmed():
+
+    filepath = DATA_DIR / "example_pubmed.txt"
+    with open(filepath) as f:
+        entries = rispy.load(f, implementation=rispy.PubMedParser, newline="\n")
+
+    assert len(entries) == 10
+    assert entries[0]["pubmed_unique_identifier"] == "30922926"

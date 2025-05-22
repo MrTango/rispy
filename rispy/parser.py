@@ -7,6 +7,8 @@ from typing import ClassVar, Optional, TextIO, Union
 from .config import (
     DELIMITED_TAG_MAPPING,
     LIST_TYPE_TAGS,
+    PUBMED_LIST_TYPE_TAGS,
+    PUBMED_TAG_KEY_MAPPING,
     TAG_KEY_MAPPING,
     WOK_LIST_TYPE_TAGS,
     WOK_TAG_KEY_MAPPING,
@@ -129,17 +131,29 @@ class RisParser:
                 if tag in self.ignore:
                     continue
 
-                if tag == self.END_TAG:
+                if self.END_TAG and tag == self.END_TAG:
                     result.append(record)
-
+                    last_tag = tag
                     record = self._iter_till_start(lines)
                     continue
+
+                if self.END_TAG is None and tag == self.START_TAG:
+                    result.append(record)
+                    record = {self.mapping[self.START_TAG]: content}
 
                 self._add_tag(record, tag, content)
                 last_tag = tag
 
         except StopIteration:
-            return result
+            pass
+
+        if self.END_TAG is not None and last_tag != self.END_TAG:
+            raise ParseError(f"Missing end tag: {self.END_TAG}")
+
+        if self.END_TAG is None:
+            result.append(record)
+
+        return result
 
     def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of RIS file.
@@ -260,6 +274,36 @@ class WokParser(RisParser):
             return (None, line[3:].strip())
         else:
             return (line[0:2], line[3:].strip())
+
+
+class PubMedParser(RisParser):
+    """Subclass of Base for reading PubMed RIS files."""
+
+    START_TAG: str = "PMID"
+    END_TAG: None = None
+    UNKNOWN_TAG: None = None
+    DEFAULT_MAPPING: dict = PUBMED_TAG_KEY_MAPPING
+    DEFAULT_LIST_TAGS: list[str] = PUBMED_LIST_TYPE_TAGS
+    DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
+
+    def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
+        """Parse line of PubMed file.
+
+        Parameters
+        ----------
+        line : str
+            Line of RIS file between start and end tag.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the tag and the content of the tag.
+        """
+
+        if line[4:5] == "-":
+            return (line[0:4].rstrip(), line[6:].rstrip())
+        else:
+            return (None, line[6:].rstrip())
 
 
 def load(
