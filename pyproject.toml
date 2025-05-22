@@ -50,6 +50,9 @@ omit = [
 [tool.coverage.report]
 fail_under=94
 precision=1
+exclude_also = [
+  "@abstractmethod",
+]
 
 [tool.flit.sdist]
 exclude = [".github", "tests"]

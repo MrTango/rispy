@@ -9,6 +9,20 @@ import rispy
 DATA_DIR = Path(__file__).parent.resolve() / "data"
 
 
+@pytest.fixture
+def ris_data():
+    return [
+        {
+            "type_of_reference": "JOUR",
+            "authors": ["Shannon, Claude E.", "Doe, John"],
+            "year": "1948/07//",
+            "title": "A Mathematical Theory of Communication",
+            "start_page": "379",
+            "urls": ["https://example.com", "https://example2.com"],
+        }
+    ]
+
+
 def test_dump_and_load():
     # check that we can write the same file we read
     source_fp = DATA_DIR / "example_full.ris"
@@ -131,81 +145,39 @@ def test_file_implementation_write():
     assert reload == entries
 
 
-def test_write_single_unknown_tag():
-    entries = [
-        {
-            "type_of_reference": "JOUR",
-            "authors": ["Shannon, Claude E."],
-            "year": "1948/07//",
-            "title": "A Mathematical Theory of Communication",
-            "start_page": "379",
-            "unknown_tag": {"JP": ["CRISPR"]},
-        }
-    ]
+def test_write_single_unknown_tag(ris_data):
+    ris_data[0]["unknown_tag"] = {"JP": ["CRISPR"]}
+    text_output = rispy.dumps(ris_data)
+    # check output is as expected
+    lines = text_output.splitlines()
+    assert lines[9] == "JP  - CRISPR"
+    assert len(lines) == 11
 
-    text_output = rispy.dumps(entries)
+
+def test_write_multiple_unknown_tag_same_type(ris_data):
+    ris_data[0]["unknown_tag"] = {"JP": ["CRISPR", "PEOPLE"]}
+    text_output = rispy.dumps(ris_data)
 
     # check output is as expected
     lines = text_output.splitlines()
-    assert lines[6] == "JP  - CRISPR"
-    assert len(lines) == 8
+    assert lines[9] == "JP  - CRISPR"
+    assert lines[10] == "JP  - PEOPLE"
+    assert len(lines) == 12
 
 
-def test_write_multiple_unknown_tag_same_type():
-    entries = [
-        {
-            "type_of_reference": "JOUR",
-            "authors": ["Shannon, Claude E."],
-            "year": "1948/07//",
-            "title": "A Mathematical Theory of Communication",
-            "start_page": "379",
-            "unknown_tag": {"JP": ["CRISPR", "PEOPLE"]},
-        }
-    ]
-
-    text_output = rispy.dumps(entries)
+def test_write_multiple_unknown_tag_diff_type(ris_data):
+    ris_data[0]["unknown_tag"] = {"JP": ["CRISPR"], "ED": ["Swinburne, Ricardo"]}
+    text_output = rispy.dumps(ris_data)
 
     # check output is as expected
     lines = text_output.splitlines()
-    assert lines[6] == "JP  - CRISPR"
-    assert lines[7] == "JP  - PEOPLE"
-    assert len(lines) == 9
+    assert lines[9] == "JP  - CRISPR"
+    assert lines[10] == "ED  - Swinburne, Ricardo"
+    assert len(lines) == 12
 
 
-def test_write_multiple_unknown_tag_diff_type():
-    entries = [
-        {
-            "type_of_reference": "JOUR",
-            "authors": ["Shannon, Claude E."],
-            "year": "1948/07//",
-            "title": "A Mathematical Theory of Communication",
-            "start_page": "379",
-            "unknown_tag": {"JP": ["CRISPR"], "ED": ["Swinburne, Ricardo"]},
-        }
-    ]
-
-    text_output = rispy.dumps(entries)
-
-    # check output is as expected
-    lines = text_output.splitlines()
-    assert lines[6] == "JP  - CRISPR"
-    assert lines[7] == "ED  - Swinburne, Ricardo"
-    assert len(lines) == 9
-
-
-def test_default_dump():
-    entries = [
-        {
-            "type_of_reference": "JOUR",
-            "authors": ["Shannon, Claude E.", "Doe, John"],
-            "year": "1948/07//",
-            "title": "A Mathematical Theory of Communication",
-            "start_page": "379",
-            "urls": ["https://example.com", "https://example2.com"],
-        }
-    ]
-
-    text_output = rispy.dumps(entries)
+def test_default_dump(ris_data):
+    text_output = rispy.dumps(ris_data)
     lines = text_output.splitlines()
     assert lines[2] == "AU  - Shannon, Claude E."
     assert lines[3] == "AU  - Doe, John"
@@ -214,20 +186,9 @@ def test_default_dump():
     assert len(lines) == 10
 
 
-def test_delimited_dump():
-    entries = [
-        {
-            "type_of_reference": "JOUR",
-            "authors": ["Shannon, Claude E.", "Doe, John"],
-            "year": "1948/07//",
-            "title": "A Mathematical Theory of Communication",
-            "start_page": "379",
-            "urls": ["https://example.com", "https://example2.com"],
-        }
-    ]
-
+def test_delimited_dump(ris_data):
     # remove URLs from list_tags and give it a custom delimiter
-    text_output = rispy.dumps(entries, list_tags=["AU"], delimiter_tags_mapping={"UR": ","})
+    text_output = rispy.dumps(ris_data, list_tags=["AU"], delimiter_tags_mapping={"UR": ","})
 
     # check output is as expected
     lines = text_output.splitlines()
@@ -235,3 +196,15 @@ def test_delimited_dump():
     assert lines[3] == "AU  - Doe, John"
     assert lines[7] == "UR  - https://example.com,https://example2.com"
     assert len(lines) == 9
+
+
+def test_dump_path(tmp_path, ris_data):
+    # check that dump works with a Path object
+    path = tmp_path / "file.ris"
+    rispy.dump(ris_data, path)
+    assert len(path.read_text()) > 0
+
+
+def test_bad_dump(ris_data):
+    with pytest.raises(ValueError, match="File must be a file-like object or a Path object"):
+        rispy.dump(ris_data, 123)  # type: ignore

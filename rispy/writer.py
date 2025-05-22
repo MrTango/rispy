@@ -1,7 +1,7 @@
 """RIS Writer."""
 
 import warnings
-from abc import ABC
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import ClassVar, Optional, TextIO, Union
 
@@ -90,21 +90,15 @@ class BaseWriter(ABC):
 
     def _get_reference_type(self, ref):
         if self.REFERENCE_TYPE_KEY in ref:
-            # TODO add check
             return ref[self.REFERENCE_TYPE_KEY]
-
-        if self.DEFAULT_REFERENCE_TYPE is not None:
-            return self.DEFAULT_REFERENCE_TYPE
-        else:
-            raise ValueError("Unknown type of reference")
+        return self.DEFAULT_REFERENCE_TYPE
 
     def _format_line(self, tag, value=""):
         """Format a RIS line."""
         return self.PATTERN.format(tag=tag, value=value)
 
     def _format_reference(self, ref, count, n):
-        header = self.set_header(count)
-        if header is not None:
+        if header := self.set_header(count):
             yield header
         yield self._format_line(self.START_TAG, self._get_reference_type(ref))
 
@@ -166,9 +160,10 @@ class BaseWriter(ABC):
         lines = self._yield_lines(references, extra_line=True)
         return self.NEWLINE.join(lines)
 
-    def set_header(self, count: int) -> Optional[str]:
-        """Create the header for each reference."""
-        return None
+    @abstractmethod
+    def set_header(self, count: int) -> str:
+        """Create the header for each reference; if empty string, unused."""
+        ...
 
 
 class RisWriter(BaseWriter):
@@ -189,7 +184,7 @@ def dump(
     file: Union[TextIO, Path],
     *,
     encoding: Optional[str] = None,
-    implementation: Optional[BaseWriter] = None,
+    implementation: type[BaseWriter] = RisWriter,
     **kw,
 ):
     """Write an RIS file to file or file-like object.
@@ -204,26 +199,18 @@ def dump(
         references (list[dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
         encoding (str, optional): Encoding to use when opening file.
-        implementation (RisImplementation): RIS implementation; base by
-                                            default.
+        implementation (BaseWriter): RIS implementation; base by default.
     """
-    if implementation is None:
-        writer = RisWriter
-    else:
-        writer = implementation
-
-    if hasattr(file, "write"):
-        writer(**kw).format_lines(file, references)
-    elif hasattr(file, "open"):
+    if isinstance(file, Path):
         with file.open(mode="w", encoding=encoding) as f:
-            writer(**kw).format_lines(f, references)
+            implementation(**kw).format_lines(f, references)
+    elif hasattr(file, "write"):
+        implementation(**kw).format_lines(file, references)
     else:
         raise ValueError("File must be a file-like object or a Path object")
 
 
-def dumps(
-    references: list[dict], *, implementation: Optional[type[BaseWriter]] = None, **kw
-) -> str:
+def dumps(references: list[dict], *, implementation: type[BaseWriter] = RisWriter, **kw) -> str:
     """Return an RIS formatted string.
 
     Entries are codified as dictionaries whose keys are the
@@ -234,12 +221,6 @@ def dumps(
 
     Args:
         references (list[dict]): List of references.
-        implementation (RisImplementation): RIS implementation; base by
-                                            default.
+        implementation (BaseWriter): RIS implementation; RisWriter by default.
     """
-    if implementation is None:
-        writer = RisWriter
-    else:
-        writer = implementation
-
-    return writer(**kw).formats(references)
+    return implementation(**kw).formats(references)
