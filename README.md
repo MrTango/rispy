@@ -1,7 +1,7 @@
 # rispy - an RIS file parser/writer for Python
 
-![PyPI Version](https://badge.fury.io/py/rispy.svg)
-![PyPI Downloads](https://img.shields.io/pypi/dm/rispy)
+[![PyPI Version](https://badge.fury.io/py/rispy.svg)](https://pypi.org/project/rispy/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/rispy)](https://pypistats.org/packages/rispy)
 
 A Python reader/writer of [RIS](https://en.wikipedia.org/wiki/RIS_(file_format)) reference files.
 
