@@ -1,10 +1,10 @@
 name: Upload Python Package
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # TODO - remove after testing
   push:
     tags:
-      - '*'
+      - 'v*'
 
 jobs:
   pypi-publish:
@@ -29,4 +29,4 @@ jobs:
     - name: Publish Package
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        repository-url: https://test.pypi.org/legacy/
+        repository-url: https://test.pypi.org/legacy/  # TODO - remove after testing
