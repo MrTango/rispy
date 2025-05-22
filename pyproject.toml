@@ -48,7 +48,7 @@ omit = [
 ]
 
 [tool.coverage.report]
-fail_under=94
+fail_under=99.5
 precision=1
 exclude_also = [
   "@abstractmethod",
