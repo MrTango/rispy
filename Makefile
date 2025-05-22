@@ -34,10 +34,10 @@ clean:  ## Remove all build, test and Python artifacts
 	find . -name '__pycache__' -exec rm -fr {} +
 
 lint:  ## Check python formatting issues
-	@ruff format . --check && ruff .
+	@ruff format . --check && ruff check
 
 format:  ## Fix python formatting issues where possible
-	@ruff format . && ruff . --fix --show-fixes
+	@ruff format && ruff check --fix --show-fixes
 
 test:  ## Run unit test suite
 	@py.test --benchmark-skip

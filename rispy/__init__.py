@@ -7,16 +7,16 @@ from .writer import BaseWriter, RisWriter, dump, dumps
 __version__ = "0.9.0"
 
 __all__ = [
-    "__version__",
     "LIST_TYPE_TAGS",
     "TAG_KEY_MAPPING",
     "TYPE_OF_REFERENCE_MAPPING",
-    "load",
-    "loads",
+    "BaseWriter",
+    "RisParser",
+    "RisWriter",
+    "WokParser",
+    "__version__",
     "dump",
     "dumps",
-    "WokParser",
-    "RisParser",
-    "BaseWriter",
-    "RisWriter",
+    "load",
+    "loads",
 ]

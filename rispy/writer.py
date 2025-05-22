@@ -3,12 +3,12 @@
 import warnings
 from abc import ABC
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional, TextIO, Type, Union
+from typing import ClassVar, Optional, TextIO, Union
 
 from .config import DELIMITED_TAG_MAPPING, LIST_TYPE_TAGS, TAG_KEY_MAPPING
 from .utils import invert_dictionary
 
-__all__ = ["dump", "dumps", "BaseWriter", "RisWriter"]
+__all__ = ["BaseWriter", "RisWriter", "dump", "dumps"]
 
 
 class BaseWriter(ABC):
@@ -42,10 +42,10 @@ class BaseWriter(ABC):
     END_TAG: str = "ER"
     UNKNOWN_TAG: str = "UK"
     PATTERN: str
-    DEFAULT_IGNORE: ClassVar[List[str]] = []
-    DEFAULT_MAPPING: Dict
-    DEFAULT_LIST_TAGS: List[str]
-    DEFAULT_DELIMITER_MAPPING: Dict
+    DEFAULT_IGNORE: ClassVar[list[str]] = []
+    DEFAULT_MAPPING: dict
+    DEFAULT_LIST_TAGS: list[str]
+    DEFAULT_DELIMITER_MAPPING: dict
     DEFAULT_REFERENCE_TYPE: str = "JOUR"
     REFERENCE_TYPE_KEY: str = "type_of_reference"
     SEPARATOR: Optional[str] = ""
@@ -54,10 +54,10 @@ class BaseWriter(ABC):
     def __init__(
         self,
         *,
-        mapping: Optional[Dict] = None,
-        list_tags: Optional[List[str]] = None,
-        delimiter_tags_mapping: Optional[Dict] = None,
-        ignore: Optional[List[str]] = None,
+        mapping: Optional[dict] = None,
+        list_tags: Optional[list[str]] = None,
+        delimiter_tags_mapping: Optional[dict] = None,
+        ignore: Optional[list[str]] = None,
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
     ):
@@ -161,7 +161,7 @@ class BaseWriter(ABC):
         for line in self._yield_lines(references):
             file.write(f"{line}{self.NEWLINE}")
 
-    def formats(self, references: List[Dict]) -> str:
+    def formats(self, references: list[dict]) -> str:
         """Format a list of references into an RIS string."""
         lines = self._yield_lines(references, extra_line=True)
         return self.NEWLINE.join(lines)
@@ -185,7 +185,7 @@ class RisWriter(BaseWriter):
 
 
 def dump(
-    references: List[Dict],
+    references: list[dict],
     file: Union[TextIO, Path],
     *,
     encoding: Optional[str] = None,
@@ -201,7 +201,7 @@ def dump(
     of strings.
 
     Args:
-        references (List[Dict]): List of references.
+        references (list[dict]): List of references.
         file (TextIO): File handle to store ris formatted data.
         encoding (str, optional): Encoding to use when opening file.
         implementation (RisImplementation): RIS implementation; base by
@@ -222,7 +222,7 @@ def dump(
 
 
 def dumps(
-    references: List[Dict], *, implementation: Optional[Type[BaseWriter]] = None, **kw
+    references: list[dict], *, implementation: Optional[type[BaseWriter]] = None, **kw
 ) -> str:
     """Return an RIS formatted string.
 
@@ -233,7 +233,7 @@ def dumps(
     of strings.
 
     Args:
-        references (List[Dict]): List of references.
+        references (list[dict]): List of references.
         implementation (RisImplementation): RIS implementation; base by
                                             default.
     """

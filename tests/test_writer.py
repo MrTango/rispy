@@ -1,6 +1,6 @@
 from copy import deepcopy
 from pathlib import Path
-from typing import ClassVar, List
+from typing import ClassVar
 
 import pytest
 
@@ -109,10 +109,10 @@ def test_writing_all_list_tags():
 
 def test_file_implementation_write():
     class CustomParser(rispy.RisParser):
-        DEFAULT_IGNORE: ClassVar[List[str]] = ["JF", "ID", "KW"]
+        DEFAULT_IGNORE: ClassVar[list[str]] = ["JF", "ID", "KW"]
 
     class CustomWriter(rispy.RisWriter):
-        DEFAULT_IGNORE: ClassVar[List[str]] = ["JF", "ID", "KW"]
+        DEFAULT_IGNORE: ClassVar[list[str]] = ["JF", "ID", "KW"]
 
     list_tags = ["SN", "T1", "A1", "UR"]
 
