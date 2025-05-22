@@ -31,8 +31,8 @@ def test_load_example_basic_ris():
     assert expected == entries[0]
 
 
-def test_load_multiline_ris():
-    filepath = DATA_DIR / "multiline.ris"
+def test_loads():
+    ristext = (DATA_DIR / "example_basic.ris").read_text()
     expected = {
         "type_of_reference": "JOUR",
         "authors": ["Shannon,Claude E."],
@@ -41,14 +41,24 @@ def test_load_multiline_ris():
         "alternate_title3": "Bell System Technical Journal",
         "start_page": "379",
         "end_page": "423",
-        "notes_abstract": "first line, then second line and at the end the last line",
-        "notes": ["first line", "* second line", "* last line"],
         "volume": "27",
+    }
+
+    assert expected == rispy.loads(ristext)[0]
+
+
+def test_load_multiline_ris():
+    filepath = DATA_DIR / "example_multiline.ris"
+    expected = {
+        "type_of_reference": "JOUR",
+        "notes_abstract": "first line, ER then second line and at the end the last line",
+        "notes": ["first line", "* second line", "* last line"],
     }
     with open(filepath) as f:
         entries = rispy.load(f)
 
-    assert expected == entries[0]
+    for entry in entries:
+        assert expected == entry
 
 
 def test_load_example_full_ris():
@@ -151,7 +161,7 @@ def test_load_example_extraneous_data_ris():
     ]
 
     with open(filepath) as f:
-        entries = rispy.load(f, skip_missing_tags=True)
+        entries = rispy.load(f)
     assert expected == entries
 
 
@@ -377,3 +387,13 @@ def test_url_tag():
     assert entries[1]["urls"] == ["http://example.com", "http://www.example.com"]
     assert entries[2]["urls"] == ["http://example.com", "http://www.example.com"]
     assert entries[3]["urls"] == ["http://example.com", "http://www.example.com"]
+
+
+def test_empty_tag():
+    filepath = DATA_DIR / "example_empty_tag.ris"
+    with open(filepath) as f:
+        entries = rispy.load(f)
+
+    assert len(entries) == 1
+    assert entries[0]["number"] == "9"
+    assert entries[0]["start_page"] == ""
