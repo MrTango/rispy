@@ -51,14 +51,23 @@ def test_load_multiline_ris():
     filepath = DATA_DIR / "example_multiline.ris"
     expected = {
         "type_of_reference": "JOUR",
-        "notes_abstract": "first line, ER then second line and at the end the last line",
-        "notes": ["first line", "* second line", "* last line"],
+        "notes_abstract": "first line,\nER then second line and at the end\nthe last line",
+        "notes": ["first line\n* second line\n* last line"],
     }
     with open(filepath) as f:
         entries = rispy.load(f)
 
     for entry in entries:
         assert expected == entry
+
+
+
+def test_load_multiline_multitag_ris():
+    with open(DATA_DIR / "example_multiline_multitag.ris") as f:
+        entry = rispy.load(f)[0]
+
+    assert len(entry["notes"]) == 2
+    assert entry["notes"][0] == entry["notes"][1]
 
 
 def test_load_example_full_ris():
@@ -403,7 +412,7 @@ def test_pubmed():
 
     filepath = DATA_DIR / "example_pubmed.txt"
     with open(filepath) as f:
-        entries = rispy.load(f, implementation=rispy.PubMedParser, newline="\n")
+        entries = rispy.load(f, implementation=rispy.PubMedParser)
 
     assert len(entries) == 10
     assert entries[0]["pubmed_unique_identifier"] == "30922926"

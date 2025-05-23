@@ -108,6 +108,8 @@ AID - 10.1016/j.ejmg.2019.03.004 [doi]
 PST - ppublish
 SO  - Eur J Med Genet. 2020 Feb;63(2):103640. doi: 10.1016/j.ejmg.2019.03.004. Epub
       2019 Mar 25.
+SO  - Eur J Med Genet. 2020 Feb;63(2):103640. doi: 10.1016/j.ejmg.2019.03.004. Epub
+      2019 Mar 25.
 
 PMID- 37068225
 OWN - NLM
