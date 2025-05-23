@@ -1,6 +1,6 @@
 """Define default mappings."""
 
-LIST_TYPE_TAGS = [
+LIST_TYPE_TAGS = {
     "A1",
     "A2",
     "A3",
@@ -9,7 +9,7 @@ LIST_TYPE_TAGS = [
     "KW",
     "N1",
     "UR",
-]
+}
 
 DELIMITED_TAG_MAPPING = {
     "UR": ";",
@@ -141,7 +141,7 @@ TYPE_OF_REFERENCE_MAPPING = {
     "VIDEO": "Video recording",
 }
 
-WOK_LIST_TYPE_TAGS = [
+WOK_LIST_TYPE_TAGS = {
     "RI",
     "CR",
     "AF",
@@ -150,7 +150,7 @@ WOK_LIST_TYPE_TAGS = [
     "AU",
     "CA",
     "GP",
-]
+}
 
 WOK_TAG_KEY_MAPPING = {
     "FN": "file_name",
