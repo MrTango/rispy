@@ -1,4 +1,5 @@
 """Define default mappings."""
+
 LIST_TYPE_TAGS = {
     "A1",
     "A2",
