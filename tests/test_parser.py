@@ -61,7 +61,6 @@ def test_load_multiline_ris():
         assert expected == entry
 
 
-
 def test_load_multiline_multitag_ris():
     with open(DATA_DIR / "example_multiline_multitag.ris") as f:
         entry = rispy.load(f)[0]
@@ -409,7 +408,6 @@ def test_empty_tag():
 
 
 def test_pubmed():
-
     filepath = DATA_DIR / "example_pubmed.txt"
     with open(filepath) as f:
         entries = rispy.load(f, implementation=rispy.PubMedParser)
