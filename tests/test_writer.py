@@ -67,7 +67,7 @@ def test_dumps_multiple_unknown_tags_ris(tmp_path):
 def test_custom_list_tags():
     filepath = DATA_DIR / "example_custom_list_tags.ris"
     list_tags = deepcopy(rispy.LIST_TYPE_TAGS)
-    list_tags.append("SN")
+    list_tags.add("SN")
 
     expected = {
         "type_of_reference": "JOUR",
