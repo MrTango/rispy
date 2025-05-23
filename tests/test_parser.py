@@ -61,6 +61,16 @@ def test_load_multiline_ris():
         assert expected == entry
 
 
+def test_multiline_list_tags_ris():
+
+    with open(DATA_DIR / "example_endnote.ris") as f:
+        entry = rispy.load(f)[0]
+
+    assert len(entry["keywords"]) >= 5
+    assert len(entry["authors"]) == 4
+    assert len(entry["author_address"].split("\n")) == 2
+
+
 def test_load_multiline_multitag_ris():
     with open(DATA_DIR / "example_multiline_multitag.ris") as f:
         entry = rispy.load(f)[0]
