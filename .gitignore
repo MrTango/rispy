@@ -6,6 +6,7 @@
 *.mo
 *.nja
 *.py[co]
+.benchmarks
 .cache
 .coverage
 .idea
@@ -19,7 +20,7 @@
 /.project
 /.pydevproject
 build
-coverage_html
+htmlcov
 dist
 venv
 
