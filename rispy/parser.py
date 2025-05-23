@@ -65,6 +65,7 @@ class RisParser:
         skip_unknown_tags: bool = False,
         enforce_list_tags: bool = True,
         newline: Optional[str] = None,
+        undo_wrapping: bool = False,
     ):
         """Initialize the parser function.
 
@@ -100,6 +101,7 @@ class RisParser:
         self.skip_unknown_tags = skip_unknown_tags
         self.enforce_list_tags = enforce_list_tags
         self.newline = newline if newline is not None else self.DEFAULT_NEWLINE
+        self.undo_wrapping = undo_wrapping
 
     def _iter_till_start(self, lines) -> dict:
         while True:
@@ -125,7 +127,7 @@ class RisParser:
                 tag, content = self.parse_line(next(lines))
 
                 if tag is None:
-                    self._add_tag(record, last_tag, content, extend_multiline=True)
+                    self._extend_tag(record, last_tag, content)
                     continue
 
                 if tag in self.ignore:
@@ -194,18 +196,11 @@ class RisParser:
         The output for a tag can be a list when a delimiter is specified,
         even if it is not a list tag.
         """
-        if not is_multi:
-            if self.enforce_list_tags or name not in record:
-                ignore_this_if_has_one = value
-                record.setdefault(name, ignore_this_if_has_one)
-            else:
-                self._add_list_value(record, name, value)
+        if self.enforce_list_tags or name not in record:
+            ignore_this_if_has_one = value
+            record.setdefault(name, ignore_this_if_has_one)
         else:
-            value_must_exist_or_is_bug = record[name]
-            if isinstance(value, list):
-                record[name].extend(value)
-            else:
-                record[name] = " ".join((value_must_exist_or_is_bug, value))
+            self._add_list_value(record, name, value)
 
     def _add_list_value(self, record: dict, name: str, value: Union[str, list[str]]) -> None:
         """Process tags with multiple values."""
@@ -220,9 +215,18 @@ class RisParser:
             must_exist = record[name]
             record[name] = [must_exist, *value_list]
 
-    def _add_tag(
-        self, record: dict, tag: str, content: str, extend_multiline: bool = False
-    ) -> None:
+    def _extend_tag(self, record: dict, tag: str, content: Union[str, list[str]]) -> None:
+        """Extend tags with multiline values."""
+
+        sep = " " if self.undo_wrapping else "\n"
+
+        name = self.mapping[tag]
+        if isinstance(record[name], list):
+            record[name][-1] = sep.join((record[name][-1], content))
+        else:
+            record[name] = sep.join((record[name], content))
+
+    def _add_tag(self, record: dict, tag: str, content: str) -> None:
         try:
             name = self.mapping[tag]
         except KeyError:
@@ -242,7 +246,7 @@ class RisParser:
             if tag in self.list_tags:
                 self._add_list_value(record, name, content)
             else:
-                self._add_single_value(record, name, content, is_multi=extend_multiline)
+                self._add_single_value(record, name, content)
 
 
 class WokParser(RisParser):
@@ -253,6 +257,9 @@ class WokParser(RisParser):
     DEFAULT_MAPPING = WOK_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS = WOK_LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
+
+    def __init__(self, undo_wrapping: bool = True, **kw):
+        super().__init__(undo_wrapping=undo_wrapping, **kw)
 
     def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of RIS file.
@@ -287,6 +294,9 @@ class PubMedParser(RisParser):
     DEFAULT_MAPPING: dict = PUBMED_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS: list[str] = PUBMED_LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}
+
+    def __init__(self, undo_wrapping: bool = True, **kw):
+        super().__init__(undo_wrapping=undo_wrapping, **kw)
 
     def parse_line(self, line: str) -> Union[tuple[str, str], tuple[None, str]]:
         """Parse line of PubMed file.
