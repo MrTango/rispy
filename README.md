@@ -322,6 +322,9 @@ uv venv --python=3.13
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e ".[dev]"
 
+# list available tasks
+poe
+
 # check if code format changes are required
 poe lint
 
@@ -330,6 +333,9 @@ poe format
 
 # run tests
 poe test
+
+# run benchmark tests
+poe bench
 ```
 
 If you'd prefer not to use `uv`, that's fine too; this is a standard Python package so feel free to use your
