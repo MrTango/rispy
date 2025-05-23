@@ -229,22 +229,33 @@ WOK_TAG_KEY_MAPPING = {
 }
 PUBMED_LIST_TYPE_TAGS = [
     "AD",
+    "AID",
     "AU",
     "AUID",
+    "CIN",
+    "CON",
     "CN",
-    "EDAT",  # not sure
+    "RN",
+    "EDAT",
+    "EIN",
     "FAU",
     "FIR",
     "GR",
     "IR",
-    "LA",  # not sure
-    "MH",
+    "IRAD",
+    "IS",
+    "LA",
+    "LID",
     "MHDA",
-    "PMC",  # not sure
-    "PST",  # not sure
-    "PT",  # not sure
-    "SB",  # not sure
-    "SO",  # not sure
+    "MH",
+    "OT",
+    "PHST",
+    "PST",
+    "PT",
+    "PMC",
+    "SI",
+    "SO",
+    "SB",
 ]
 
 # from https://pubmed.ncbi.nlm.nih.gov/help/#pubmed-format
