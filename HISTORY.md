@@ -1,5 +1,15 @@
 # History
 
+## v0.10.0 (2025-05-23)
+
+* Improve performance of rispy's parser and refactor parser
+* Add support for Python 3.13 and remove Python 3.8
+* Revert strip UTF-8 BOM strip
+* (dev) Add benchmark for rispy
+* (dev) Switch from Makefile to poethepoet
+* (dev) increase test coverage to 99.5%
+* (dev) GitHub publish package to PyPI
+
 ## v0.9.0 (2024-01-17)
 
 * Improve performance to yield from file objects instead of loading into memory at once (@scott-8 #57)
