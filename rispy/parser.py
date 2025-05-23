@@ -47,7 +47,6 @@ class RisParser:
 
     START_TAG: str = "TY"
     END_TAG: str = "ER"
-    UNKNOWN_TAG: str = "UK"
     PATTERN: str
     DEFAULT_IGNORE: ClassVar[list[str]] = []
     DEFAULT_MAPPING: dict = TAG_KEY_MAPPING
@@ -233,12 +232,7 @@ class RisParser:
             if self.skip_unknown_tags:
                 return
 
-            # handle unknown tag
-            name = self.mapping[self.UNKNOWN_TAG]
-            if name not in record:
-                record[name] = defaultdict(list)
-            record[name][tag].append(content)
-
+            record.setdefault("unknown_tag", defaultdict(list))[tag].append(content)
         else:
             if delimiter := self.delimiter_map.get(tag):
                 content = [i.strip() for i in content.split(delimiter)]
@@ -290,7 +284,6 @@ class PubMedParser(RisParser):
 
     START_TAG: str = "PMID"
     END_TAG: None = None
-    UNKNOWN_TAG: None = None
     DEFAULT_MAPPING: dict = PUBMED_TAG_KEY_MAPPING
     DEFAULT_LIST_TAGS: list[str] = PUBMED_LIST_TYPE_TAGS
     DEFAULT_DELIMITER_MAPPING: ClassVar[dict] = {}

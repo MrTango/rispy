@@ -80,7 +80,6 @@ TAG_KEY_MAPPING = {
     "Y1": "publication_year",
     "Y2": "access_date",
     "ER": "end_of_reference",
-    "UK": "unknown_tag",
 }
 
 TYPE_OF_REFERENCE_MAPPING = {
