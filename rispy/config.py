@@ -226,7 +226,7 @@ WOK_TAG_KEY_MAPPING = {
     "ER": "end_of_record",
     "EF": "end_of_file",
 }
-PUBMED_LIST_TYPE_TAGS = [
+PUBMED_LIST_TYPE_TAGS = {
     "AD",
     "AID",
     "AU",
@@ -255,7 +255,7 @@ PUBMED_LIST_TYPE_TAGS = [
     "SI",
     "SO",
     "SB",
-]
+}
 
 # from https://pubmed.ncbi.nlm.nih.gov/help/#pubmed-format
 PUBMED_TAG_KEY_MAPPING = {
