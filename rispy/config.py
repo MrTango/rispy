@@ -227,25 +227,24 @@ WOK_TAG_KEY_MAPPING = {
     "ER": "end_of_record",
     "EF": "end_of_file",
 }
-
 PUBMED_LIST_TYPE_TAGS = [
-    "FAU",
-    "AU",
     "AD",
+    "AU",
     "AUID",
-    "IR",
+    "CN",
+    "EDAT",  # not sure
+    "FAU",
     "FIR",
     "GR",
-    "CN",
+    "IR",
     "LA",  # not sure
-    "PT",  # not sure
-    "SB",  # not sure
     "MH",
     "MHDA",
     "PMC",  # not sure
-    "EDAT",  # not sure
-    "PST",   # not sure
-    "SO",   # not sure
+    "PST",  # not sure
+    "PT",  # not sure
+    "SB",  # not sure
+    "SO",  # not sure
 ]
 
 # from https://pubmed.ncbi.nlm.nih.gov/help/#pubmed-format
