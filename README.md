@@ -91,7 +91,7 @@ Writing:
 
 ## TAG_KEY_MAPPING
 
-Most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping is 
+Most fields contain string values, but some like first_authors (A1) are parsed into lists. The default mapping is
 created from specifications scattered around the web, but to our knowledge there is not one single source of RIS truth,
 so these may need to be modified for specific export systems:
 
@@ -314,24 +314,31 @@ support. Software specializing in these formats includes:
 
 ## Developer instructions
 
-Common developer commands are in the provided `Makefile`; if you don't have `make` installed, you can view the make
-commands and run the commands from the command-line manually:
+Install [uv](https://docs.astral.sh/uv/) and make it available and on your path. Then:
 
 ```bash
 # setup environment
-python -m venv venv
-source venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
+uv venv --python=3.13
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e ".[dev]"
+
+# list available tasks
+poe
 
 # check if code format changes are required
-make lint
+poe lint
 
 # reformat code
-make format
+poe format
 
 # run tests
-make test
+poe test
+
+# run benchmark tests
+poe bench
 ```
+
+If you'd prefer not to use `uv`, that's fine too; this is a standard Python package so feel free to use your
+preferred workflow.
 
 Github Actions are currently enabled to run `lint` and `test` when submitting a pull-request.
