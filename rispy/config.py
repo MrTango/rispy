@@ -269,7 +269,7 @@ PUBMED_TAG_KEY_MAPPING = {
     "CI": "copyright_information",
     "CIN": "comment_in",
     "CN": "corporate_author",
-    "COIS": "conflict_of_interest",  # mistake in the documentation (COIS instead of COI, March 2025)
+    "COIS": "conflict_of_interest",  # mistake in the doc (COIS instead of COI, March 2025)
     "CON": "comment_on",
     "CP": "chapter",
     "CRDT": "create_date",
