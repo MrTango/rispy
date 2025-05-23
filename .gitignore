@@ -26,3 +26,8 @@ venv
 
 # created from tests
 export.ris
+
+# extra benchmark data only for internal use (because of copyright)
+benchmark_data
+tests/test_benchmark_extra.py
+benchmark_*.svg
