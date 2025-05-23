@@ -125,10 +125,6 @@ class RisParser:
             while True:
                 tag, content = self.parse_line(next(lines))
 
-                if tag is None:
-                    self._extend_tag(record, last_tag, content)
-                    continue
-
                 if tag in self.ignore:
                     continue
 
@@ -144,8 +140,13 @@ class RisParser:
                     last_tag = tag
                     continue
 
-                self._add_tag(record, tag, content)
-                last_tag = tag
+                if tag is None and not self.undo_wrapping and last_tag in self.list_tags:
+                    self._add_tag(record, last_tag, content)
+                elif tag is None:
+                    self._extend_tag(record, last_tag, content)
+                else:
+                    self._add_tag(record, tag, content)
+                    last_tag = tag
 
         except StopIteration:
             pass
@@ -233,6 +234,7 @@ class RisParser:
                 return
 
             record.setdefault("unknown_tag", defaultdict(list))[tag].append(content)
+            return
         else:
             if delimiter := self.delimiter_map.get(tag):
                 content = [i.strip() for i in content.split(delimiter)]

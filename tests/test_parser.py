@@ -52,7 +52,7 @@ def test_load_multiline_ris():
     expected = {
         "type_of_reference": "JOUR",
         "notes_abstract": "first line,\nER then second line and at the end\nthe last line",
-        "notes": ["first line\n* second line\n* last line"],
+        "notes": ["first line", "* second line", "* last line"],
     }
     with open(filepath) as f:
         entries = rispy.load(f)
@@ -62,7 +62,6 @@ def test_load_multiline_ris():
 
 
 def test_multiline_list_tags_ris():
-
     with open(DATA_DIR / "example_endnote.ris") as f:
         entry = rispy.load(f)[0]
 
@@ -73,10 +72,18 @@ def test_multiline_list_tags_ris():
 
 def test_load_multiline_multitag_ris():
     with open(DATA_DIR / "example_multiline_multitag.ris") as f:
-        entry = rispy.load(f)[0]
+        entry = rispy.load(f, undo_wrapping=True)[0]
 
     assert len(entry["notes"]) == 2
     assert entry["notes"][0] == entry["notes"][1]
+
+
+def test_load_multiline_multitag_ris_wrapped():
+    with open(DATA_DIR / "example_multiline_multitag.ris") as f:
+        entry = rispy.load(f)[0]
+
+    assert len(entry["notes"]) == 4
+    assert entry["notes"][0] == entry["notes"][2]
 
 
 def test_load_example_full_ris():
