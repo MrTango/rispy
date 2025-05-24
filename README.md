@@ -177,7 +177,6 @@ so these may need to be modified for specific export systems:
  'TI': 'title',
  'TT': 'translated_title',
  'TY': 'type_of_reference',
- 'UK': 'unknown_tag',
  'UR': 'urls',
  'VL': 'volume',
  'Y1': 'publication_year',

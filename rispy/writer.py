@@ -111,8 +111,11 @@ class BaseWriter(ABC):
             try:
                 tag = self._rev_mapping[label.lower()]
             except KeyError:
-                warnings.warn(UserWarning(f"label `{label}` not exported"), stacklevel=2)
-                continue
+                if label.lower() == "unknown_tag":
+                    tag = self.UNKNOWN_TAG
+                else:
+                    warnings.warn(UserWarning(f"label `{label}` not exported"), stacklevel=2)
+                    continue
 
             # ignore
             if tag in tags_to_skip:
