@@ -1,5 +1,9 @@
 # History
 
+## v0.10.1 (2025-10-24)
+
+* Support LK, M2, U2-U4 fields in RIS
+
 ## v0.10.0 (2025-05-23)
 
 * Improve performance of rispy's parser and refactor parser

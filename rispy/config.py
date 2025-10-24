@@ -54,7 +54,9 @@ TAG_KEY_MAPPING = {
     "L4": "figure",
     "LA": "language",
     "LB": "label",
+    "LK": "website_link",
     "M1": "note",
+    "M2": "miscellaneous_2",
     "M3": "type_of_work",
     "N1": "notes",  # ListType
     "N2": "notes_abstract",
@@ -75,6 +77,9 @@ TAG_KEY_MAPPING = {
     "TA": "translated_author",
     "TI": "title",
     "TT": "translated_title",
+    "U2": "user_defined_2",
+    "U3": "user_defined_3",
+    "U4": "user_defined_4",
     "UR": "urls",  # ListType
     "VL": "volume",
     "Y1": "publication_year",
