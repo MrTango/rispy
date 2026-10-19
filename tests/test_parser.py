@@ -80,6 +80,33 @@ def test_load_multiline_ris():
         assert expected == entry
 
 
+@pytest.mark.parametrize("leading", ["", "TI  - Kept title\n", "AU  - Kept author\n"])
+def test_ignored_tag_continuations(leading):
+    text = (
+        "TY  - JOUR\n"
+        f"{leading}"
+        "N1  - Ignored note\n"
+        "continued note\n"
+        "another continuation\n"
+        "AB  - Kept abstract\n"
+        "continued abstract\n"
+        "ER  -"
+    )
+    expected = {"type_of_reference": "JOUR", "abstract": "Kept abstract continued abstract"}
+    if leading.startswith("TI"):
+        expected["title"] = "Kept title"
+    elif leading.startswith("AU"):
+        expected["authors"] = ["Kept author"]
+    assert rispy.loads(text, ignore=["N1"]) == [expected]
+
+
+def test_ignored_wok_tag_continuations():
+    text = "PT J\nTI Kept title\nFN Ignored name\n   continued name\nAB Kept abstract\nER\n"
+    assert rispy.loads(text, implementation=rispy.WokParser) == [
+        {"publication_type": "J", "document_title": "Kept title", "abstract": "Kept abstract"}
+    ]
+
+
 def test_load_example_full_ris():
     filepath = DATA_DIR / "example_full.ris"
     expected = [

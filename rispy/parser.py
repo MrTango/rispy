@@ -123,10 +123,12 @@ class RisParser:
                 tag, content = self.parse_line(next(lines))
 
                 if tag is None:
-                    self._add_tag(record, last_tag, content, extend_multiline=True)
+                    if last_tag not in self.ignore:
+                        self._add_tag(record, last_tag, content, extend_multiline=True)
                     continue
 
                 if tag in self.ignore:
+                    last_tag = tag
                     continue
 
                 if tag == self.END_TAG:
