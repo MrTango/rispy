@@ -315,7 +315,7 @@ support. Software specializing in these formats includes:
 
 ## Developer instructions
 
-Install [uv](https://docs.astral.sh/uv/) and make it available and on your path. Then:
+Install [uv](https://docs.astral.sh/uv/) and the [just](https://github.com/casey/just) task runner, and make them available on your path. Then:
 
 ```bash
 # setup environment
@@ -324,19 +324,19 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e ".[dev]"
 
 # list available tasks
-poe
+just
 
 # check if code format changes are required
-poe lint
+just lint
 
 # reformat code
-poe format
+just format
 
 # run tests
-poe test
+just test
 
 # run benchmark tests
-poe bench
+just bench
 ```
 
 If you'd prefer not to use `uv`, that's fine too; this is a standard Python package so feel free to use your
