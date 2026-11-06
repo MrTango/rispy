@@ -1,5 +1,9 @@
 # History
 
+## Unreleased
+
+* (dev) Switch from poethepoet to just for task running
+
 ## v0.10.0 (2025-05-23)
 
 * Improve performance of rispy's parser and refactor parser

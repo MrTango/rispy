@@ -22,7 +22,9 @@ jobs:
         cache-dependency-glob: "**/pyproject.toml"
     - name: Install dependencies
       run: uv sync --all-extras
+    - name: Install just
+      uses: extractions/setup-just@v2
     - name: Build wheel and tar.gz
-      run: uv run poe build
+      run: uv run just build
     - name: Publish Package
       uses: pypa/gh-action-pypi-publish@release/v1
